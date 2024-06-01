@@ -9,120 +9,103 @@ import moment from "moment";
 import "../styles/index.css"; // Ensure the CSS file is imported
 
 const { Title } = Typography;
+import { Activity, Product, ShipmentResponse } from "../types";
+import { getAllShipments } from "../api";
+// interface SubProduct {
+//   sub_product: string;
+// }
 
-interface SubProduct {
-  sub_product: string;
-}
+// interface Product {
+//   product: string;
+//   sub_products: SubProduct[];
+// }
 
-interface Product {
-  product: string;
-  sub_products: SubProduct[];
-}
+// interface QuantityDimensions {
+//   KG: number;
+//   G: number;
+// }
 
-interface QuantityDimensions {
-  KG: number;
-  G: number;
-}
+// interface ShipmentProduct {
+//   products: Product[];
+//   quantity: number;
+//   dimensions: QuantityDimensions;
+//   percentage: number;
+// }
 
-interface ShipmentProduct {
-  products: Product[];
-  quantity: number;
-  dimensions: QuantityDimensions;
-  percentage: number;
-}
+// interface ArrivalDepartureInformation {
+//   arrival_displacement: number;
+//   departure_displacement: number;
+//   arrival_draft: number;
+//   departure_draft: number;
+//   arrival_mast_height: number;
+//   departure_mast_height: number;
+// }
 
-interface ArrivalDepartureInformation {
-  arrival_displacement: number;
-  departure_displacement: number;
-  arrival_draft: number;
-  departure_draft: number;
-  arrival_mast_height: number;
-  departure_mast_height: number;
-}
+// interface CustomerSpecifications {
+//   customer: string;
+//   company: string;
+//   email: string;
+//   contact: string;
+// }
 
-interface CustomerSpecifications {
-  customer: string;
-  company: string;
-  email: string;
-  contact: string;
-}
+// interface Activity {
+//   activity_type: string;
+//   customer_specifications: CustomerSpecifications;
+//   anchorage_location: string;
+//   shipment_product: ShipmentProduct;
+//   readiness: string; // Use string type for date-time fields
+//   etb: string;
+//   etd: string;
+//   arrival_departure_information: ArrivalDepartureInformation;
+// }
 
-interface Activity {
-  activity_type: string;
-  customer_specifications: CustomerSpecifications;
-  anchorage_location: string;
-  shipment_product: ShipmentProduct;
-  readiness: string; // Use string type for date-time fields
-  etb: string;
-  etd: string;
-  arrival_departure_information: ArrivalDepartureInformation;
-}
+// interface ShipmentType {
+//   cargo_operations: boolean;
+//   bunkering: boolean;
+//   owner_matters: boolean;
+// }
 
-interface ShipmentType {
-  cargo_operations: boolean;
-  bunkering: boolean;
-  owner_matters: boolean;
-}
+// interface VesselSpecifications {
+//   imo_number: number;
+//   vessel_name: string;
+//   call_sign: string;
+//   sdwt: string;
+//   nrt: string;
+//   flag: string;
+//   grt: string;
+//   loa: string;
+// }
 
-interface VesselSpecifications {
-  imo_number: number;
-  vessel_name: string;
-  call_sign: string;
-  sdwt: string;
-  nrt: string;
-  flag: string;
-  grt: string;
-  loa: string;
-}
+// interface Agent {
+//   name: string;
+//   email: string;
+//   agent_contact: string;
+// }
 
-interface Agent {
-  name: string;
-  email: string;
-  agent_contact: string;
-}
+// interface ShipmentDetails {
+//   agent_details: Agent;
+// }
 
-interface ShipmentDetails {
-  agent_details: Agent;
-}
-
-interface Shipment {
-  _id: string;
-  shipment_type: ShipmentType;
-  vessel_specifications: VesselSpecifications;
-  shipment_details: ShipmentDetails;
-  activity: Activity[];
-  created_at: string;
-  updated_at: string;
-}
+// interface Shipment {
+//   _id: string;
+//   shipment_type: ShipmentType;
+//   vessel_specifications: VesselSpecifications;
+//   shipment_details: ShipmentDetails;
+//   activity: Activity[];
+//   created_at: string;
+//   updated_at: string;
+// }
 
 const Dashboard: React.FC = () => {
   const [summary, setSummary] = useState<any>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [shipments, setShipments] = useState<Shipment[]>([]);
+  const [shipments, setShipments] = useState<ShipmentResponse[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const requestOptions = {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      };
       try {
-        const response = await fetch(
-          "http://localhost:8080/shipments",
-          requestOptions
-        ); // Replace with your actual API endpoint
-        const isJson = response.headers
-          .get("content-type")
-          ?.includes("application/json");
-        const data = isJson && (await response.json());
-
-        if (!response.ok) {
-          const error = (data && data.message) || response.status;
-          throw new Error(error);
-        }
-
-        setShipments(data.shipments);
-        console.log(shipments.length);
+        const data = await getAllShipments();
+        setShipments(data);
       } catch (error) {
         if (error instanceof Error) {
           setErrorMessage(error.message);
@@ -211,10 +194,10 @@ const Dashboard: React.FC = () => {
       <Row gutter={16}>
         {shipments.map((shipment) => {
           console.log(
-            `Shipment ${shipment._id} has ${shipment.activity.length} activities`
+            `Shipment ${shipment.ID} has ${shipment.activity.length} activities`
           );
           return (
-            <Col span={8} key={shipment._id}>
+            <Col span={8} key={shipment.ID}>
               <Card
                 title={
                   <>

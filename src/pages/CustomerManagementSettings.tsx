@@ -8,7 +8,6 @@ import {
   Form,
   Input,
   message,
-  Spin,
 } from "antd";
 import { Customer, CustomerResponse } from "../types";
 import {
@@ -25,11 +24,9 @@ const CustomerManagementSettings: React.FC = () => {
   const [customers, setCustomers] = useState<CustomerResponse[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [form] = Form.useForm();
 
   const fetchData = async () => {
-    setIsLoading(true);
     try {
       const data = await getAllCustomers();
       console.log("Fetched customers:", data); // Debugging statement
@@ -42,8 +39,6 @@ const CustomerManagementSettings: React.FC = () => {
         setErrorMessage(String(error));
       }
       console.error("There was an error!", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -55,8 +50,8 @@ const CustomerManagementSettings: React.FC = () => {
     console.log(`Attempting to delete customer with ID: ${id}`); // Debugging statement
     try {
       await deleteCustomer(id);
-      message.success("Customer deleted successfully!");
       fetchData(); // Refresh the table data after deletion
+      message.success("Customer deleted successfully!");
     } catch (error) {
       if (error instanceof Error) {
         console.error("Failed to delete customer:", error.message);
@@ -135,8 +130,6 @@ const CustomerManagementSettings: React.FC = () => {
       <Card>
         {errorMessage ? (
           <p>{errorMessage}</p>
-        ) : isLoading ? (
-          <Spin size="large" />
         ) : (
           <Table dataSource={customers} columns={columns} rowKey="id" />
         )}

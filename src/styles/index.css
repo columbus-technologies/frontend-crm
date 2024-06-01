@@ -126,3 +126,35 @@ button:focus-visible {
 .ant-carousel .slick-dots {
   padding-bottom: 8px; /* Adjust the padding as needed */
 }
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f0f2f5;
+}
+
+.login-image {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+
+  align-items: center;
+}
+
+.login-image img {
+  max-width: 70%; /* Adjust this value to make the image smaller */
+  height: auto;
+}
+
+.login-form {
+  flex: 1;
+  max-width: 300px;
+  padding: 20px;
+  padding-right: 4px; /* Add right padding */
+
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}

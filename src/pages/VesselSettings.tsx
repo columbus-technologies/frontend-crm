@@ -56,7 +56,7 @@ const VesselSettings: React.FC = () => {
       title: "Action",
       key: "action",
       render: (text: string, record: VesselResponse) => (
-        <Button type="primary" danger onClick={() => handleDelete(record._id)}>
+        <Button type="primary" danger onClick={() => handleDelete(record.ID)}>
           Delete
         </Button>
       ),
