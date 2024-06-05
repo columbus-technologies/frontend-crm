@@ -6,8 +6,8 @@ import Dashboard from "./pages/Dashboard";
 import Shipments from "./pages/Shipments";
 import VesselSettings from "./pages/VesselSettings";
 import CustomerManagementSettings from "./pages/CustomerManagementSettings";
-// import Login from "./pages/Login";
 import Login from "./pages/Login";
+import Feed from "./pages/Feed"; // Assume this is the page for creating a shipment
 
 const App: React.FC = () => {
   return (
@@ -27,6 +27,7 @@ const App: React.FC = () => {
             <AppLayout>
               <Routes>
                 <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/feed" element={<Feed />} />
                 <Route path="/shipments" element={<Shipments />} />
                 <Route
                   path="/customer-management-settings"

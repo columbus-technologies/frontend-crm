@@ -66,6 +66,16 @@ button:focus-visible {
   }
 }
 
+.shipments-management-container {
+  padding: 20px;
+}
+
+.shipments-management-title {
+  writing-mode: horizontal-tb; /* Ensure horizontal text direction */
+  text-align: left;
+  margin-bottom: 20px; /* Add margin below the title */
+}
+
 .customer-management-settings-container {
   padding: 20px;
 }

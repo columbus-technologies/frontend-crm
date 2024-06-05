@@ -191,103 +191,115 @@ const Dashboard: React.FC = () => {
   return (
     <div style={{ padding: "20px" }}>
       <Title level={2}>Ongoing Shipments</Title>
-      <Row gutter={16}>
-        {shipments.map((shipment) => {
-          console.log(
-            `Shipment ${shipment.ID} has ${shipment.activity.length} activities`
-          );
-          return (
-            <Col span={8} key={shipment.ID}>
-              <Card
-                title={
-                  <>
-                    <p>{getStatusTag(shipment.activity[0])}</p>
-                    <div style={{ marginTop: "10px" }}>
-                      <ClockCircleOutlined />{" "}
-                      {shipment.vessel_specifications.imo_number}{" "}
-                      {shipment.vessel_specifications.vessel_name}
-                    </div>
-                    <div style={{ marginTop: "5px" }}>
-                      <span>
-                        Updated: {moment(shipment.updated_at).fromNow()}
-                      </span>
-                    </div>
-                  </>
-                }
-                style={{ marginBottom: "20px" }}
-              >
-                <p>
-                  <strong>ETB:</strong>{" "}
-                  {moment(shipment.activity[0].etb).format(
-                    "DD-MMM-YYYY, dddd, HH:mm"
-                  )}
-                  HRS
-                </p>
-                {/* <p><strong>Anchorage Location:</strong> {shipment.activity[0].anchorage_location}</p> */}
-                {shipment.shipment_details?.agent_details && (
-                  <>
-                    <p>
-                      <strong>Agent Name:</strong>{" "}
-                      {shipment.shipment_details.agent_details.name}
-                    </p>
-                    <p>
-                      <strong>Agent Email:</strong>{" "}
-                      {shipment.shipment_details.agent_details.email}
-                    </p>
-                    <p>
-                      <strong>Agent Contact:</strong>{" "}
-                      {shipment.shipment_details.agent_details.agent_contact}
-                    </p>
-                  </>
-                )}
-                <Carousel
-                  afterChange={onChange}
-                  dots={{ className: "custom-dots" }}
-                  // style={{ paddingBottom: '5px' }} // Add padding here
-                >
-                  {shipment.activity.map((activity, index) => (
-                    <div>
-                      <h5 style={contentStyle}>
-                        <p>Activity Type: {activity.activity_type} </p>
-                        <p>
-                          Anchorage Location: {activity.anchorage_location}{" "}
-                        </p>
-                        <p>
-                          Customer: {activity.customer_specifications.customer}{" "}
-                        </p>
-                        <p>
-                          {renderProductTypes(
-                            activity.shipment_product.products
-                          )}{" "}
-                        </p>
-                        <p>
-                          ETD:{" "}
-                          {moment(activity.etd).format(
+      {shipments && shipments.length > 0 ? (
+        <Row gutter={16}>
+          {shipments.map((shipment) => {
+            console.log(
+              `Shipment ${shipment.ID} has ${shipment.activity.length} activities`
+            );
+            return (
+              <Col span={8} key={shipment.ID}>
+                <Card
+                  title={
+                    <>
+                      <p>{getStatusTag(shipment.activity[0])}</p>
+                      <div style={{ marginTop: "10px" }}>
+                        <ClockCircleOutlined />{" "}
+                        {shipment.vessel_specifications.imo_number}{" "}
+                        {shipment.vessel_specifications.vessel_name}
+                      </div>
+                      <div
+                        style={{
+                          marginTop: "5px",
+                          whiteSpace: "normal",
+                          wordBreak: "break-word",
+                        }}
+                      >
+                        <span>
+                          Updated:{" "}
+                          {moment(shipment.updated_at).format(
                             "DD-MMM-YYYY, dddd, HH:mm"
-                          )}
+                          )}{" "}
                           HRS
-                        </p>
-                      </h5>
-                    </div>
-                  ))}
-                </Carousel>
-                <div style={{ textAlign: "right" }}>
-                  <Button
-                    type="primary"
-                    icon={<EyeOutlined />}
-                    style={{ marginRight: "8px" }}
+                        </span>
+                      </div>
+                    </>
+                  }
+                  style={{ marginBottom: "20px" }}
+                >
+                  <p>
+                    <strong>ETA:</strong>{" "}
+                    {moment(shipment.ETA).format("DD-MMM-YYYY, dddd, HH:mm")}
+                    HRS
+                  </p>
+                  {shipment.shipment_details?.agent_details && (
+                    <>
+                      <p>
+                        <strong>Agent Name:</strong>{" "}
+                        {shipment.shipment_details.agent_details.name}
+                      </p>
+                      <p>
+                        <strong>Agent Email:</strong>{" "}
+                        {shipment.shipment_details.agent_details.email}
+                      </p>
+                      <p>
+                        <strong>Agent Contact:</strong>{" "}
+                        {shipment.shipment_details.agent_details.agent_contact}
+                      </p>
+                    </>
+                  )}
+                  <Carousel
+                    afterChange={onChange}
+                    dots={{ className: "custom-dots" }}
+                    // style={{ paddingBottom: '5px' }} // Add padding here
                   >
-                    View Shipment
-                  </Button>
-                  <Button type="default" icon={<EditOutlined />}>
-                    Edit Shipment
-                  </Button>
-                </div>
-              </Card>
-            </Col>
-          );
-        })}
-      </Row>
+                    {shipment.activity.map((activity, index) => (
+                      <div>
+                        <h5 style={contentStyle}>
+                          <p>Activity Type: {activity.activity_type} </p>
+                          <p>
+                            Anchorage Location: {activity.anchorage_location}{" "}
+                          </p>
+                          <p>
+                            Customer:{" "}
+                            {activity.customer_specifications.customer}{" "}
+                          </p>
+                          <p>
+                            {renderProductTypes(
+                              activity.shipment_product.products
+                            )}{" "}
+                          </p>
+                          <p>
+                            ETD:{" "}
+                            {moment(activity.etd).format(
+                              "DD-MMM-YYYY, dddd, HH:mm"
+                            )}
+                            HRS
+                          </p>
+                        </h5>
+                      </div>
+                    ))}
+                  </Carousel>
+                  <div style={{ textAlign: "right" }}>
+                    <Button
+                      type="primary"
+                      icon={<EyeOutlined />}
+                      style={{ marginRight: "8px" }}
+                    >
+                      View Shipment
+                    </Button>
+                    <Button type="default" icon={<EditOutlined />}>
+                      Edit Shipment
+                    </Button>
+                  </div>
+                </Card>
+              </Col>
+            );
+          })}
+        </Row>
+      ) : (
+        <p>No ongoing shipments available.</p>
+      )}
     </div>
   );
 };

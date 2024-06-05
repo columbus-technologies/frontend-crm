@@ -35,6 +35,19 @@ export const getAllShipments = async (): Promise<ShipmentResponse[]> => {
   return data.shipments;
 };
 
+export const createShipment = async (shipment: Shipment): Promise<void> => {
+  console.log("Sending payload to backend:", shipment); // Debugging payload
+
+  const response = await fetch(SHIPMENTS_URL, {
+    method: "POST",
+    headers: prepareAuthHeaders(),
+    body: JSON.stringify(shipment),
+  });
+  if (!response.ok) {
+    throw new Error(`Error: ${response.statusText}`);
+  }
+};
+
 export const deleteShipment = async (id: string): Promise<void> => {
   const response = await fetch(`${SHIPMENTS_URL}/${id}`, {
     method: "DELETE",

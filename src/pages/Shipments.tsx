@@ -1,78 +1,150 @@
 import React, { useEffect, useState } from "react";
-import { Card, Typography, Tabs } from "antd";
+import { Card, Typography, Table, Button, message } from "antd";
+import { ShipmentResponse } from "../types";
+import {
+  getAllShipments,
+  createShipment,
+  updateShipment,
+  deleteShipment,
+} from "../api";
+import "../styles/index.css"; // Ensure the CSS file is imported
+import MultiStepShipmentModal from "../components/MultiStepShipmentModal";
 
 const { Title } = Typography;
-const { TabPane } = Tabs;
 
-const Shipments: React.FC = () => {
-  const [shipments, setShipments] = useState<any[]>([]);
+const ShipmentsManagement: React.FC = () => {
+  const [shipments, setShipments] = useState<ShipmentResponse[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const fetchData = async () => {
+    try {
+      const data = await getAllShipments();
+      console.log("Fetched shipments:", data); // Debugging statement
+      setShipments(data);
+      setErrorMessage(null);
+    } catch (error) {
+      if (error instanceof Error) {
+        setErrorMessage(error.message);
+      } else {
+        setErrorMessage(String(error));
+      }
+      console.error("There was an error!", error);
+    }
+  };
 
   useEffect(() => {
-    const requestOptions = {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    };
-    fetch("https://cat-fact.herokuapp.com/facts", requestOptions)
-      .then(async (response) => {
-        const isJson = response.headers
-          .get("content-type")
-          ?.includes("application/json");
-        const data = isJson && (await response.json());
+    fetchData(); // Initial fetch
+  }, []); // Empty dependency array means this effect runs once on mount
 
-        if (!response.ok) {
-          const error = (data && data.message) || response.status;
-          return Promise.reject(error);
-        }
+  const handleDelete = async (id: string) => {
+    console.log(`Attempting to delete shipment with ID: ${id}`); // Debugging statement
+    try {
+      await deleteShipment(id);
+      fetchData(); // Refresh the table data after deletion
+      message.success("Shipment deleted successfully!");
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error("Failed to delete shipment:", error.message);
+        message.error("Failed to delete shipment. Please try again.");
+      }
+    }
+  };
 
-        setShipments(data);
-      })
-      .catch((error) => {
-        setErrorMessage(error.toString());
-        console.error("There was an error!", error);
-      });
-  }, []);
+  const columns = [
+    { title: "Date Created", dataIndex: "created_at", key: "created_at" },
+    {
+      title: "ETA Status",
+      dataIndex: "ETA",
+      key: "eta_status",
+      render: (eta: string) => (
+        <div>{new Date(eta) > new Date() ? "Upcoming" : "Past"}</div>
+      ),
+    },
+    {
+      title: "IMO Number",
+      dataIndex: ["vessel_specifications", "imo_number"],
+      key: "imo_number",
+    },
+    {
+      title: "Voyage Number",
+      dataIndex: "voyage_number",
+      key: "voyage_number",
+    },
+    {
+      title: "Vessel",
+      dataIndex: ["vessel_specifications", "vessel_name"],
+      key: "vessel_name",
+    },
+    {
+      title: "Customer Name(s)",
+      dataIndex: ["activity"],
+      key: "customer_names",
+      render: (activities: any[]) =>
+        activities.map((activity) => (
+          <div key={activity.customer_specifications.customer}>
+            {activity.customer_specifications.customer}
+          </div>
+        )),
+    },
+    {
+      title: "Terminal Location(s)",
+      dataIndex: ["activity"],
+      key: "terminal_location",
+      render: (activities: any[]) =>
+        activities.map((activity) => (
+          <div key={activity.terminal_location}>
+            {activity.terminal_location}
+          </div>
+        )),
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (text: string, record: ShipmentResponse) => {
+        console.log("Record:", record); // Debugging statement
+        return (
+          <Button type="primary" danger onClick={() => handleDelete(record.ID)}>
+            Delete
+          </Button>
+        );
+      },
+    },
+  ];
 
-  const renderContent = (content: string) => (
-    <div>
-      <p>{content}</p>
-    </div>
-  );
+  const handleModalOpen = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalVisible(false);
+    fetchData(); // Refresh the table data after creation
+  };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <Title level={2}>Shipments</Title>
+    <div className="shipments-management-container">
+      <Title level={2} className="shipments-management-title">
+        Shipments Management
+      </Title>
+      <div style={{ textAlign: "right", marginBottom: "20px" }}>
+        <Button type="primary" onClick={handleModalOpen}>
+          Add Shipment
+        </Button>
+      </div>
       <Card>
         {errorMessage ? (
           <p>{errorMessage}</p>
         ) : (
-          <Tabs defaultActiveKey="1">
-            <TabPane tab="Feed" key="1">
-              {renderContent("Feed content...")}
-            </TabPane>
-            <TabPane tab="Shipment Details" key="2">
-              {renderContent("Shipment Details content...")}
-            </TabPane>
-            <TabPane tab="Vessel" key="3">
-              {renderContent("Vessel content...")}
-            </TabPane>
-            <TabPane tab="Customer" key="4">
-              {renderContent("Customer content...")}
-            </TabPane>
-            <TabPane tab="Audit" key="5">
-              {renderContent("Audit content...")}
-            </TabPane>
-            <TabPane tab="Documents" key="6">
-              {renderContent("Documents content...")}
-            </TabPane>
-            <TabPane tab="Accounting" key="7">
-              {renderContent("Accounting content...")}
-            </TabPane>
-          </Tabs>
+          <Table dataSource={shipments} columns={columns} rowKey="ID" />
         )}
       </Card>
+      <MultiStepShipmentModal
+        visible={isModalVisible}
+        onCancel={handleModalClose}
+        onCreate={handleModalClose}
+      />
     </div>
   );
 };
 
-export default Shipments;
+export default ShipmentsManagement;

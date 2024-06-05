@@ -79,6 +79,7 @@ export interface Activity {
   activity_type: string;
   customer_specifications: CustomerSpecifications;
   anchorage_location: string;
+  terminal_location: string;
   shipment_product: ShipmentProduct;
   readiness: string; // Use string type for date-time fields
   etb: string;
@@ -114,16 +115,22 @@ export interface ShipmentDetails {
 }
 
 export interface Shipment {
+  master_email: string;
+  ETA: string;
+  voyage_number: string;
+  current_status: string;
   shipment_type: ShipmentType;
   vessel_specifications: VesselSpecifications;
   shipment_details: ShipmentDetails;
   activity: Activity[];
-  created_at: string;
-  updated_at: string;
 }
 
 export interface ShipmentResponse {
   ID: string;
+  master_email: string;
+  ETA: string;
+  voyage_number: string;
+  current_status: string;
   shipment_type: ShipmentType;
   vessel_specifications: VesselSpecifications;
   shipment_details: ShipmentDetails;
