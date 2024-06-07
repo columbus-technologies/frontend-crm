@@ -13,6 +13,7 @@ import { Agent, AgentResponse } from "../types";
 import { getAllAgents, createAgent, deleteAgent } from "../api";
 import "../styles/index.css"; // Ensure the CSS file is imported
 import { useNavigate } from "react-router-dom";
+import ContactInput from "../util/ContactNumberCountryCodeInput";
 
 const { Title } = Typography;
 
@@ -79,6 +80,7 @@ const AgentManagementSettings: React.FC = () => {
 
       const payload: Agent = {
         ...values,
+        contact: values.phoneCode + values.contact,
       };
 
       console.log("Form values:", payload);
@@ -160,12 +162,8 @@ const AgentManagementSettings: React.FC = () => {
           >
             <Input type="email" />
           </Form.Item>
-          <Form.Item
-            name="contact"
-            label="Contact"
-            rules={[{ required: true, message: "Please input the Contact!" }]}
-          >
-            <Input />
+          <Form.Item label="Contact">
+            <ContactInput />
           </Form.Item>
         </Form>
       </Modal>

@@ -14,6 +14,7 @@ import { Vessel, VesselResponse } from "../types";
 import { fetchVessels, createVessel, deleteVessel } from "../api";
 import "../styles/index.css"; // Ensure the CSS file is imported
 import { useNavigate } from "react-router-dom";
+import InputWithUnit from "../components/InputWithUnit";
 
 const { Title } = Typography;
 
@@ -87,6 +88,10 @@ const VesselManagementSettings: React.FC = () => {
         vessel_specifications: {
           ...values,
           imo_number: parseInt(values.imo_number, 10),
+          sdwt: parseInt(values.sdwt, 10),
+          nrt: parseInt(values.nrt, 10),
+          grt: parseInt(values.grt, 10),
+          loa: parseFloat(values.loa),
         },
       };
 
@@ -186,14 +191,14 @@ const VesselManagementSettings: React.FC = () => {
             label="SDWT"
             rules={[{ required: true, message: "Please input the SDWT!" }]}
           >
-            <Input />
+            <InputWithUnit unit="DWT" />
           </Form.Item>
           <Form.Item
             name="nrt"
             label="NRT"
             rules={[{ required: true, message: "Please input the NRT!" }]}
           >
-            <Input />
+            <InputWithUnit unit="NRT" />
           </Form.Item>
           <Form.Item
             name="flag"
@@ -207,14 +212,14 @@ const VesselManagementSettings: React.FC = () => {
             label="GRT"
             rules={[{ required: true, message: "Please input the GRT!" }]}
           >
-            <Input />
+            <InputWithUnit unit="GRT" />
           </Form.Item>
           <Form.Item
             name="loa"
             label="LOA"
             rules={[{ required: true, message: "Please input the LOA!" }]}
           >
-            <Input />
+            <InputWithUnit unit="metres" />
           </Form.Item>
         </Form>
       </Modal>

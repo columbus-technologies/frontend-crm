@@ -2,11 +2,11 @@ export interface VesselSpecifications {
   imo_number: number;
   vessel_name: string;
   call_sign: string;
-  sdwt: string;
-  nrt: string;
+  sdwt: number;
+  nrt: number;
   flag: string;
-  grt: string;
-  loa: string;
+  grt: number;
+  loa: number;
 }
 
 export interface VesselResponse {

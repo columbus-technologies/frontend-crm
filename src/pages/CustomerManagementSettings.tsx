@@ -18,6 +18,7 @@ import {
 } from "../api";
 import "../styles/index.css"; // Ensure the CSS file is imported
 import { useNavigate } from "react-router-dom";
+import ContactInput from "../util/ContactNumberCountryCodeInput";
 
 const { Title } = Typography;
 
@@ -104,6 +105,7 @@ const CustomerManagementSettings: React.FC = () => {
       // Convert the fields to appropriate types
       const payload: Customer = {
         ...values,
+        contact: values.phoneCode + values.contact,
       };
 
       console.log("Payload before sending to backend:", payload); // Debugging payload
@@ -181,12 +183,8 @@ const CustomerManagementSettings: React.FC = () => {
           >
             <Input type="email" />
           </Form.Item>
-          <Form.Item
-            name="contact"
-            label="Contact"
-            rules={[{ required: true, message: "Please input the Contact!" }]}
-          >
-            <Input />
+          <Form.Item label="Contact">
+            <ContactInput />
           </Form.Item>
         </Form>
       </Modal>

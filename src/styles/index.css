@@ -66,6 +66,12 @@ button:focus-visible {
   }
 }
 
+.horizontal-checkbox-group {
+  display: flex;
+  gap: 20px; /* Adjust the gap between checkboxes as needed */
+  align-items: center; /* Center align items vertically */
+}
+
 .shipments-management-container {
   padding: 20px;
 }

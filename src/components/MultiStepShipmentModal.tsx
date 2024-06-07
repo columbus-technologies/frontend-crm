@@ -11,7 +11,8 @@ import {
 } from "antd";
 import moment from "moment";
 import { createShipment } from "../api";
-import { Product, ShipmentProduct } from "../types"; // Import the necessary types
+import { Product, ShipmentProduct } from "../types";
+import InputWithUnit from "./InputWithUnit"; // Import the custom component
 
 const { Step } = Steps;
 const { Option } = Select;
@@ -30,6 +31,7 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
   const [currentStep, setCurrentStep] = useState(0);
   const [form] = Form.useForm();
   const [formValues, setFormValues] = useState({});
+  const [shipmentStatuses, setShipmentStatuses] = useState<string[]>([]);
 
   useEffect(() => {
     if (!visible) {
@@ -38,6 +40,21 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
       setFormValues({});
     }
   }, [visible, form]);
+
+  useEffect(() => {
+    // Fetch shipment statuses from the backend
+    const fetchShipmentStatuses = async () => {
+      try {
+        const response = await fetch("/api/shipment-statuses");
+        const data = await response.json();
+        setShipmentStatuses(data.shipment_statuses);
+      } catch (error) {
+        console.error("Failed to fetch shipment statuses:", error);
+      }
+    };
+
+    fetchShipmentStatuses();
+  }, []);
 
   const next = () => {
     form.validateFields().then((values) => {
@@ -71,11 +88,11 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
             parseInt(mergedValues.vessel_specifications?.imo_number, 10) || 0,
           vessel_name: mergedValues.vessel_specifications?.vessel_name || "",
           call_sign: mergedValues.vessel_specifications?.call_sign || "",
-          sdwt: mergedValues.vessel_specifications?.sdwt || "",
-          nrt: mergedValues.vessel_specifications?.nrt || "",
+          sdwt: mergedValues.vessel_specifications?.sdwt || 0,
+          nrt: mergedValues.vessel_specifications?.nrt || 0,
           flag: mergedValues.vessel_specifications?.flag || "",
-          grt: mergedValues.vessel_specifications?.grt || "",
-          loa: mergedValues.vessel_specifications?.loa || "",
+          grt: mergedValues.vessel_specifications?.grt || 0,
+          loa: mergedValues.vessel_specifications?.loa || 0,
         },
         shipment_details: mergedValues.shipment_details || {
           agent_details: {
@@ -163,7 +180,7 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
             master_email: "",
             ETA: null,
             voyage_number: "",
-            current_status: "",
+            current_status: "Not Started",
             shipment_type: {
               cargo_operations: false,
               bunkering: false,
@@ -206,31 +223,34 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
               { required: true, message: "Please select the Current Status!" },
             ]}
           >
-            <Select>
-              <Option value="Not Started">Not Started</Option>
-              <Option value="Started">Started</Option>
-              <Option value="Delayed">Delayed</Option>
-              <Option value="Completed">Completed</Option>
+            <Select defaultValue="Not Started">
+              {shipmentStatuses.map((status) => (
+                <Option key={status} value={status}>
+                  {status}
+                </Option>
+              ))}
             </Select>
           </Form.Item>
-          <Form.Item
-            name={["shipment_type", "cargo_operations"]}
-            valuePropName="checked"
-          >
-            <Checkbox> Cargo Operations </Checkbox>
-          </Form.Item>
-          <Form.Item
-            name={["shipment_type", "bunkering"]}
-            valuePropName="checked"
-          >
-            <Checkbox> Bunkering </Checkbox>
-          </Form.Item>
-          <Form.Item
-            name={["shipment_type", "owner_matters"]}
-            valuePropName="checked"
-          >
-            <Checkbox> Owner Matters </Checkbox>
-          </Form.Item>
+          <div className="horizontal-checkbox-group">
+            <Form.Item
+              name={["shipment_type", "cargo_operations"]}
+              valuePropName="checked"
+            >
+              <Checkbox> Cargo Operations </Checkbox>
+            </Form.Item>
+            <Form.Item
+              name={["shipment_type", "bunkering"]}
+              valuePropName="checked"
+            >
+              <Checkbox> Bunkering </Checkbox>
+            </Form.Item>
+            <Form.Item
+              name={["shipment_type", "owner_matters"]}
+              valuePropName="checked"
+            >
+              <Checkbox> Owner Matters </Checkbox>
+            </Form.Item>
+          </div>
         </Form>
       ),
     },
@@ -246,11 +266,11 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
               vessel_name: "",
               imo_number: 0,
               call_sign: "",
-              sdwt: "",
-              nrt: "",
+              sdwt: 0,
+              nrt: 0,
               flag: "",
-              grt: "",
-              loa: "",
+              grt: 0,
+              loa: 0,
             },
           }}
         >
@@ -279,19 +299,19 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
             <Input />
           </Form.Item>
           <Form.Item name={["vessel_specifications", "sdwt"]} label="SDWT">
-            <Input />
+            <InputWithUnit unit="DWT" />
           </Form.Item>
           <Form.Item name={["vessel_specifications", "nrt"]} label="NRT">
-            <Input />
+            <InputWithUnit unit="NRT" />
           </Form.Item>
           <Form.Item name={["vessel_specifications", "flag"]} label="Flag">
             <Input />
           </Form.Item>
           <Form.Item name={["vessel_specifications", "grt"]} label="GRT">
-            <Input />
+            <InputWithUnit unit="GRT" />
           </Form.Item>
           <Form.Item name={["vessel_specifications", "loa"]} label="LOA">
-            <Input />
+            <InputWithUnit unit="metres" />
           </Form.Item>
         </Form>
       ),
@@ -637,7 +657,7 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
   ];
 
   return (
-    <Modal visible={visible} onCancel={onCancel} footer={null}>
+    <Modal open={visible} onCancel={onCancel} footer={null}>
       <Steps current={currentStep}>
         {steps.map((item, index) => (
           <Step key={index} title={item.title} />

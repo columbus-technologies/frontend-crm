@@ -15,6 +15,8 @@ const VESSEL_SETTINGS_URL = "http://localhost:8080/vessel_management";
 const SHIPMENTS_URL = "http://localhost:8080/shipments";
 const AGENT_SETTINGS_URL = "http://localhost:8080/agent_management";
 
+const SHIPMENT_STATUSES_URL = "http://localhost:8080/shipments/statuses";
+
 export const prepareAuthHeaders = () => {
   const token = sessionStorage.getItem("jwtToken");
   const headers = {
@@ -22,6 +24,20 @@ export const prepareAuthHeaders = () => {
     ...(token && { Authorization: `Bearer ${token}` }),
   };
   return headers;
+};
+
+export const getShipmentStatuses = async (): Promise<string[]> => {
+  const response = await fetch(SHIPMENT_STATUSES_URL, {
+    method: "GET",
+    headers: prepareAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Error: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return data.shipment_statuses;
 };
 
 export const getAllShipments = async (): Promise<ShipmentResponse[]> => {
@@ -193,17 +209,25 @@ export const fetchVessels = async (): Promise<VesselResponse[]> => {
   }
 
   const data = await response.json();
+  // Ensuring the correct data structure in the fetchVessels function is crucial because the Table component
+  // from Ant Design expects the data in a specific format to correctly map the dataIndex values in the columns
+  // to the corresponding fields in the data.
 
-  // Transform the response to flatten the vessel_specifications
-  const vessels: VesselResponse[] = data.vessels.map(
-    (vessel: VesselResponse) => ({
-      ID: vessel.ID,
-      ...vessel.vessel_specifications,
-      created_at: vessel.created_at,
-      updated_at: vessel.updated_at,
-    })
-  );
-
+  // If the API response is nested, you need
+  // to transform it to match the flat structure expected by the Table component:
+  const vessels: VesselResponse[] = data.vessels.map((vessel: any) => ({
+    ID: vessel.ID,
+    imo_number: vessel.vessel_specifications.imo_number,
+    vessel_name: vessel.vessel_specifications.vessel_name,
+    call_sign: vessel.vessel_specifications.call_sign,
+    sdwt: vessel.vessel_specifications.sdwt,
+    nrt: vessel.vessel_specifications.nrt,
+    flag: vessel.vessel_specifications.flag,
+    grt: vessel.vessel_specifications.grt,
+    loa: vessel.vessel_specifications.loa,
+    created_at: vessel.created_at,
+    updated_at: vessel.updated_at,
+  }));
   return vessels;
 };
 
