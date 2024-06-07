@@ -13,14 +13,18 @@ import {
 import { Vessel, VesselResponse } from "../types";
 import { fetchVessels, createVessel, deleteVessel } from "../api";
 import "../styles/index.css"; // Ensure the CSS file is imported
+import { useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
 
-const VesselSettings: React.FC = () => {
+const VesselManagementSettings: React.FC = () => {
   const [vessels, setVessels] = useState<VesselResponse[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
+  const [isUnauthorizedModalVisible, setIsUnauthorizedModalVisible] =
+    useState(false);
+  const navigate = useNavigate();
 
   const loadVessels = async () => {
     try {
@@ -29,6 +33,9 @@ const VesselSettings: React.FC = () => {
       setVessels(data);
     } catch (error) {
       if (error instanceof Error) {
+        if (error.message === "Unauthorized") {
+          setIsUnauthorizedModalVisible(true);
+        }
         setErrorMessage(error.message);
       } else {
         setErrorMessage(String(error));
@@ -40,6 +47,11 @@ const VesselSettings: React.FC = () => {
   useEffect(() => {
     loadVessels(); // Initial fetch
   }, []);
+
+  const handleUnauthorizedModalOk = () => {
+    setIsUnauthorizedModalVisible(false);
+    navigate("/login");
+  };
 
   const columns = [
     { title: "IMO Number", dataIndex: "imo_number", key: "imo_number" },
@@ -206,8 +218,20 @@ const VesselSettings: React.FC = () => {
           </Form.Item>
         </Form>
       </Modal>
+      <Modal
+        title="Credentials Expired"
+        visible={isUnauthorizedModalVisible}
+        maskClosable={false}
+        footer={[
+          <Button key="ok" type="primary" onClick={handleUnauthorizedModalOk}>
+            OK
+          </Button>,
+        ]}
+      >
+        <p>Credentials Expired. Please login again.</p>
+      </Modal>
     </div>
   );
 };
 
-export default VesselSettings;
+export default VesselManagementSettings;

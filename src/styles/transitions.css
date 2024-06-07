@@ -1,0 +1,16 @@
+.fade-enter {
+  opacity: 0;
+  will-change: opacity;
+}
+.fade-enter-active {
+  opacity: 1;
+  transition: opacity 300ms ease-in-out;
+}
+.fade-exit {
+  opacity: 1;
+  will-change: opacity;
+}
+.fade-exit-active {
+  opacity: 0;
+  transition: opacity 300ms ease-in-out;
+}

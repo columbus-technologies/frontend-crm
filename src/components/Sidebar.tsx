@@ -9,6 +9,7 @@ import {
 } from "@ant-design/icons";
 
 const { Sider } = Layout;
+const { SubMenu } = Menu;
 
 const Sidebar: React.FC = () => {
   const navigate = useNavigate();
@@ -42,14 +43,19 @@ const Sidebar: React.FC = () => {
         <Menu.Item key="3" icon={<SettingOutlined />}>
           <Link to="/shipments">Shipments</Link>
         </Menu.Item>
-        <Menu.Item key="4" icon={<SettingOutlined />}>
-          <Link to="/customer-management-settings">
-            Customer Management Settings
-          </Link>
-        </Menu.Item>
-        <Menu.Item key="5" icon={<SettingOutlined />}>
-          <Link to="/vessel-settings">Vessel Settings</Link>
-        </Menu.Item>
+        <SubMenu key="settings" icon={<SettingOutlined />} title="Settings">
+          <Menu.Item key="4">
+            <Link to="/customer-management-settings">
+              Customer Management Settings
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="5">
+            <Link to="/vessel-management-settings">Vessel Settings</Link>
+          </Menu.Item>
+          <Menu.Item key="6">
+            <Link to="/agent-management-settings">Agent Settings</Link>
+          </Menu.Item>
+        </SubMenu>
       </Menu>
     </Sider>
   );

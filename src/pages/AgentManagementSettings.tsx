@@ -9,20 +9,15 @@ import {
   Input,
   message,
 } from "antd";
-import { Customer, CustomerResponse } from "../types";
-import {
-  getAllCustomers,
-  createCustomer,
-  updateCustomer,
-  deleteCustomer,
-} from "../api";
+import { Agent, AgentResponse } from "../types";
+import { getAllAgents, createAgent, deleteAgent } from "../api";
 import "../styles/index.css"; // Ensure the CSS file is imported
 import { useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
 
-const CustomerManagementSettings: React.FC = () => {
-  const [customers, setCustomers] = useState<CustomerResponse[]>([]);
+const AgentManagementSettings: React.FC = () => {
+  const [agents, setAgents] = useState<AgentResponse[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
@@ -30,12 +25,11 @@ const CustomerManagementSettings: React.FC = () => {
     useState(false);
   const navigate = useNavigate();
 
-  const fetchData = async () => {
+  const loadAgents = async () => {
     try {
-      const data = await getAllCustomers();
-      console.log("Fetched customers:", data); // Debugging statement
-      setCustomers(data);
-      setErrorMessage(null);
+      const data = await getAllAgents();
+      console.log("Fetched agents:", data); // Debugging statement
+      setAgents(data);
     } catch (error) {
       if (error instanceof Error) {
         if (error.message === "Unauthorized") {
@@ -50,22 +44,8 @@ const CustomerManagementSettings: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchData(); // Initial fetch
-  }, []); // Empty dependency array means this effect runs once on mount
-
-  const handleDelete = async (id: string) => {
-    console.log(`Attempting to delete customer with ID: ${id}`); // Debugging statement
-    try {
-      await deleteCustomer(id);
-      fetchData(); // Refresh the table data after deletion
-      message.success("Customer deleted successfully!");
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error("Failed to delete customer:", error.message);
-        message.error("Failed to delete customer. Please try again.");
-      }
-    }
-  };
+    loadAgents(); // Initial fetch
+  }, []);
 
   const handleUnauthorizedModalOk = () => {
     setIsUnauthorizedModalVisible(false);
@@ -73,8 +53,7 @@ const CustomerManagementSettings: React.FC = () => {
   };
 
   const columns = [
-    { title: "Customer", dataIndex: "customer", key: "customer" },
-    { title: "Company", dataIndex: "company", key: "company" },
+    { title: "Name", dataIndex: "name", key: "name" },
     { title: "Email", dataIndex: "email", key: "email" },
     { title: "Contact", dataIndex: "contact", key: "contact" },
     { title: "Created At", dataIndex: "created_at", key: "created_at" },
@@ -82,14 +61,11 @@ const CustomerManagementSettings: React.FC = () => {
     {
       title: "Action",
       key: "action",
-      render: (text: string, record: CustomerResponse) => {
-        console.log("Record:", record); // Debugging statement
-        return (
-          <Button type="primary" danger onClick={() => handleDelete(record.ID)}>
-            Delete
-          </Button>
-        );
-      },
+      render: (text: string, record: AgentResponse) => (
+        <Button type="primary" danger onClick={() => handleDelete(record.ID)}>
+          Delete
+        </Button>
+      ),
     },
   ];
 
@@ -101,27 +77,24 @@ const CustomerManagementSettings: React.FC = () => {
     try {
       const values = await form.validateFields();
 
-      // Convert the fields to appropriate types
-      const payload: Customer = {
+      const payload: Agent = {
         ...values,
       };
 
-      console.log("Payload before sending to backend:", payload); // Debugging payload
+      console.log("Form values:", payload);
 
-      // Perform the API call to save the new customer
-      await createCustomer(payload);
+      await createAgent(payload);
 
-      // Refresh the table data
-      fetchData();
+      loadAgents();
 
       setIsModalVisible(false);
       form.resetFields();
-      message.success("Customer added successfully!");
+      message.success("Agent added successfully!");
     } catch (error) {
       if (error instanceof Error) {
-        console.error("Failed to add customer:", error.message);
+        console.error("Failed to add agent setting:", error.message);
         if (error.message === "Duplicate key error") {
-          message.error("Customer with this name already exists.");
+          message.error("Agent with this email already exists.");
         } else {
           message.error("Server error. Please try again.");
         }
@@ -133,44 +106,50 @@ const CustomerManagementSettings: React.FC = () => {
     setIsModalVisible(false);
   };
 
+  const handleDelete = async (id: string) => {
+    try {
+      console.log(`Deleting agent with ID: ${id}`); // Debugging deletion
+
+      await deleteAgent(id);
+      loadAgents();
+      message.success("Agent deleted successfully!");
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error("Failed to delete agent:", error.message);
+        message.error("Failed to delete agent. Please try again.");
+      }
+    }
+  };
+
   return (
-    <div className="customer-management-settings-container">
-      <Title level={2} className="customer-management-settings-title">
-        Customer Management
+    <div className="agent-management-settings-container">
+      <Title level={2} className="agent-management-settings-title">
+        Agent Settings
       </Title>
       <div style={{ textAlign: "right", marginBottom: "20px" }}>
         <Button type="primary" onClick={showModal}>
-          Add Customer
+          Add Agent
         </Button>
       </div>
       <Card>
         {errorMessage ? (
           <p>{errorMessage}</p>
         ) : (
-          <Table dataSource={customers} columns={columns} rowKey="id" />
+          <Table dataSource={agents} columns={columns} />
         )}
       </Card>
       <Modal
-        title="Add Customer"
-        visible={isModalVisible}
+        title="Add Agent"
+        open={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
         className="custom-modal"
       >
         <Form form={form} layout="vertical">
           <Form.Item
-            name="customer"
-            label="Customer"
-            rules={[
-              { required: true, message: "Please input the Customer name!" },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="company"
-            label="Company"
-            rules={[{ required: true, message: "Please input the Company!" }]}
+            name="name"
+            label="Name"
+            rules={[{ required: true, message: "Please input the Name!" }]}
           >
             <Input />
           </Form.Item>
@@ -206,4 +185,4 @@ const CustomerManagementSettings: React.FC = () => {
   );
 };
 
-export default CustomerManagementSettings;
+export default AgentManagementSettings;

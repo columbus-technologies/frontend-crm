@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Typography, Button, Row, Col, Tag, Carousel } from "antd";
+import { Card, Typography, Button, Row, Col, Tag, Carousel, Modal } from "antd";
 import {
   EditOutlined,
   EyeOutlined,
@@ -7,107 +7,31 @@ import {
 } from "@ant-design/icons";
 import moment from "moment";
 import "../styles/index.css"; // Ensure the CSS file is imported
+import { useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
 import { Activity, Product, ShipmentResponse } from "../types";
 import { getAllShipments } from "../api";
-// interface SubProduct {
-//   sub_product: string;
-// }
-
-// interface Product {
-//   product: string;
-//   sub_products: SubProduct[];
-// }
-
-// interface QuantityDimensions {
-//   KG: number;
-//   G: number;
-// }
-
-// interface ShipmentProduct {
-//   products: Product[];
-//   quantity: number;
-//   dimensions: QuantityDimensions;
-//   percentage: number;
-// }
-
-// interface ArrivalDepartureInformation {
-//   arrival_displacement: number;
-//   departure_displacement: number;
-//   arrival_draft: number;
-//   departure_draft: number;
-//   arrival_mast_height: number;
-//   departure_mast_height: number;
-// }
-
-// interface CustomerSpecifications {
-//   customer: string;
-//   company: string;
-//   email: string;
-//   contact: string;
-// }
-
-// interface Activity {
-//   activity_type: string;
-//   customer_specifications: CustomerSpecifications;
-//   anchorage_location: string;
-//   shipment_product: ShipmentProduct;
-//   readiness: string; // Use string type for date-time fields
-//   etb: string;
-//   etd: string;
-//   arrival_departure_information: ArrivalDepartureInformation;
-// }
-
-// interface ShipmentType {
-//   cargo_operations: boolean;
-//   bunkering: boolean;
-//   owner_matters: boolean;
-// }
-
-// interface VesselSpecifications {
-//   imo_number: number;
-//   vessel_name: string;
-//   call_sign: string;
-//   sdwt: string;
-//   nrt: string;
-//   flag: string;
-//   grt: string;
-//   loa: string;
-// }
-
-// interface Agent {
-//   name: string;
-//   email: string;
-//   agent_contact: string;
-// }
-
-// interface ShipmentDetails {
-//   agent_details: Agent;
-// }
-
-// interface Shipment {
-//   _id: string;
-//   shipment_type: ShipmentType;
-//   vessel_specifications: VesselSpecifications;
-//   shipment_details: ShipmentDetails;
-//   activity: Activity[];
-//   created_at: string;
-//   updated_at: string;
-// }
 
 const Dashboard: React.FC = () => {
   const [summary, setSummary] = useState<any>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [shipments, setShipments] = useState<ShipmentResponse[]>([]);
+  const [isUnauthorizedModalVisible, setIsUnauthorizedModalVisible] =
+    useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await getAllShipments();
+        console.log(data);
         setShipments(data);
       } catch (error) {
         if (error instanceof Error) {
+          if (error.message === "Unauthorized") {
+            setIsUnauthorizedModalVisible(true);
+          }
           setErrorMessage(error.message);
         } else {
           setErrorMessage(String(error));
@@ -118,6 +42,11 @@ const Dashboard: React.FC = () => {
 
     fetchData(); // Initial fetch
   }, []);
+
+  const handleUnauthorizedModalOk = () => {
+    setIsUnauthorizedModalVisible(false);
+    navigate("/login");
+  };
 
   const getStatusTag = (activity: Activity) => {
     const now = moment();
@@ -190,6 +119,18 @@ const Dashboard: React.FC = () => {
 
   return (
     <div style={{ padding: "20px" }}>
+      <Modal
+        title="Credentials Expired"
+        visible={isUnauthorizedModalVisible}
+        maskClosable={false}
+        footer={[
+          <Button key="ok" type="primary" onClick={handleUnauthorizedModalOk}>
+            OK
+          </Button>,
+        ]}
+      >
+        <p>Credentials Expired. Please login again.</p>
+      </Modal>
       <Title level={2}>Ongoing Shipments</Title>
       {shipments && shipments.length > 0 ? (
         <Row gutter={16}>
@@ -244,7 +185,7 @@ const Dashboard: React.FC = () => {
                       </p>
                       <p>
                         <strong>Agent Contact:</strong>{" "}
-                        {shipment.shipment_details.agent_details.agent_contact}
+                        {shipment.shipment_details.agent_details.contact}
                       </p>
                     </>
                   )}

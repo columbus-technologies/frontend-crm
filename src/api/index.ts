@@ -1,4 +1,6 @@
 import {
+  Agent,
+  AgentResponse,
   Customer,
   CustomerResponse,
   Shipment,
@@ -11,6 +13,7 @@ const CUSTOMER_MANAGEMENT_SETTINGS_URL =
 const VESSEL_SETTINGS_URL = "http://localhost:8080/vessel_management";
 
 const SHIPMENTS_URL = "http://localhost:8080/shipments";
+const AGENT_SETTINGS_URL = "http://localhost:8080/agent_management";
 
 export const prepareAuthHeaders = () => {
   const token = sessionStorage.getItem("jwtToken");
@@ -28,7 +31,10 @@ export const getAllShipments = async (): Promise<ShipmentResponse[]> => {
   });
 
   if (!response.ok) {
-    throw new Error(`Error: ${response.statusText}`);
+    if (response.status === 401) {
+      throw new Error("Unauthorized");
+    }
+    throw new Error(response.statusText);
   }
 
   const data = await response.json();
@@ -44,6 +50,9 @@ export const createShipment = async (shipment: Shipment): Promise<void> => {
     body: JSON.stringify(shipment),
   });
   if (!response.ok) {
+    if (response.status === 409) {
+      throw new Error("Duplicate key error");
+    }
     throw new Error(`Error: ${response.statusText}`);
   }
 };
@@ -105,7 +114,10 @@ export const getAllCustomers = async (): Promise<CustomerResponse[]> => {
   });
 
   if (!response.ok) {
-    throw new Error(`Error: ${response.statusText}`);
+    if (response.status === 401) {
+      throw new Error("Unauthorized");
+    }
+    throw new Error(response.statusText);
   }
   const data = await response.json();
   return data.customers;
@@ -120,6 +132,9 @@ export const createCustomer = async (customer: Customer): Promise<void> => {
     body: JSON.stringify(customer),
   });
   if (!response.ok) {
+    if (response.status === 409) {
+      throw new Error("Duplicate key error");
+    }
     throw new Error(`Error: ${response.statusText}`);
   }
 };
@@ -165,21 +180,16 @@ export const getCustomerById = async (
 };
 
 export const fetchVessels = async (): Promise<VesselResponse[]> => {
-  // const token = sessionStorage.getItem("jwtToken");
-
-  // Prepare the headers, including the Authorization header with the token
-  // const headers = {
-  //   "Content-Type": "application/json",
-  //   ...(token && { Authorization: `Bearer ${token}` }),
-  // };
-
   const response = await fetch(VESSEL_SETTINGS_URL, {
     method: "GET",
     headers: prepareAuthHeaders(),
   });
 
   if (!response.ok) {
-    throw new Error(`Error: ${response.statusText}`);
+    if (response.status === 401) {
+      throw new Error("Unauthorized");
+    }
+    throw new Error(response.statusText);
   }
 
   const data = await response.json();
@@ -194,7 +204,6 @@ export const fetchVessels = async (): Promise<VesselResponse[]> => {
     })
   );
 
-  // console.log(data.vessels)
   return vessels;
 };
 
@@ -217,7 +226,6 @@ export const createVessel = async (payload: Vessel): Promise<void> => {
 };
 
 export const deleteVessel = async (id: string): Promise<void> => {
-  console.log("Asdsadas", id);
   const response = await fetch(`${VESSEL_SETTINGS_URL}/${id}`, {
     method: "DELETE",
     headers: prepareAuthHeaders(),
@@ -231,6 +239,71 @@ export const deleteVessel = async (id: string): Promise<void> => {
 
 export const getVesselById = async (id: string): Promise<VesselResponse> => {
   const response = await fetch(`${VESSEL_SETTINGS_URL}/${id}`, {
+    method: "GET",
+    headers: prepareAuthHeaders(),
+  });
+  if (!response.ok) {
+    throw new Error(`Error: ${response.statusText}`);
+  }
+  const data = await response.json();
+  return data;
+};
+
+// Get all agents
+export const getAllAgents = async (): Promise<AgentResponse[]> => {
+  const response = await fetch(AGENT_SETTINGS_URL, {
+    method: "GET",
+    headers: prepareAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    if (response.status === 401) {
+      throw new Error("Unauthorized");
+    }
+    throw new Error(response.statusText);
+  }
+
+  const data = await response.json();
+
+  return data.agents;
+};
+
+// Create a new agent
+export const createAgent = async (payload: Agent): Promise<void> => {
+  const response = await fetch(AGENT_SETTINGS_URL, {
+    method: "POST",
+    headers: prepareAuthHeaders(),
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    console.log(response);
+    if (response.status === 409) {
+      throw new Error("Duplicate key error");
+    }
+    const error = errorData.message || response.statusText;
+    throw new Error(error);
+  }
+};
+
+// Delete an agent by ID
+export const deleteAgent = async (id: string): Promise<void> => {
+  console.log("Deleting agent with ID:", id);
+  const response = await fetch(`${AGENT_SETTINGS_URL}/${id}`, {
+    method: "DELETE",
+    headers: prepareAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    const error = (await response.json()).message || response.statusText;
+    throw new Error(error);
+  }
+};
+
+// Get an agent by ID
+export const getAgentById = async (id: string): Promise<AgentResponse> => {
+  const response = await fetch(`${AGENT_SETTINGS_URL}/${id}`, {
     method: "GET",
     headers: prepareAuthHeaders(),
   });

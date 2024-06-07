@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Typography, Table, Button, message } from "antd";
+import { Card, Typography, Table, Button, message, Modal } from "antd";
 import { ShipmentResponse } from "../types";
 import {
   getAllShipments,
@@ -9,6 +9,7 @@ import {
 } from "../api";
 import "../styles/index.css"; // Ensure the CSS file is imported
 import MultiStepShipmentModal from "../components/MultiStepShipmentModal";
+import { useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
 
@@ -16,6 +17,9 @@ const ShipmentsManagement: React.FC = () => {
   const [shipments, setShipments] = useState<ShipmentResponse[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isUnauthorizedModalVisible, setIsUnauthorizedModalVisible] =
+    useState(false);
+  const navigate = useNavigate();
 
   const fetchData = async () => {
     try {
@@ -25,6 +29,10 @@ const ShipmentsManagement: React.FC = () => {
       setErrorMessage(null);
     } catch (error) {
       if (error instanceof Error) {
+        if (error.message === "Unauthorized") {
+          setIsUnauthorizedModalVisible(true);
+        }
+        console.log(error.message);
         setErrorMessage(error.message);
       } else {
         setErrorMessage(String(error));
@@ -49,6 +57,20 @@ const ShipmentsManagement: React.FC = () => {
         message.error("Failed to delete shipment. Please try again.");
       }
     }
+  };
+
+  const handleModalOpen = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalVisible(false);
+    fetchData(); // Refresh the table data after creation
+  };
+
+  const handleUnauthorizedModalOk = () => {
+    setIsUnauthorizedModalVisible(false);
+    navigate("/login");
   };
 
   const columns = [
@@ -112,15 +134,6 @@ const ShipmentsManagement: React.FC = () => {
     },
   ];
 
-  const handleModalOpen = () => {
-    setIsModalVisible(true);
-  };
-
-  const handleModalClose = () => {
-    setIsModalVisible(false);
-    fetchData(); // Refresh the table data after creation
-  };
-
   return (
     <div className="shipments-management-container">
       <Title level={2} className="shipments-management-title">
@@ -143,6 +156,18 @@ const ShipmentsManagement: React.FC = () => {
         onCancel={handleModalClose}
         onCreate={handleModalClose}
       />
+      <Modal
+        title="Credentials Expired"
+        visible={isUnauthorizedModalVisible}
+        maskClosable={false}
+        footer={[
+          <Button key="ok" type="primary" onClick={handleUnauthorizedModalOk}>
+            OK
+          </Button>,
+        ]}
+      >
+        <p>Credentials Expired. Please login again.</p>
+      </Modal>
     </div>
   );
 };

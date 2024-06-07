@@ -1,13 +1,15 @@
+// src/App.tsx
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import AppLayout from "./components/AppLayout";
 import LoginLayout from "./components/LoginLayout";
 import Dashboard from "./pages/Dashboard";
 import Shipments from "./pages/Shipments";
-import VesselSettings from "./pages/VesselSettings";
+import VesselManagementSettings from "./pages/VesselManagementSettings";
+import AgentManagementSettings from "./pages/AgentManagementSettings";
 import CustomerManagementSettings from "./pages/CustomerManagementSettings";
 import Login from "./pages/Login";
-import Feed from "./pages/Feed"; // Assume this is the page for creating a shipment
+import Feed from "./pages/Feed";
 
 const App: React.FC = () => {
   return (
@@ -33,7 +35,14 @@ const App: React.FC = () => {
                   path="/customer-management-settings"
                   element={<CustomerManagementSettings />}
                 />
-                <Route path="/vessel-settings" element={<VesselSettings />} />
+                <Route
+                  path="/vessel-management-settings"
+                  element={<VesselManagementSettings />}
+                />
+                <Route
+                  path="/agent-management-settings"
+                  element={<AgentManagementSettings />}
+                />
               </Routes>
             </AppLayout>
           }
