@@ -88,11 +88,11 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
             parseInt(mergedValues.vessel_specifications?.imo_number, 10) || 0,
           vessel_name: mergedValues.vessel_specifications?.vessel_name || "",
           call_sign: mergedValues.vessel_specifications?.call_sign || "",
-          sdwt: mergedValues.vessel_specifications?.sdwt || 0,
-          nrt: mergedValues.vessel_specifications?.nrt || 0,
+          sdwt: parseInt(mergedValues.vessel_specifications?.sdwt, 10) || 0,
+          nrt: parseInt(mergedValues.vessel_specifications?.nrt, 10) || 0,
           flag: mergedValues.vessel_specifications?.flag || "",
-          grt: mergedValues.vessel_specifications?.grt || 0,
-          loa: mergedValues.vessel_specifications?.loa || 0,
+          grt: parseInt(mergedValues.vessel_specifications?.grt, 10) || 0,
+          loa: parseFloat(mergedValues.vessel_specifications?.loa) || 0,
         },
         shipment_details: mergedValues.shipment_details || {
           agent_details: {
