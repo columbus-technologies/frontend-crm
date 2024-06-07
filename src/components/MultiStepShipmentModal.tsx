@@ -10,7 +10,7 @@ import {
   Select,
 } from "antd";
 import moment from "moment";
-import { createShipment } from "../api";
+import { createShipment, getShipmentStatuses } from "../api";
 import { Product, ShipmentProduct } from "../types";
 import InputWithUnit from "./InputWithUnit"; // Import the custom component
 
@@ -45,9 +45,10 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
     // Fetch shipment statuses from the backend
     const fetchShipmentStatuses = async () => {
       try {
-        const response = await fetch("/api/shipment-statuses");
-        const data = await response.json();
-        setShipmentStatuses(data.shipment_statuses);
+        const data = await getShipmentStatuses();
+        // const data = await response.json();
+        // console.log(data);
+        setShipmentStatuses(data);
       } catch (error) {
         console.error("Failed to fetch shipment statuses:", error);
       }
