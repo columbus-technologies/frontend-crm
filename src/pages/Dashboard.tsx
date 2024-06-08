@@ -50,21 +50,24 @@ const Dashboard: React.FC = () => {
 
   const getStatusTag = (activity: Activity) => {
     const now = moment();
-    const readiness = moment(activity.readiness);
-    const etb = moment(activity.etb);
-    const etd = moment(activity.etd);
+    const readiness = activity.readiness ? moment(activity.readiness) : null;
+    const etb = activity.etb ? moment(activity.etb) : null;
+    const etd = activity.etd ? moment(activity.etd) : null;
 
+    if (!readiness) {
+      return <Tag color="red">No Readiness</Tag>;
+    }
     if (now.isBefore(readiness)) {
       return <Tag color="blue">Planned</Tag>;
     }
     if (now.isBetween(readiness, etb)) {
-      return <Tag color="orange">Activity Commenced</Tag>;
+      return <Tag color="brown">Activity Commenced</Tag>;
     }
     if (now.isBetween(etb, etd)) {
-      return <Tag color="green">Ongoing</Tag>;
+      return <Tag color="yellow">Ongoing</Tag>;
     }
     if (now.isAfter(etd)) {
-      return <Tag color="red">Completed</Tag>;
+      return <Tag color="green">Completed</Tag>;
     }
     return <Tag>Unknown</Tag>;
   };

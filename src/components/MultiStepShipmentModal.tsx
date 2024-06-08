@@ -11,9 +11,9 @@ import {
 } from "antd";
 import moment from "moment";
 import { createShipment, getShipmentStatuses } from "../api";
-import { Product, ShipmentProduct } from "../types";
 import InputWithUnit from "./InputWithUnit"; // Import the custom component
 import { validateInteger, validateFloat } from "../util/validationUtils"; // Import validation functions
+import QuantityInput from "../util/QuantityInput";
 
 const { Step } = Steps;
 const { Option } = Select;
@@ -72,7 +72,6 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
       const now = moment().toISOString();
       const mergedValues = { ...formValues, ...values };
 
-      // Ensure the structure of the payload matches the backend requirements
       const payload = {
         master_email: mergedValues.master_email || "",
         ETA: mergedValues.ETA ? mergedValues.ETA.toISOString() : now,
@@ -101,7 +100,10 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
             agent_contact: "",
           },
         },
-        activity: (mergedValues.activity || []).map((activity: any) => ({
+        activity: (mergedValues.activity && mergedValues.activity.length > 0
+          ? mergedValues.activity
+          : [{}]
+        ).map((activity: any) => ({
           activity_type: activity.activity_type || "",
           customer_specifications: {
             customer: activity.customer_specifications?.customer || "",
@@ -114,129 +116,53 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
           shipment_product: {
             products: activity.shipment_product?.products || [],
             quantity: parseInt(activity.shipment_product?.quantity, 10) || -1,
-            dimensions: {
-              KG: parseInt(activity.shipment_product?.dimensions?.KG, 10) || -1,
-              G: parseInt(activity.shipment_product?.dimensions?.G, 10) || -1,
-            },
-            percentage:
-              parseInt(activity.shipment_product?.percentage, 10) || -1,
+            dimensions: activity.shipment_product?.quantityCode || "",
+            percentage: activity.shipment_product?.percentage
+              ? parseInt(activity.shipment_product.percentage, 10)
+              : -1,
           },
-          readiness: activity.readiness || now,
-          etb: activity.etb || now,
-          etd: activity.etd || now,
+          readiness: activity.Readiness || null,
+          etb: activity.ETB || null,
+          etd: activity.ETD || null,
           arrival_departure_information: {
-            arrival_displacement:
-              parseInt(
-                activity.arrival_departure_information?.arrival_displacement,
-                10
-              ) || -1,
-            departure_displacement:
-              parseInt(
-                activity.arrival_departure_information?.departure_displacement,
-                10
-              ) || -1,
-            arrival_draft:
-              parseFloat(
-                activity.arrival_departure_information?.arrival_draft
-              ) || -1,
-            departure_draft:
-              parseFloat(
-                activity.arrival_departure_information?.departure_draft
-              ) || -1,
-            arrival_mast_height:
-              parseFloat(
-                activity.arrival_departure_information?.arrival_mast_height
-              ) || -1,
-            departure_mast_height:
-              parseFloat(
-                activity.arrival_departure_information?.departure_mast_height
-              ) || -1,
+            arrival_displacement: activity.arrival_departure_information
+              ?.arrival_displacement
+              ? parseInt(
+                  activity.arrival_departure_information.arrival_displacement,
+                  10
+                )
+              : -1,
+            departure_displacement: activity.arrival_departure_information
+              ?.departure_displacement
+              ? parseInt(
+                  activity.arrival_departure_information.departure_displacement,
+                  10
+                )
+              : -1,
+            arrival_draft: activity.arrival_departure_information?.arrival_draft
+              ? parseFloat(activity.arrival_departure_information.arrival_draft)
+              : -1,
+            departure_draft: activity.arrival_departure_information
+              ?.departure_draft
+              ? parseFloat(
+                  activity.arrival_departure_information.departure_draft
+                )
+              : -1,
+            arrival_mast_height: activity.arrival_departure_information
+              ?.arrival_mast_height
+              ? parseFloat(
+                  activity.arrival_departure_information.arrival_mast_height
+                )
+              : -1,
+            departure_mast_height: activity.arrival_departure_information
+              ?.departure_mast_height
+              ? parseFloat(
+                  activity.arrival_departure_information.departure_mast_height
+                )
+              : -1,
           },
         })),
       };
-
-      //   // Ensure the structure of the payload matches the backend requirements
-      //   const payload = {
-      //     master_email: mergedValues.master_email || "",
-      //     ETA: mergedValues.ETA ? mergedValues.ETA.toISOString() : now,
-      //     voyage_number: mergedValues.voyage_number || "",
-      //     current_status: mergedValues.current_status || "",
-      //     shipment_type: mergedValues.shipment_type || {
-      //       cargo_operations: false,
-      //       bunkering: false,
-      //       owner_matters: false,
-      //     },
-      //     vessel_specifications: {
-      //       imo_number:
-      //         parseInt(mergedValues.vessel_specifications?.imo_number, 10) || 0,
-      //       vessel_name: mergedValues.vessel_specifications?.vessel_name || "",
-      //       call_sign: mergedValues.vessel_specifications?.call_sign || "",
-      //       sdwt: parseInt(mergedValues.vessel_specifications?.sdwt, 10) || 0,
-      //       nrt: parseInt(mergedValues.vessel_specifications?.nrt, 10) || 0,
-      //       flag: mergedValues.vessel_specifications?.flag || "",
-      //       grt: parseInt(mergedValues.vessel_specifications?.grt, 10) || 0,
-      //       loa: parseFloat(mergedValues.vessel_specifications?.loa) || 0,
-      //     },
-      //     shipment_details: mergedValues.shipment_details || {
-      //       agent_details: {
-      //         name: "",
-      //         email: "",
-      //         agent_contact: "",
-      //       },
-      //     },
-      //     activity: mergedValues.activity.map((activity: any) => ({
-      //       activity_type: activity.activity_type || "",
-      //       customer_specifications: {
-      //         customer: activity.customer_specifications?.customer || "",
-      //         company: activity.customer_specifications?.company || "",
-      //         email: activity.customer_specifications?.email || "",
-      //         contact: activity.customer_specifications?.contact || "",
-      //       },
-      //       anchorage_location: activity.anchorage_location || "",
-      //       terminal_location: activity.terminal_location || "",
-      //       shipment_product: {
-      //         products: activity.shipment_product?.products || [],
-      //         quantity: parseInt(activity.shipment_product?.quantity, 10) || 0,
-      //         dimensions: {
-      //           KG: parseInt(activity.shipment_product?.dimensions?.KG, 10) || 0,
-      //           G: parseInt(activity.shipment_product?.dimensions?.G, 10) || 0,
-      //         },
-      //         percentage:
-      //           parseInt(activity.shipment_product?.percentage, 10) || 0,
-      //       },
-      //       readiness: activity.readiness || now,
-      //       etb: activity.etb || now,
-      //       etd: activity.etd || now,
-      //       arrival_departure_information: {
-      //         arrival_displacement:
-      //           parseInt(
-      //             activity.arrival_departure_information?.arrival_displacement,
-      //             10
-      //           ) || 0,
-      //         departure_displacement:
-      //           parseInt(
-      //             activity.arrival_departure_information?.departure_displacement,
-      //             10
-      //           ) || 0,
-      //         arrival_draft:
-      //           parseFloat(
-      //             activity.arrival_departure_information?.arrival_draft
-      //           ) || 0,
-      //         departure_draft:
-      //           parseFloat(
-      //             activity.arrival_departure_information?.departure_draft
-      //           ) || 0,
-      //         arrival_mast_height:
-      //           parseFloat(
-      //             activity.arrival_departure_information?.arrival_mast_height
-      //           ) || 0,
-      //         departure_mast_height:
-      //           parseFloat(
-      //             activity.arrival_departure_information?.departure_mast_height
-      //           ) || 0,
-      //       },
-      //     })),
-      //   };
 
       createShipment(payload)
         .then(() => {
@@ -278,7 +204,7 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
               { required: true, message: "Please input the Master Email!" },
             ]}
           >
-            <Input />
+            <Input type="email" />
           </Form.Item>
           <Form.Item
             name="ETA"
@@ -477,10 +403,7 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
                 shipment_product: {
                   products: [],
                   quantity: 0,
-                  dimensions: {
-                    KG: 0,
-                    G: 0,
-                  },
+                  dimensions: "",
                   percentage: 0,
                 },
                 readiness: null,
@@ -544,6 +467,48 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
                       label="Terminal Location"
                     >
                       <Input />
+                    </Form.Item>
+                    <Form.Item
+                      {...restField}
+                      name={[name, "Readiness"]}
+                      label="Readiness"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please input the Readiness!",
+                        },
+                      ]}
+                    >
+                      <DatePicker
+                        showTime={{ format: "HH:00" }}
+                        format="YYYY-MM-DD HH:00"
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      {...restField}
+                      name={[name, "ETB"]}
+                      label="ETB"
+                      rules={[
+                        { required: true, message: "Please input the ETB!" },
+                      ]}
+                    >
+                      <DatePicker
+                        showTime={{ format: "HH:00" }}
+                        format="YYYY-MM-DD HH:00"
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      {...restField}
+                      name={[name, "ETD"]}
+                      label="ETD"
+                      rules={[
+                        { required: true, message: "Please input the ETD!" },
+                      ]}
+                    >
+                      <DatePicker
+                        showTime={{ format: "HH:00" }}
+                        format="YYYY-MM-DD HH:00"
+                      />
                     </Form.Item>
                     <Form.List name={[name, "shipment_product", "products"]}>
                       {(
@@ -636,21 +601,7 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
                       name={[name, "shipment_product", "quantity"]}
                       label="Quantity"
                     >
-                      <Input type="number" />
-                    </Form.Item>
-                    <Form.Item
-                      {...restField}
-                      name={[name, "shipment_product", "dimensions", "KG"]}
-                      label="Dimensions (KG)"
-                    >
-                      <Input type="number" />
-                    </Form.Item>
-                    <Form.Item
-                      {...restField}
-                      name={[name, "shipment_product", "dimensions", "G"]}
-                      label="Dimensions (G)"
-                    >
-                      <Input type="number" />
+                      <QuantityInput form={form} name={name} fieldKey={key} />
                     </Form.Item>
                     <Form.Item
                       {...restField}

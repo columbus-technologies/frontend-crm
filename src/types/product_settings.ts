@@ -7,14 +7,14 @@ export interface Product {
   sub_products: SubProduct[];
 }
 
-export interface QuantityDimensions {
-  KG: number;
-  G: number;
-}
+// export interface QuantityDimensions {
+//   KG: number;
+//   G: number;
+// }
 
 export interface ShipmentProduct {
   products: Product[];
   quantity: number;
-  dimensions: QuantityDimensions;
+  dimensions: string;
   percentage: number;
 }
