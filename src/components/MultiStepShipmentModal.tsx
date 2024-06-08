@@ -13,6 +13,7 @@ import moment from "moment";
 import { createShipment, getShipmentStatuses } from "../api";
 import { Product, ShipmentProduct } from "../types";
 import InputWithUnit from "./InputWithUnit"; // Import the custom component
+import { validateInteger, validateFloat } from "../util/validationUtils"; // Import validation functions
 
 const { Step } = Steps;
 const { Option } = Select;
@@ -46,8 +47,6 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
     const fetchShipmentStatuses = async () => {
       try {
         const data = await getShipmentStatuses();
-        // const data = await response.json();
-        // console.log(data);
         setShipmentStatuses(data);
       } catch (error) {
         console.error("Failed to fetch shipment statuses:", error);
@@ -102,7 +101,7 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
             agent_contact: "",
           },
         },
-        activity: mergedValues.activity.map((activity: any) => ({
+        activity: (mergedValues.activity || []).map((activity: any) => ({
           activity_type: activity.activity_type || "",
           customer_specifications: {
             customer: activity.customer_specifications?.customer || "",
@@ -114,13 +113,13 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
           terminal_location: activity.terminal_location || "",
           shipment_product: {
             products: activity.shipment_product?.products || [],
-            quantity: parseInt(activity.shipment_product?.quantity, 10) || 0,
+            quantity: parseInt(activity.shipment_product?.quantity, 10) || -1,
             dimensions: {
-              KG: parseInt(activity.shipment_product?.dimensions?.KG, 10) || 0,
-              G: parseInt(activity.shipment_product?.dimensions?.G, 10) || 0,
+              KG: parseInt(activity.shipment_product?.dimensions?.KG, 10) || -1,
+              G: parseInt(activity.shipment_product?.dimensions?.G, 10) || -1,
             },
             percentage:
-              parseInt(activity.shipment_product?.percentage, 10) || 0,
+              parseInt(activity.shipment_product?.percentage, 10) || -1,
           },
           readiness: activity.readiness || now,
           etb: activity.etb || now,
@@ -130,31 +129,114 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
               parseInt(
                 activity.arrival_departure_information?.arrival_displacement,
                 10
-              ) || 0,
+              ) || -1,
             departure_displacement:
               parseInt(
                 activity.arrival_departure_information?.departure_displacement,
                 10
-              ) || 0,
+              ) || -1,
             arrival_draft:
               parseFloat(
                 activity.arrival_departure_information?.arrival_draft
-              ) || 0,
+              ) || -1,
             departure_draft:
               parseFloat(
                 activity.arrival_departure_information?.departure_draft
-              ) || 0,
+              ) || -1,
             arrival_mast_height:
               parseFloat(
                 activity.arrival_departure_information?.arrival_mast_height
-              ) || 0,
+              ) || -1,
             departure_mast_height:
               parseFloat(
                 activity.arrival_departure_information?.departure_mast_height
-              ) || 0,
+              ) || -1,
           },
         })),
       };
+
+      //   // Ensure the structure of the payload matches the backend requirements
+      //   const payload = {
+      //     master_email: mergedValues.master_email || "",
+      //     ETA: mergedValues.ETA ? mergedValues.ETA.toISOString() : now,
+      //     voyage_number: mergedValues.voyage_number || "",
+      //     current_status: mergedValues.current_status || "",
+      //     shipment_type: mergedValues.shipment_type || {
+      //       cargo_operations: false,
+      //       bunkering: false,
+      //       owner_matters: false,
+      //     },
+      //     vessel_specifications: {
+      //       imo_number:
+      //         parseInt(mergedValues.vessel_specifications?.imo_number, 10) || 0,
+      //       vessel_name: mergedValues.vessel_specifications?.vessel_name || "",
+      //       call_sign: mergedValues.vessel_specifications?.call_sign || "",
+      //       sdwt: parseInt(mergedValues.vessel_specifications?.sdwt, 10) || 0,
+      //       nrt: parseInt(mergedValues.vessel_specifications?.nrt, 10) || 0,
+      //       flag: mergedValues.vessel_specifications?.flag || "",
+      //       grt: parseInt(mergedValues.vessel_specifications?.grt, 10) || 0,
+      //       loa: parseFloat(mergedValues.vessel_specifications?.loa) || 0,
+      //     },
+      //     shipment_details: mergedValues.shipment_details || {
+      //       agent_details: {
+      //         name: "",
+      //         email: "",
+      //         agent_contact: "",
+      //       },
+      //     },
+      //     activity: mergedValues.activity.map((activity: any) => ({
+      //       activity_type: activity.activity_type || "",
+      //       customer_specifications: {
+      //         customer: activity.customer_specifications?.customer || "",
+      //         company: activity.customer_specifications?.company || "",
+      //         email: activity.customer_specifications?.email || "",
+      //         contact: activity.customer_specifications?.contact || "",
+      //       },
+      //       anchorage_location: activity.anchorage_location || "",
+      //       terminal_location: activity.terminal_location || "",
+      //       shipment_product: {
+      //         products: activity.shipment_product?.products || [],
+      //         quantity: parseInt(activity.shipment_product?.quantity, 10) || 0,
+      //         dimensions: {
+      //           KG: parseInt(activity.shipment_product?.dimensions?.KG, 10) || 0,
+      //           G: parseInt(activity.shipment_product?.dimensions?.G, 10) || 0,
+      //         },
+      //         percentage:
+      //           parseInt(activity.shipment_product?.percentage, 10) || 0,
+      //       },
+      //       readiness: activity.readiness || now,
+      //       etb: activity.etb || now,
+      //       etd: activity.etd || now,
+      //       arrival_departure_information: {
+      //         arrival_displacement:
+      //           parseInt(
+      //             activity.arrival_departure_information?.arrival_displacement,
+      //             10
+      //           ) || 0,
+      //         departure_displacement:
+      //           parseInt(
+      //             activity.arrival_departure_information?.departure_displacement,
+      //             10
+      //           ) || 0,
+      //         arrival_draft:
+      //           parseFloat(
+      //             activity.arrival_departure_information?.arrival_draft
+      //           ) || 0,
+      //         departure_draft:
+      //           parseFloat(
+      //             activity.arrival_departure_information?.departure_draft
+      //           ) || 0,
+      //         arrival_mast_height:
+      //           parseFloat(
+      //             activity.arrival_departure_information?.arrival_mast_height
+      //           ) || 0,
+      //         departure_mast_height:
+      //           parseFloat(
+      //             activity.arrival_departure_information?.departure_mast_height
+      //           ) || 0,
+      //       },
+      //     })),
+      //   };
 
       createShipment(payload)
         .then(() => {
@@ -289,29 +371,47 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
             label="IMO Number"
             rules={[
               { required: true, message: "Please input the IMO number!" },
+              { validator: validateInteger },
             ]}
           >
-            <Input type="number" />
+            <Input />
           </Form.Item>
           <Form.Item
             name={["vessel_specifications", "call_sign"]}
             label="Call Sign"
+            rules={[{ required: true, message: "Please input the Call Sign!" }]}
           >
             <Input />
           </Form.Item>
-          <Form.Item name={["vessel_specifications", "sdwt"]} label="SDWT">
+          <Form.Item
+            name={["vessel_specifications", "sdwt"]}
+            label="SDWT"
+            rules={[{ validator: validateInteger }]}
+          >
             <InputWithUnit unit="DWT" />
           </Form.Item>
-          <Form.Item name={["vessel_specifications", "nrt"]} label="NRT">
+          <Form.Item
+            name={["vessel_specifications", "nrt"]}
+            label="NRT"
+            rules={[{ validator: validateInteger }]}
+          >
             <InputWithUnit unit="NRT" />
           </Form.Item>
           <Form.Item name={["vessel_specifications", "flag"]} label="Flag">
             <Input />
           </Form.Item>
-          <Form.Item name={["vessel_specifications", "grt"]} label="GRT">
+          <Form.Item
+            name={["vessel_specifications", "grt"]}
+            label="GRT"
+            rules={[{ validator: validateInteger }]}
+          >
             <InputWithUnit unit="GRT" />
           </Form.Item>
-          <Form.Item name={["vessel_specifications", "loa"]} label="LOA">
+          <Form.Item
+            name={["vessel_specifications", "loa"]}
+            label="LOA"
+            rules={[{ validator: validateFloat }]}
+          >
             <InputWithUnit unit="metres" />
           </Form.Item>
         </Form>

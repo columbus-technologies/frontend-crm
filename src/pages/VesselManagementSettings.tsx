@@ -15,6 +15,7 @@ import { fetchVessels, createVessel, deleteVessel } from "../api";
 import "../styles/index.css"; // Ensure the CSS file is imported
 import { useNavigate } from "react-router-dom";
 import InputWithUnit from "../components/InputWithUnit";
+import { validateFloat, validateInteger } from "../util/validationUtils";
 
 const { Title } = Typography;
 
@@ -166,9 +167,10 @@ const VesselManagementSettings: React.FC = () => {
             label="IMO Number"
             rules={[
               { required: true, message: "Please input the IMO Number!" },
+              { validator: validateInteger },
             ]}
           >
-            <Input type="number" />
+            <Input />
           </Form.Item>
           <Form.Item
             name="vessel_name"
@@ -189,35 +191,50 @@ const VesselManagementSettings: React.FC = () => {
           <Form.Item
             name="sdwt"
             label="SDWT"
-            rules={[{ required: true, message: "Please input the SDWT!" }]}
+            rules={[
+              { required: true, message: "Please input the SDWT!" },
+              { validator: validateInteger },
+            ]}
           >
             <InputWithUnit unit="DWT" />
           </Form.Item>
           <Form.Item
             name="nrt"
             label="NRT"
-            rules={[{ required: true, message: "Please input the NRT!" }]}
+            rules={[
+              { required: true, message: "Please input the NRT!" },
+              { validator: validateInteger },
+            ]}
           >
             <InputWithUnit unit="NRT" />
           </Form.Item>
           <Form.Item
             name="flag"
             label="Flag"
-            rules={[{ required: true, message: "Please input the Flag!" }]}
+            rules={[
+              { required: true, message: "Please input the Flag!" },
+              { validator: validateInteger },
+            ]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             name="grt"
             label="GRT"
-            rules={[{ required: true, message: "Please input the GRT!" }]}
+            rules={[
+              { required: true, message: "Please input the GRT!" },
+              { validator: validateInteger },
+            ]}
           >
             <InputWithUnit unit="GRT" />
           </Form.Item>
           <Form.Item
             name="loa"
             label="LOA"
-            rules={[{ required: true, message: "Please input the LOA!" }]}
+            rules={[
+              { required: true, message: "Please input the LOA!" },
+              { validator: validateFloat },
+            ]}
           >
             <InputWithUnit unit="metres" />
           </Form.Item>
