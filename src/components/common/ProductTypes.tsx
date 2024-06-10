@@ -1,26 +1,25 @@
 import React from "react";
-import { Product } from "../../types";
 
 interface ProductTypesProps {
-  products: Product[];
+  productType: string;
+  subProductsType: string[];
 }
 
-const ProductTypes: React.FC<ProductTypesProps> = ({ products }) => {
+const ProductTypes: React.FC<ProductTypesProps> = ({
+  productType,
+  subProductsType,
+}) => {
   return (
-    <>
-      {products.map((product, index) => (
-        <div key={index}>
-          <p>
-            <strong>Product:</strong> {product.product}
-          </p>
-          {product.sub_products.map((subProduct, subIndex) => (
-            <p key={subIndex} style={{ marginLeft: "20px" }}>
-              <strong>Sub Product:</strong> {subProduct.sub_product}
-            </p>
-          ))}
-        </div>
+    <div>
+      <p>
+        <strong>Product:</strong> {productType}
+      </p>
+      {subProductsType.map((subProduct, index) => (
+        <p key={index} style={{ marginLeft: "20px" }}>
+          <strong>Sub Product:</strong> {subProduct}
+        </p>
       ))}
-    </>
+    </div>
   );
 };
 

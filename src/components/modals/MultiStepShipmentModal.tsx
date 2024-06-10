@@ -118,7 +118,9 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
           anchorage_location: activity.anchorage_location || "",
           terminal_location: activity.terminal_location || "",
           shipment_product: {
-            products: activity.shipment_product?.products || [],
+            product_type: activity.shipment_product?.products || "",
+            sub_products_type: activity.shipment_product?.products || [],
+
             quantity: parseInt(activity.shipment_product?.quantity, 10) || -1,
             dimensions: activity.shipment_product?.quantityCode || "",
             percentage: activity.shipment_product?.percentage
@@ -295,7 +297,8 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
                 anchorage_location: "",
                 terminal_location: "",
                 shipment_product: {
-                  products: [],
+                  product_type: "",
+                  sub_products_type: [""],
                   quantity: 0,
                   dimensions: "",
                   percentage: 0,
@@ -421,14 +424,14 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
                             >
                               <Form.Item
                                 {...productField}
-                                name={[productField.name, "product"]}
+                                name={[productField.name, "product_type"]}
                                 label="Product"
                                 style={{ flex: 1, marginRight: 8 }}
                               >
                                 <Input placeholder="Product Name" />
                               </Form.Item>
                               <Form.List
-                                name={[productField.name, "sub_products"]}
+                                name={[productField.name, "sub_products_type"]}
                               >
                                 {(
                                   subFields,
@@ -445,7 +448,10 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
                                       >
                                         <Form.Item
                                           {...subField}
-                                          name={[subField.name, "sub_product"]}
+                                          name={[
+                                            subField.name,
+                                            "sub_product_type",
+                                          ]}
                                           label="Sub Product"
                                           style={{
                                             flex: 1,

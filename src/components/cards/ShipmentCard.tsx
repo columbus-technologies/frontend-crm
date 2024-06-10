@@ -87,7 +87,10 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({ shipment }) => {
               <p>Anchorage Location: {activity.anchorage_location} </p>
               <p>Customer: {activity.customer_specifications.customer} </p>
               <p>
-                <ProductTypes products={activity.shipment_product.products} />
+                <ProductTypes
+                  productType={activity.shipment_product.product_type}
+                  subProductsType={activity.shipment_product.sub_products_type}
+                />
               </p>
               <p>
                 ETD: {moment(activity.etd).format("DD-MMM-YYYY, dddd, HH:mm")}
