@@ -1,21 +1,11 @@
-// src/components/VesselSettings.tsx
 import React, { useEffect, useState } from "react";
-import {
-  Card,
-  Typography,
-  Table,
-  Button,
-  Modal,
-  Form,
-  Input,
-  message,
-} from "antd";
-import { Vessel, VesselResponse } from "../types";
-import { fetchVessels, createVessel, deleteVessel } from "../api";
+import { Card, Typography, Table, Button, message, Modal } from "antd";
+import { VesselResponse } from "../types";
+import { fetchVessels, deleteVessel } from "../api";
 import "../styles/index.css"; // Ensure the CSS file is imported
 import { useNavigate } from "react-router-dom";
-import InputWithUnit from "../components/InputWithUnit";
-import { validateFloat, validateInteger } from "../util/validationUtils";
+import AddVesselModal from "../components/modals/AddVesselSettingsModal";
+import UnauthorizedModal from "../components/modals/UnauthorizedModal";
 
 const { Title } = Typography;
 
@@ -23,7 +13,6 @@ const VesselManagementSettings: React.FC = () => {
   const [vessels, setVessels] = useState<VesselResponse[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [form] = Form.useForm();
   const [isUnauthorizedModalVisible, setIsUnauthorizedModalVisible] =
     useState(false);
   const navigate = useNavigate();
@@ -81,44 +70,11 @@ const VesselManagementSettings: React.FC = () => {
     setIsModalVisible(true);
   };
 
-  const handleOk = async () => {
-    try {
-      const values = await form.validateFields();
-
-      const payload: Vessel = {
-        vessel_specifications: {
-          ...values,
-          imo_number: parseInt(values.imo_number, 10),
-          sdwt: parseInt(values.sdwt, 10),
-          nrt: parseInt(values.nrt, 10),
-          grt: parseInt(values.grt, 10),
-          loa: parseFloat(values.loa),
-        },
-      };
-
-      console.log("Form values:", payload);
-
-      await createVessel(payload);
-
-      loadVessels();
-
-      setIsModalVisible(false);
-      form.resetFields();
-      message.success("Vessel added successfully!");
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error("Failed to add vessel setting:", error.message);
-        // message.error('Failed to add vessel setting. Please try again.');
-        if (error.message === "Duplicate key error") {
-          message.error("Vessel with this IMO number already exists.");
-        } else {
-          message.error("Server error. Please try again.");
-        }
-      }
-    }
+  const handleModalOk = () => {
+    setIsModalVisible(false);
   };
 
-  const handleCancel = () => {
+  const handleModalCancel = () => {
     setIsModalVisible(false);
   };
 
@@ -154,104 +110,16 @@ const VesselManagementSettings: React.FC = () => {
           <Table dataSource={vessels} columns={columns} />
         )}
       </Card>
-      <Modal
-        title="Add Vessel Setting"
+      <AddVesselModal
         visible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        className="custom-modal"
-      >
-        <Form form={form} layout="vertical">
-          <Form.Item
-            name="imo_number"
-            label="IMO Number"
-            rules={[
-              { required: true, message: "Please input the IMO Number!" },
-              { validator: validateInteger },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="vessel_name"
-            label="Vessel Name"
-            rules={[
-              { required: true, message: "Please input the Vessel Name!" },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="call_sign"
-            label="Call Sign"
-            rules={[{ required: true, message: "Please input the Call Sign!" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="sdwt"
-            label="SDWT"
-            rules={[
-              { required: true, message: "Please input the SDWT!" },
-              { validator: validateInteger },
-            ]}
-          >
-            <InputWithUnit unit="DWT" />
-          </Form.Item>
-          <Form.Item
-            name="nrt"
-            label="NRT"
-            rules={[
-              { required: true, message: "Please input the NRT!" },
-              { validator: validateInteger },
-            ]}
-          >
-            <InputWithUnit unit="NRT" />
-          </Form.Item>
-          <Form.Item
-            name="flag"
-            label="Flag"
-            rules={[
-              { required: true, message: "Please input the Flag!" },
-              { validator: validateInteger },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="grt"
-            label="GRT"
-            rules={[
-              { required: true, message: "Please input the GRT!" },
-              { validator: validateInteger },
-            ]}
-          >
-            <InputWithUnit unit="GRT" />
-          </Form.Item>
-          <Form.Item
-            name="loa"
-            label="LOA"
-            rules={[
-              { required: true, message: "Please input the LOA!" },
-              { validator: validateFloat },
-            ]}
-          >
-            <InputWithUnit unit="metres" />
-          </Form.Item>
-        </Form>
-      </Modal>
-      <Modal
-        title="Credentials Expired"
+        onOk={handleModalOk}
+        onCancel={handleModalCancel}
+        loadVessels={loadVessels}
+      />
+      <UnauthorizedModal
         visible={isUnauthorizedModalVisible}
-        maskClosable={false}
-        footer={[
-          <Button key="ok" type="primary" onClick={handleUnauthorizedModalOk}>
-            OK
-          </Button>,
-        ]}
-      >
-        <p>Credentials Expired. Please login again.</p>
-      </Modal>
+        onClose={() => setIsUnauthorizedModalVisible(false)}
+      />
     </div>
   );
 };

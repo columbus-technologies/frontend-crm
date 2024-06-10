@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { Form, Input, Button, message } from "antd";
-import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { message } from "antd";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import "../styles/index.css"; // Ensure the CSS file is imported
 import loginImage from "../assets/columbus2.png"; // Import the image
+import LoginForm from "../components/forms/LoginForm"; // Import the LoginForm component
 
 const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -46,48 +46,7 @@ const Login: React.FC = () => {
         <img src={loginImage} alt="Login Background" />
       </div>
       <div className="login-form">
-        <Form
-          name="login"
-          initialValues={{ remember: true }}
-          onFinish={onFinish}
-        >
-          <Form.Item
-            name="email"
-            rules={[{ required: true, message: "Please input your email!" }]}
-          >
-            <Input
-              prefix={<UserOutlined className="site-form-item-icon" />}
-              placeholder="Email"
-              type="email"
-            />
-          </Form.Item>
-          <Form.Item
-            name="password"
-            rules={[{ required: true, message: "Please input your Password!" }]}
-          >
-            <Input
-              prefix={<LockOutlined className="site-form-item-icon" />}
-              type="password"
-              placeholder="Password"
-            />
-          </Form.Item>
-          <Form.Item>
-            <a className="login-form-forgot" href="">
-              Forgot password
-            </a>
-          </Form.Item>
-
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              className="login-form-button"
-              loading={loading}
-            >
-              Log in
-            </Button>
-          </Form.Item>
-        </Form>
+        <LoginForm onFinish={onFinish} loading={loading} />
       </div>
     </div>
   );

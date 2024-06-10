@@ -1,5 +1,4 @@
 import { Agent } from "./agent_management_settings";
-import { ShipmentProduct } from "./product_settings";
 import { VesselSpecifications } from "./vessel_management_settings";
 
 export interface ArrivalDepartureInformation {
@@ -28,6 +27,14 @@ export interface Activity {
   etb: string;
   etd: string;
   arrival_departure_information: ArrivalDepartureInformation;
+}
+
+export interface ShipmentProduct {
+  product_type: string;
+  sub_products_type: string[];
+  quantity: number;
+  dimensions: string;
+  percentage: number;
 }
 
 export interface ShipmentType {

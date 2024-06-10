@@ -1,19 +1,11 @@
 import React, { useEffect, useState } from "react";
-import {
-  Card,
-  Typography,
-  Table,
-  Button,
-  Modal,
-  Form,
-  Input,
-  message,
-} from "antd";
-import { Agent, AgentResponse } from "../types";
-import { getAllAgents, createAgent, deleteAgent } from "../api";
-import "../styles/index.css"; // Ensure the CSS file is imported
+import { Card, Typography, Table, Button, Modal, message } from "antd";
+import { AgentResponse } from "../types";
+import { getAllAgents, deleteAgent } from "../api";
+import "../styles/index.css";
 import { useNavigate } from "react-router-dom";
-import ContactInput from "../util/ContactNumberCountryCodeInput";
+import AddAgentModal from "../components/modals/AddAgentSettingsModal";
+import UnauthorizedModal from "../components/modals/UnauthorizedModal";
 
 const { Title } = Typography;
 
@@ -21,7 +13,6 @@ const AgentManagementSettings: React.FC = () => {
   const [agents, setAgents] = useState<AgentResponse[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [form] = Form.useForm();
   const [isUnauthorizedModalVisible, setIsUnauthorizedModalVisible] =
     useState(false);
   const navigate = useNavigate();
@@ -74,37 +65,11 @@ const AgentManagementSettings: React.FC = () => {
     setIsModalVisible(true);
   };
 
-  const handleOk = async () => {
-    try {
-      const values = await form.validateFields();
-
-      const payload: Agent = {
-        ...values,
-        contact: values.phoneCode + values.contact,
-      };
-
-      console.log("Form values:", payload);
-
-      await createAgent(payload);
-
-      loadAgents();
-
-      setIsModalVisible(false);
-      form.resetFields();
-      message.success("Agent added successfully!");
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error("Failed to add agent setting:", error.message);
-        if (error.message === "Duplicate key error") {
-          message.error("Agent with this email already exists.");
-        } else {
-          message.error("Server error. Please try again.");
-        }
-      }
-    }
+  const handleModalOk = () => {
+    setIsModalVisible(false);
   };
 
-  const handleCancel = () => {
+  const handleModalCancel = () => {
     setIsModalVisible(false);
   };
 
@@ -140,45 +105,16 @@ const AgentManagementSettings: React.FC = () => {
           <Table dataSource={agents} columns={columns} />
         )}
       </Card>
-      <Modal
-        title="Add Agent"
-        open={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        className="custom-modal"
-      >
-        <Form form={form} layout="vertical">
-          <Form.Item
-            name="name"
-            label="Name"
-            rules={[{ required: true, message: "Please input the Name!" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="email"
-            label="Email"
-            rules={[{ required: true, message: "Please input the Email!" }]}
-          >
-            <Input type="email" />
-          </Form.Item>
-          <Form.Item label="Contact">
-            <ContactInput />
-          </Form.Item>
-        </Form>
-      </Modal>
-      <Modal
-        title="Credentials Expired"
+      <AddAgentModal
+        visible={isModalVisible}
+        onOk={handleModalOk}
+        onCancel={handleModalCancel}
+        loadAgents={loadAgents}
+      />
+      <UnauthorizedModal
         visible={isUnauthorizedModalVisible}
-        maskClosable={false}
-        footer={[
-          <Button key="ok" type="primary" onClick={handleUnauthorizedModalOk}>
-            OK
-          </Button>,
-        ]}
-      >
-        <p>Credentials Expired. Please login again.</p>
-      </Modal>
+        onClose={() => setIsUnauthorizedModalVisible(false)}
+      />
     </div>
   );
 };

@@ -8,8 +8,9 @@ import {
   deleteShipment,
 } from "../api";
 import "../styles/index.css"; // Ensure the CSS file is imported
-import MultiStepShipmentModal from "../components/MultiStepShipmentModal";
+import MultiStepShipmentModal from "../components/modals/MultiStepShipmentModal";
 import { useNavigate } from "react-router-dom";
+import UnauthorizedModal from "../components/modals/UnauthorizedModal";
 
 const { Title } = Typography;
 
@@ -156,18 +157,10 @@ const ShipmentsManagement: React.FC = () => {
         onCancel={handleModalClose}
         onCreate={handleModalClose}
       />
-      <Modal
-        title="Credentials Expired"
+      <UnauthorizedModal
         visible={isUnauthorizedModalVisible}
-        maskClosable={false}
-        footer={[
-          <Button key="ok" type="primary" onClick={handleUnauthorizedModalOk}>
-            OK
-          </Button>,
-        ]}
-      >
-        <p>Credentials Expired. Please login again.</p>
-      </Modal>
+        onClose={() => setIsUnauthorizedModalVisible(false)}
+      />
     </div>
   );
 };

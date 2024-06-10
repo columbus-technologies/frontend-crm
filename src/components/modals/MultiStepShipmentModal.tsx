@@ -10,10 +10,13 @@ import {
   Select,
 } from "antd";
 import moment from "moment";
-import { createShipment, getShipmentStatuses } from "../api";
-import InputWithUnit from "./InputWithUnit"; // Import the custom component
-import { validateInteger, validateFloat } from "../util/validationUtils"; // Import validation functions
-import QuantityInput from "../util/QuantityInput";
+import { createShipment, getShipmentStatuses } from "../../api";
+import InputWithUnit from "../common/InputWithUnit"; // Import the custom component
+import { validateInteger, validateFloat } from "../../utils/validationUtils"; // Import validation functions
+import QuantityInput from "../common/QuantityInput";
+import VesselForm from "../forms/VesselSettingsForm";
+import { merge } from "antd/es/theme/util/statistic";
+import AgentForm from "../forms/AgentSettingsForm";
 
 const { Step } = Steps;
 const { Option } = Select;
@@ -71,7 +74,7 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
     form.validateFields().then((values) => {
       const now = moment().toISOString();
       const mergedValues = { ...formValues, ...values };
-
+      console.log(mergedValues);
       const payload = {
         master_email: mergedValues.master_email || "",
         ETA: mergedValues.ETA ? mergedValues.ETA.toISOString() : now,
@@ -83,21 +86,20 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
           owner_matters: false,
         },
         vessel_specifications: {
-          imo_number:
-            parseInt(mergedValues.vessel_specifications?.imo_number, 10) || 0,
-          vessel_name: mergedValues.vessel_specifications?.vessel_name || "",
-          call_sign: mergedValues.vessel_specifications?.call_sign || "",
-          sdwt: parseInt(mergedValues.vessel_specifications?.sdwt, 10) || 0,
-          nrt: parseInt(mergedValues.vessel_specifications?.nrt, 10) || 0,
-          flag: mergedValues.vessel_specifications?.flag || "",
-          grt: parseInt(mergedValues.vessel_specifications?.grt, 10) || 0,
-          loa: parseFloat(mergedValues.vessel_specifications?.loa) || 0,
+          imo_number: parseInt(mergedValues?.imo_number, 10) || 0,
+          vessel_name: mergedValues?.vessel_name || "",
+          call_sign: mergedValues?.call_sign || "",
+          sdwt: parseInt(mergedValues?.sdwt, 10) || 0,
+          nrt: parseInt(mergedValues?.nrt, 10) || 0,
+          flag: mergedValues?.flag || "",
+          grt: parseInt(mergedValues?.grt, 10) || 0,
+          loa: parseFloat(mergedValues?.loa) || 0,
         },
-        shipment_details: mergedValues.shipment_details || {
+        shipment_details: {
           agent_details: {
-            name: "",
-            email: "",
-            agent_contact: "",
+            name: mergedValues?.name || "",
+            email: mergedValues?.email || "",
+            contact: mergedValues?.phoneCode + mergedValues?.contact || "",
           },
         },
         activity: (mergedValues.activity && mergedValues.activity.length > 0
@@ -265,121 +267,46 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
     },
     {
       title: "Vessel Specifications",
-      content: (
-        <Form
-          form={form}
-          layout="vertical"
-          name="vesselSpecifications"
-          initialValues={{
-            vessel_specifications: {
-              vessel_name: "",
-              imo_number: 0,
-              call_sign: "",
-              sdwt: 0,
-              nrt: 0,
-              flag: "",
-              grt: 0,
-              loa: 0,
-            },
-          }}
-        >
-          <Form.Item
-            name={["vessel_specifications", "vessel_name"]}
-            label="Vessel Name"
-            rules={[
-              { required: true, message: "Please input the Vessel name!" },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name={["vessel_specifications", "imo_number"]}
-            label="IMO Number"
-            rules={[
-              { required: true, message: "Please input the IMO number!" },
-              { validator: validateInteger },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name={["vessel_specifications", "call_sign"]}
-            label="Call Sign"
-            rules={[{ required: true, message: "Please input the Call Sign!" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name={["vessel_specifications", "sdwt"]}
-            label="SDWT"
-            rules={[{ validator: validateInteger }]}
-          >
-            <InputWithUnit unit="DWT" />
-          </Form.Item>
-          <Form.Item
-            name={["vessel_specifications", "nrt"]}
-            label="NRT"
-            rules={[{ validator: validateInteger }]}
-          >
-            <InputWithUnit unit="NRT" />
-          </Form.Item>
-          <Form.Item name={["vessel_specifications", "flag"]} label="Flag">
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name={["vessel_specifications", "grt"]}
-            label="GRT"
-            rules={[{ validator: validateInteger }]}
-          >
-            <InputWithUnit unit="GRT" />
-          </Form.Item>
-          <Form.Item
-            name={["vessel_specifications", "loa"]}
-            label="LOA"
-            rules={[{ validator: validateFloat }]}
-          >
-            <InputWithUnit unit="metres" />
-          </Form.Item>
-        </Form>
-      ),
+      content: <VesselForm form={form} />,
     },
     {
       title: "Shipment Details",
-      content: (
-        <Form
-          form={form}
-          layout="vertical"
-          name="shipmentDetails"
-          initialValues={{
-            shipment_details: {
-              agent_details: {
-                name: "",
-                email: "",
-                agent_contact: "",
-              },
-            },
-          }}
-        >
-          <Form.Item
-            name={["shipment_details", "agent_details", "name"]}
-            label="Agent Name"
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name={["shipment_details", "agent_details", "email"]}
-            label="Agent Email"
-          >
-            <Input type="email" />
-          </Form.Item>
-          <Form.Item
-            name={["shipment_details", "agent_details", "agent_contact"]}
-            label="Agent Contact"
-          >
-            <Input />
-          </Form.Item>
-        </Form>
-      ),
+      content: <AgentForm form={form} />,
+      //   content: (
+      //     <Form
+      //       form={form}
+      //       layout="vertical"
+      //       name="shipmentDetails"
+      //       initialValues={{
+      //         shipment_details: {
+      //           agent_details: {
+      //             name: "",
+      //             email: "",
+      //             agent_contact: "",
+      //           },
+      //         },
+      //       }}
+      //     >
+      //       <Form.Item
+      //         name={["shipment_details", "agent_details", "name"]}
+      //         label="Agent Name"
+      //       >
+      //         <Input />
+      //       </Form.Item>
+      //       <Form.Item
+      //         name={["shipment_details", "agent_details", "email"]}
+      //         label="Agent Email"
+      //       >
+      //         <Input type="email" />
+      //       </Form.Item>
+      //       <Form.Item
+      //         name={["shipment_details", "agent_details", "agent_contact"]}
+      //         label="Agent Contact"
+      //       >
+      //         <Input />
+      //       </Form.Item>
+      //     </Form>
+      //   ),
     },
     {
       title: "Activity",
@@ -618,8 +545,9 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
                         "arrival_displacement",
                       ]}
                       label="Arrival Displacement"
+                      rules={[{ validator: validateFloat }]}
                     >
-                      <Input type="number" />
+                      <InputWithUnit unit="tonnes" />
                     </Form.Item>
                     <Form.Item
                       {...restField}
@@ -629,8 +557,9 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
                         "departure_displacement",
                       ]}
                       label="Departure Displacement"
+                      rules={[{ validator: validateFloat }]}
                     >
-                      <Input type="number" />
+                      <InputWithUnit unit="tonnes" />
                     </Form.Item>
                     <Form.Item
                       {...restField}
@@ -640,8 +569,9 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
                         "arrival_draft",
                       ]}
                       label="Arrival Draft"
+                      rules={[{ validator: validateFloat }]}
                     >
-                      <Input type="number" />
+                      <InputWithUnit unit="metres" />
                     </Form.Item>
                     <Form.Item
                       {...restField}
@@ -651,8 +581,9 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
                         "departure_draft",
                       ]}
                       label="Departure Draft"
+                      rules={[{ validator: validateFloat }]}
                     >
-                      <Input type="number" />
+                      <InputWithUnit unit="metres" />
                     </Form.Item>
                     <Form.Item
                       {...restField}
@@ -662,8 +593,9 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
                         "arrival_mast_height",
                       ]}
                       label="Arrival Mast Height"
+                      rules={[{ validator: validateFloat }]}
                     >
-                      <Input type="number" />
+                      <InputWithUnit unit="metres" />
                     </Form.Item>
                     <Form.Item
                       {...restField}
@@ -673,8 +605,9 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
                         "departure_mast_height",
                       ]}
                       label="Departure Mast Height"
+                      rules={[{ validator: validateFloat }]}
                     >
-                      <Input type="number" />
+                      <InputWithUnit unit="metres" />
                     </Form.Item>
                     <Button
                       onClick={() => remove(name)}

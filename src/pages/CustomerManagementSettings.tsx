@@ -1,24 +1,11 @@
 import React, { useEffect, useState } from "react";
-import {
-  Card,
-  Typography,
-  Table,
-  Button,
-  Modal,
-  Form,
-  Input,
-  message,
-} from "antd";
-import { Customer, CustomerResponse } from "../types";
-import {
-  getAllCustomers,
-  createCustomer,
-  updateCustomer,
-  deleteCustomer,
-} from "../api";
+import { Card, Typography, Table, Button, message, Modal } from "antd";
+import { CustomerResponse } from "../types";
+import { getAllCustomers, deleteCustomer } from "../api";
 import "../styles/index.css"; // Ensure the CSS file is imported
 import { useNavigate } from "react-router-dom";
-import ContactInput from "../util/ContactNumberCountryCodeInput";
+import AddCustomerModal from "../components/modals/AddCustomerSettingsModal";
+import UnauthorizedModal from "../components/modals/UnauthorizedModal";
 
 const { Title } = Typography;
 
@@ -26,7 +13,6 @@ const CustomerManagementSettings: React.FC = () => {
   const [customers, setCustomers] = useState<CustomerResponse[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [form] = Form.useForm();
   const [isUnauthorizedModalVisible, setIsUnauthorizedModalVisible] =
     useState(false);
   const navigate = useNavigate();
@@ -98,40 +84,11 @@ const CustomerManagementSettings: React.FC = () => {
     setIsModalVisible(true);
   };
 
-  const handleOk = async () => {
-    try {
-      const values = await form.validateFields();
-
-      // Convert the fields to appropriate types
-      const payload: Customer = {
-        ...values,
-        contact: values.phoneCode + values.contact,
-      };
-
-      console.log("Payload before sending to backend:", payload); // Debugging payload
-
-      // Perform the API call to save the new customer
-      await createCustomer(payload);
-
-      // Refresh the table data
-      fetchData();
-
-      setIsModalVisible(false);
-      form.resetFields();
-      message.success("Customer added successfully!");
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error("Failed to add customer:", error.message);
-        if (error.message === "Duplicate key error") {
-          message.error("Customer with this name already exists.");
-        } else {
-          message.error("Server error. Please try again.");
-        }
-      }
-    }
+  const handleModalOk = () => {
+    setIsModalVisible(false);
   };
 
-  const handleCancel = () => {
+  const handleModalCancel = () => {
     setIsModalVisible(false);
   };
 
@@ -149,57 +106,19 @@ const CustomerManagementSettings: React.FC = () => {
         {errorMessage ? (
           <p>{errorMessage}</p>
         ) : (
-          <Table dataSource={customers} columns={columns} rowKey="id" />
+          <Table dataSource={customers} columns={columns} rowKey="ID" />
         )}
       </Card>
-      <Modal
-        title="Add Customer"
+      <AddCustomerModal
         visible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        className="custom-modal"
-      >
-        <Form form={form} layout="vertical">
-          <Form.Item
-            name="customer"
-            label="Customer"
-            rules={[
-              { required: true, message: "Please input the Customer name!" },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="company"
-            label="Company"
-            rules={[{ required: true, message: "Please input the Company!" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="email"
-            label="Email"
-            rules={[{ required: true, message: "Please input the Email!" }]}
-          >
-            <Input type="email" />
-          </Form.Item>
-          <Form.Item label="Contact">
-            <ContactInput />
-          </Form.Item>
-        </Form>
-      </Modal>
-      <Modal
-        title="Credentials Expired"
+        onOk={handleModalOk}
+        onCancel={handleModalCancel}
+        fetchData={fetchData}
+      />
+      <UnauthorizedModal
         visible={isUnauthorizedModalVisible}
-        maskClosable={false}
-        footer={[
-          <Button key="ok" type="primary" onClick={handleUnauthorizedModalOk}>
-            OK
-          </Button>,
-        ]}
-      >
-        <p>Credentials Expired. Please login again.</p>
-      </Modal>
+        onClose={() => setIsUnauthorizedModalVisible(false)}
+      />
     </div>
   );
 };
