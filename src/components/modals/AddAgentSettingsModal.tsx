@@ -25,7 +25,7 @@ const AddAgentModal: React.FC<AddAgentModalProps> = ({
 
       const payload: Agent = {
         ...values,
-        contact: values.phoneCode + values.contact,
+        contact: values.phoneCode + " " + values.contact,
       };
 
       console.log("Form values:", payload);

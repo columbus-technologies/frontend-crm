@@ -26,7 +26,7 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
       // Convert the fields to appropriate types
       const payload: Customer = {
         ...values,
-        contact: values.phoneCode + values.contact,
+        contact: values.phoneCode + " " + values.contact,
       };
 
       console.log("Payload before sending to backend:", payload); // Debugging payload

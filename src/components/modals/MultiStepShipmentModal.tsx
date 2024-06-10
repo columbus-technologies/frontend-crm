@@ -15,8 +15,9 @@ import InputWithUnit from "../common/InputWithUnit"; // Import the custom compon
 import { validateInteger, validateFloat } from "../../utils/validationUtils"; // Import validation functions
 import QuantityInput from "../common/QuantityInput";
 import VesselForm from "../forms/VesselSettingsForm";
-import { merge } from "antd/es/theme/util/statistic";
 import AgentForm from "../forms/AgentSettingsForm";
+import VesselFormAutoComplete from "../forms/VesselSettingsFormAutoComplete";
+import AgentFormAutoComplete from "../forms/AgentSettingsFormAutoComplete";
 
 const { Step } = Steps;
 const { Option } = Select;
@@ -99,7 +100,8 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
           agent_details: {
             name: mergedValues?.name || "",
             email: mergedValues?.email || "",
-            contact: mergedValues?.phoneCode + mergedValues?.contact || "",
+            contact:
+              mergedValues?.phoneCode + " " + mergedValues?.contact || "",
           },
         },
         activity: (mergedValues.activity && mergedValues.activity.length > 0
@@ -266,47 +268,12 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
       ),
     },
     {
-      title: "Vessel Specifications",
-      content: <VesselForm form={form} />,
+      title: "Vessel",
+      content: <VesselFormAutoComplete form={form} />,
     },
     {
-      title: "Shipment Details",
-      content: <AgentForm form={form} />,
-      //   content: (
-      //     <Form
-      //       form={form}
-      //       layout="vertical"
-      //       name="shipmentDetails"
-      //       initialValues={{
-      //         shipment_details: {
-      //           agent_details: {
-      //             name: "",
-      //             email: "",
-      //             agent_contact: "",
-      //           },
-      //         },
-      //       }}
-      //     >
-      //       <Form.Item
-      //         name={["shipment_details", "agent_details", "name"]}
-      //         label="Agent Name"
-      //       >
-      //         <Input />
-      //       </Form.Item>
-      //       <Form.Item
-      //         name={["shipment_details", "agent_details", "email"]}
-      //         label="Agent Email"
-      //       >
-      //         <Input type="email" />
-      //       </Form.Item>
-      //       <Form.Item
-      //         name={["shipment_details", "agent_details", "agent_contact"]}
-      //         label="Agent Contact"
-      //       >
-      //         <Input />
-      //       </Form.Item>
-      //     </Form>
-      //   ),
+      title: "Agent",
+      content: <AgentFormAutoComplete form={form} />,
     },
     {
       title: "Activity",
