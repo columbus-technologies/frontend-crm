@@ -10,6 +10,8 @@ interface VesselFormProps {
 
 const VesselFormAutoComplete: React.FC<VesselFormProps> = ({ form }) => {
   const [vesselOptions, setVesselOptions] = useState<any[]>([]);
+  const [imoOptions, setImoOptions] = useState<{ value: string }[]>([]);
+  const [nameOptions, setNameOptions] = useState<{ value: string }[]>([]);
 
   useEffect(() => {
     const fetchAllVessels = async () => {
@@ -26,7 +28,8 @@ const VesselFormAutoComplete: React.FC<VesselFormProps> = ({ form }) => {
 
   const handleVesselSelect = (value: string, option: any) => {
     const selectedVessel = vesselOptions.find(
-      (vessel) => vessel.imo_number === value || vessel.vessel_name === value
+      (vessel) =>
+        vessel.imo_number.toString() === value || vessel.vessel_name === value
     );
     if (selectedVessel) {
       form.setFieldsValue({
@@ -42,6 +45,24 @@ const VesselFormAutoComplete: React.FC<VesselFormProps> = ({ form }) => {
     }
   };
 
+  const handleImoSearch = (value: string) => {
+    setImoOptions(
+      vesselOptions
+        .filter((vessel) => vessel.imo_number.toString().includes(value))
+        .map((vessel) => ({ value: vessel.imo_number.toString() }))
+    );
+  };
+
+  const handleNameSearch = (value: string) => {
+    setNameOptions(
+      vesselOptions
+        .filter((vessel) =>
+          vessel.vessel_name.toLowerCase().includes(value.toLowerCase())
+        )
+        .map((vessel) => ({ value: vessel.vessel_name }))
+    );
+  };
+
   return (
     <Form form={form} layout="vertical">
       <Form.Item
@@ -53,9 +74,8 @@ const VesselFormAutoComplete: React.FC<VesselFormProps> = ({ form }) => {
         ]}
       >
         <AutoComplete
-          options={vesselOptions.map((vessel) => ({
-            value: vessel.imo_number,
-          }))}
+          options={imoOptions}
+          onSearch={handleImoSearch}
           onSelect={handleVesselSelect}
           placeholder="Select IMO Number"
         />
@@ -66,9 +86,8 @@ const VesselFormAutoComplete: React.FC<VesselFormProps> = ({ form }) => {
         rules={[{ required: true, message: "Please input the Vessel Name!" }]}
       >
         <AutoComplete
-          options={vesselOptions.map((vessel) => ({
-            value: vessel.vessel_name,
-          }))}
+          options={nameOptions}
+          onSearch={handleNameSearch}
           onSelect={handleVesselSelect}
           placeholder="Select Vessel Name"
         />

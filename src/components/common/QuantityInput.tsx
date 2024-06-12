@@ -1,48 +1,3 @@
-// // src/util/QuantityInput.tsx
-// import React from "react";
-// import { Form, Input, Select } from "antd";
-
-// const { Option } = Select;
-
-// const quantityCodes = [
-//   { code: "KB", unit: "Kilo Barrels" },
-//   { code: "MT", unit: "Metric Tonnes" },
-//   // Add more quantity codes as needed
-// ];
-
-// const QuantityInput: React.FC = () => {
-//   return (
-//     <Input.Group compact>
-//       <Form.Item
-//         name="quantityCode"
-//         noStyle
-//         rules={[
-//           { required: true, message: "Please select the Quantity Code!" },
-//         ]}
-//       >
-//         <Select style={{ width: "30%" }} placeholder="Select Unit">
-//           {quantityCodes.map(({ code, unit }) => (
-//             <Option key={code} value={code}>
-//               {`${unit} (${code})`}
-//             </Option>
-//           ))}
-//         </Select>
-//       </Form.Item>
-//       <Form.Item
-//         name="quantity"
-//         noStyle
-//         rules={[{ required: true, message: "Please input the Quantity!" }]}
-//       >
-//         <Input style={{ width: "70%" }} />
-//       </Form.Item>
-//     </Input.Group>
-//   );
-// };
-
-// export default QuantityInput;
-
-// src/util/QuantityInput.tsx
-// src/util/QuantityInput.tsx
 import React from "react";
 import { Form, Input, Select } from "antd";
 
@@ -87,7 +42,7 @@ const QuantityInput: React.FC<QuantityInputProps> = ({
         noStyle
         rules={[{ required: true, message: "Please input the Quantity!" }]}
       >
-        <Input style={{ width: "70%" }} />
+        <Input style={{ width: "70%" }} placeholder="Quantity" />
       </Form.Item>
     </Input.Group>
   );

@@ -64,6 +64,7 @@ const CategoryManagementActivityType: React.FC = () => {
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
+      e.preventDefault();
       handleAddActivityType();
     }
   };
@@ -81,7 +82,7 @@ const CategoryManagementActivityType: React.FC = () => {
         Information added here will be reflected under the Activity Type field
         when creating a new shipment.
       </p>
-      <Form layout="inline" onFinish={handleAddActivityType}>
+      <Form layout="inline">
         <Form.Item>
           <Input
             placeholder="Press Enter to add"

@@ -9,6 +9,7 @@ interface AgentFormProps {
 
 const AgentFormAutoComplete: React.FC<AgentFormProps> = ({ form }) => {
   const [agentOptions, setAgentOptions] = useState<any[]>([]);
+  const [nameOptions, setNameOptions] = useState<{ value: string }[]>([]);
 
   useEffect(() => {
     const fetchAllAgents = async () => {
@@ -16,7 +17,7 @@ const AgentFormAutoComplete: React.FC<AgentFormProps> = ({ form }) => {
         const agents = await getAllAgents();
         setAgentOptions(agents);
       } catch (error) {
-        console.error("Failed to fetch vessels:", error);
+        console.error("Failed to fetch agents:", error);
       }
     };
 
@@ -39,6 +40,16 @@ const AgentFormAutoComplete: React.FC<AgentFormProps> = ({ form }) => {
     }
   };
 
+  const handleNameSearch = (value: string) => {
+    setNameOptions(
+      agentOptions
+        .filter((agent) =>
+          agent.name.toLowerCase().includes(value.toLowerCase())
+        )
+        .map((agent) => ({ value: agent.name }))
+    );
+  };
+
   return (
     <Form form={form} layout="vertical">
       <Form.Item
@@ -47,9 +58,8 @@ const AgentFormAutoComplete: React.FC<AgentFormProps> = ({ form }) => {
         rules={[{ required: true, message: "Please input the Name!" }]}
       >
         <AutoComplete
-          options={agentOptions.map((agent) => ({
-            value: agent.name,
-          }))}
+          options={nameOptions}
+          onSearch={handleNameSearch}
           onSelect={handleAgentSelect}
           placeholder="Select Agent"
         />
