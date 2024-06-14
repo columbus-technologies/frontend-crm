@@ -6,24 +6,36 @@ import {
   deleteActivityType,
 } from "../api";
 import { ActivityType, ActivityTypeResponse } from "../types";
+import UnauthorizedModal from "../components/modals/UnauthorizedModal";
 
 const CategoryManagementActivityType: React.FC = () => {
   const [activityTypes, setActivityTypes] = useState<ActivityTypeResponse[]>(
     []
   );
   const [inputValue, setInputValue] = useState("");
+  const [isUnauthorizedModalVisible, setIsUnauthorizedModalVisible] =
+    useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const fetchActivityTypes = async () => {
+    try {
+      const response = await getAllActivityTypes();
+      setActivityTypes(response);
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error.message === "Unauthorized") {
+          setIsUnauthorizedModalVisible(true);
+        }
+        setErrorMessage(error.message);
+      } else {
+        setErrorMessage(String(error));
+      }
+      console.error("Failed to load activity types");
+    }
+  };
 
   useEffect(() => {
-    const fetchActivityTypes = async () => {
-      try {
-        const response = await getAllActivityTypes();
-        setActivityTypes(response);
-      } catch (error) {
-        message.error("Failed to load activity types");
-      }
-    };
-
-    fetchActivityTypes();
+    fetchActivityTypes(); // Initial fetch
   }, []);
 
   const handleAddActivityType = async () => {
@@ -111,6 +123,10 @@ const CategoryManagementActivityType: React.FC = () => {
           </Tag>
         ))}
       </div>
+      <UnauthorizedModal
+        visible={isUnauthorizedModalVisible}
+        onClose={() => setIsUnauthorizedModalVisible(false)}
+      />
     </div>
   );
 };

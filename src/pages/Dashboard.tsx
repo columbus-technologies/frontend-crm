@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Typography, Row, Col } from "antd";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import "../styles/index.css"; // Ensure the CSS file is imported
 import { ShipmentResponse } from "../types";
 import { getAllShipments } from "../api";
@@ -14,7 +14,7 @@ const Dashboard: React.FC = () => {
   const [shipments, setShipments] = useState<ShipmentResponse[]>([]);
   const [isUnauthorizedModalVisible, setIsUnauthorizedModalVisible] =
     useState(false);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {

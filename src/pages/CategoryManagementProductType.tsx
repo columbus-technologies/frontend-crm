@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Input, Button, Tag, Divider, Form, message } from "antd";
 import {
   getAllProductTypes,
@@ -7,6 +7,7 @@ import {
   deleteProductType,
 } from "../api";
 import { ProductType, ProductTypeResponse } from "../types";
+import UnauthorizedModal from "../components/modals/UnauthorizedModal";
 
 const CategoryManagementProductType: React.FC = () => {
   const [productTypes, setProductTypes] = useState<ProductTypeResponse[]>([]);
@@ -14,26 +15,37 @@ const CategoryManagementProductType: React.FC = () => {
   const [subInputValues, setSubInputValues] = useState<{
     [key: string]: string;
   }>({});
+  const [isUnauthorizedModalVisible, setIsUnauthorizedModalVisible] =
+    useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const fetchProductTypes = async () => {
+    try {
+      const data = await getAllProductTypes();
+      if (data === null) {
+        setProductTypes([]);
+      } else if (Array.isArray(data)) {
+        setProductTypes(data);
+      } else {
+        message.error(
+          "Failed to load product types - unexpected response format"
+        );
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error.message === "Unauthorized") {
+          setIsUnauthorizedModalVisible(true);
+        }
+        setErrorMessage(error.message);
+      } else {
+        setErrorMessage(String(error));
+      }
+      message.error("Failed to load product types");
+    }
+  };
 
   useEffect(() => {
-    const fetchProductTypes = async () => {
-      try {
-        const data = await getAllProductTypes();
-        if (data === null) {
-          setProductTypes([]);
-        } else if (Array.isArray(data)) {
-          setProductTypes(data);
-        } else {
-          message.error(
-            "Failed to load product types - unexpected response format"
-          );
-        }
-      } catch (error) {
-        message.error("Failed to load product types");
-      }
-    };
-
-    fetchProductTypes();
+    fetchProductTypes(); // Initial fetch
   }, []);
 
   const handleAddProductType = async () => {
@@ -144,7 +156,7 @@ const CategoryManagementProductType: React.FC = () => {
           />
         </Form.Item>
         <Form.Item>
-          <Button type="primary" onClick={handleAddProductType}>
+          <Button type="primary" htmlType="submit">
             Add
           </Button>
         </Form.Item>
@@ -200,6 +212,10 @@ const CategoryManagementProductType: React.FC = () => {
           <Divider />
         </div>
       ))}
+      <UnauthorizedModal
+        visible={isUnauthorizedModalVisible}
+        onClose={() => setIsUnauthorizedModalVisible(false)}
+      />
     </div>
   );
 };

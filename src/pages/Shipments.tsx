@@ -9,7 +9,7 @@ import {
 } from "../api";
 import "../styles/index.css"; // Ensure the CSS file is imported
 import MultiStepShipmentModal from "../components/modals/MultiStepShipmentModal";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import UnauthorizedModal from "../components/modals/UnauthorizedModal";
 
 const { Title } = Typography;
@@ -20,7 +20,7 @@ const ShipmentsManagement: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isUnauthorizedModalVisible, setIsUnauthorizedModalVisible] =
     useState(false);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const fetchData = async () => {
     try {
@@ -69,10 +69,10 @@ const ShipmentsManagement: React.FC = () => {
     fetchData(); // Refresh the table data after creation
   };
 
-  const handleUnauthorizedModalOk = () => {
-    setIsUnauthorizedModalVisible(false);
-    navigate("/login");
-  };
+  // const handleUnauthorizedModalOk = () => {
+  //   setIsUnauthorizedModalVisible(false);
+  //   navigate("/login");
+  // };
 
   const columns = [
     { title: "Date Created", dataIndex: "created_at", key: "created_at" },

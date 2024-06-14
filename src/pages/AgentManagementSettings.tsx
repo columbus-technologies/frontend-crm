@@ -15,7 +15,6 @@ const AgentManagementSettings: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isUnauthorizedModalVisible, setIsUnauthorizedModalVisible] =
     useState(false);
-  const navigate = useNavigate();
 
   const loadAgents = async () => {
     try {
@@ -38,11 +37,6 @@ const AgentManagementSettings: React.FC = () => {
   useEffect(() => {
     loadAgents(); // Initial fetch
   }, []);
-
-  const handleUnauthorizedModalOk = () => {
-    setIsUnauthorizedModalVisible(false);
-    navigate("/login");
-  };
 
   const columns = [
     { title: "Name", dataIndex: "name", key: "name" },

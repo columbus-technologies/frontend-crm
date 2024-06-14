@@ -3,7 +3,7 @@ import { Card, Typography, Table, Button, message, Modal } from "antd";
 import { VesselResponse } from "../types";
 import { fetchVessels, deleteVessel } from "../api";
 import "../styles/index.css"; // Ensure the CSS file is imported
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import AddVesselModal from "../components/modals/AddVesselSettingsModal";
 import UnauthorizedModal from "../components/modals/UnauthorizedModal";
 
@@ -15,7 +15,7 @@ const VesselManagementSettings: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isUnauthorizedModalVisible, setIsUnauthorizedModalVisible] =
     useState(false);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const loadVessels = async () => {
     try {
@@ -39,10 +39,10 @@ const VesselManagementSettings: React.FC = () => {
     loadVessels(); // Initial fetch
   }, []);
 
-  const handleUnauthorizedModalOk = () => {
-    setIsUnauthorizedModalVisible(false);
-    navigate("/login");
-  };
+  // const handleUnauthorizedModalOk = () => {
+  //   setIsUnauthorizedModalVisible(false);
+  //   navigate("/login");
+  // };
 
   const columns = [
     { title: "IMO Number", dataIndex: "imo_number", key: "imo_number" },

@@ -3,7 +3,7 @@ import { Card, Typography, Table, Button, message, Modal } from "antd";
 import { CustomerResponse } from "../types";
 import { getAllCustomers, deleteCustomer } from "../api";
 import "../styles/index.css"; // Ensure the CSS file is imported
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import AddCustomerModal from "../components/modals/AddCustomerSettingsModal";
 import UnauthorizedModal from "../components/modals/UnauthorizedModal";
 
@@ -15,7 +15,7 @@ const CustomerManagementSettings: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isUnauthorizedModalVisible, setIsUnauthorizedModalVisible] =
     useState(false);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const fetchData = async () => {
     try {
@@ -54,10 +54,10 @@ const CustomerManagementSettings: React.FC = () => {
     }
   };
 
-  const handleUnauthorizedModalOk = () => {
-    setIsUnauthorizedModalVisible(false);
-    navigate("/login");
-  };
+  // const handleUnauthorizedModalOk = () => {
+  //   setIsUnauthorizedModalVisible(false);
+  //   navigate("/login");
+  // };
 
   const columns = [
     { title: "Customer", dataIndex: "customer", key: "customer" },
