@@ -94,8 +94,8 @@ const VesselManagementSettings: React.FC = () => {
   };
 
   return (
-    <div className="vessel-settings-container">
-      <Title level={2} className="vessel-settings-title">
+    <div className="settings-management-container">
+      <Title level={2} className="settings-management-title">
         Vessel Settings
       </Title>
       <div style={{ textAlign: "right", marginBottom: "20px" }}>

@@ -1,26 +1,33 @@
 import React, { useEffect, useState } from "react";
-import { Card, Typography, Table, Button, Modal, message } from "antd";
-import { AgentResponse } from "../types";
-import { getAllAgents, deleteAgent } from "../api";
-import "../styles/index.css";
-import { useNavigate } from "react-router-dom";
-import AddAgentModal from "../components/modals/AddAgentSettingsModal";
+import { Card, Typography, Table, Button, message, Modal } from "antd";
+import { TerminalResponse } from "../types";
+import {
+  getAllTerminals,
+  createTerminal,
+  deleteTerminal,
+  getTerminalById,
+  updateTerminal,
+} from "../api";
+import "../styles/index.css"; // Ensure the CSS file is imported
+// import { useNavigate } from "react-router-dom";
+import AddTerminalModal from "../components/modals/AddTerminalSettingsModal";
 import UnauthorizedModal from "../components/modals/UnauthorizedModal";
 
 const { Title } = Typography;
 
-const AgentManagementSettings: React.FC = () => {
-  const [agents, setAgents] = useState<AgentResponse[]>([]);
+const TerminalManagementSettings: React.FC = () => {
+  const [terminals, setTerminals] = useState<TerminalResponse[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isUnauthorizedModalVisible, setIsUnauthorizedModalVisible] =
     useState(false);
+  // const navigate = useNavigate();
 
-  const loadAgents = async () => {
+  const loadTerminals = async () => {
     try {
-      const data = await getAllAgents();
-      console.log("Fetched agents:", data); // Debugging statement
-      setAgents(data);
+      const data = await getAllTerminals();
+      console.log(data);
+      setTerminals(data);
     } catch (error) {
       if (error instanceof Error) {
         if (error.message === "Unauthorized") {
@@ -35,19 +42,23 @@ const AgentManagementSettings: React.FC = () => {
   };
 
   useEffect(() => {
-    loadAgents(); // Initial fetch
+    loadTerminals(); // Initial fetch
   }, []);
 
+  // const handleUnauthorizedModalOk = () => {
+  //   setIsUnauthorizedModalVisible(false);
+  //   navigate("/login");
+  // };
+
   const columns = [
-    { title: "Name", dataIndex: "name", key: "name" },
+    { title: "Terminal Name", dataIndex: "name", key: "name" },
+    { title: "Address", dataIndex: "address", key: "address" },
     { title: "Email", dataIndex: "email", key: "email" },
     { title: "Contact", dataIndex: "contact", key: "contact" },
-    { title: "Created At", dataIndex: "created_at", key: "created_at" },
-    { title: "Updated At", dataIndex: "updated_at", key: "updated_at" },
     {
       title: "Action",
       key: "action",
-      render: (text: string, record: AgentResponse) => (
+      render: (text: string, record: TerminalResponse) => (
         <Button type="primary" danger onClick={() => handleDelete(record.ID)}>
           Delete
         </Button>
@@ -69,15 +80,15 @@ const AgentManagementSettings: React.FC = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      console.log(`Deleting agent with ID: ${id}`); // Debugging deletion
+      console.log(`Deleting Terminal with ID: ${id}`); // Debugging deletion
 
-      await deleteAgent(id);
-      loadAgents();
-      message.success("Agent deleted successfully!");
+      await deleteTerminal(id);
+      loadTerminals();
+      message.success("Terminal deleted successfully!");
     } catch (error) {
       if (error instanceof Error) {
-        console.error("Failed to delete agent:", error.message);
-        message.error("Failed to delete agent. Please try again.");
+        console.error("Failed to delete Terminal:", error.message);
+        message.error("Failed to delete Terminal. Please try again.");
       }
     }
   };
@@ -85,25 +96,25 @@ const AgentManagementSettings: React.FC = () => {
   return (
     <div className="settings-management-container">
       <Title level={2} className="settings-management-title">
-        Agent Settings
+        Terminal Settings
       </Title>
       <div style={{ textAlign: "right", marginBottom: "20px" }}>
         <Button type="primary" onClick={showModal}>
-          Add Agent
+          Add Terminal Setting
         </Button>
       </div>
       <Card>
         {errorMessage ? (
           <p>{errorMessage}</p>
         ) : (
-          <Table dataSource={agents} columns={columns} />
+          <Table dataSource={terminals} columns={columns} />
         )}
       </Card>
-      <AddAgentModal
+      <AddTerminalModal
         visible={isModalVisible}
         onOk={handleModalOk}
         onCancel={handleModalCancel}
-        loadAgents={loadAgents}
+        loadTerminals={loadTerminals}
       />
       <UnauthorizedModal
         visible={isUnauthorizedModalVisible}
@@ -113,4 +124,4 @@ const AgentManagementSettings: React.FC = () => {
   );
 };
 
-export default AgentManagementSettings;
+export default TerminalManagementSettings;

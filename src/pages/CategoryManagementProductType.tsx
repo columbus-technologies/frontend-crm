@@ -138,7 +138,7 @@ const CategoryManagementProductType: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="settings-management-container">
       <h1>Category Management</h1>
       <p>
         Information added here will be reflected under the Product and Product

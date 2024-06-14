@@ -72,41 +72,11 @@ button:focus-visible {
   align-items: center; /* Center align items vertically */
 }
 
-.shipments-management-container {
+.settings-management-container {
   padding: 20px;
 }
 
-.shipments-management-settings-title {
-  writing-mode: horizontal-tb; /* Ensure horizontal text direction */
-  text-align: left;
-  margin-bottom: 20px; /* Add margin below the title */
-}
-
-.agent-management-settings-container {
-  padding: 20px;
-}
-
-.agent-management-title {
-  writing-mode: horizontal-tb; /* Ensure horizontal text direction */
-  text-align: left;
-  margin-bottom: 20px; /* Add margin below the title */
-}
-
-.customer-management-settings-container {
-  padding: 20px;
-}
-
-.customer-management-settings-title {
-  writing-mode: horizontal-tb; /* Ensure horizontal text direction */
-  text-align: left;
-  margin-bottom: 20px; /* Add margin below the title */
-}
-
-.vessel-settings-container {
-  padding: 20px;
-}
-
-.vessel-settings-title {
+.settings-management-title {
   writing-mode: horizontal-tb; /* Ensure horizontal text direction */
   text-align: left;
   margin-bottom: 20px; /* Add margin below the title */

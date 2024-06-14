@@ -93,8 +93,8 @@ const CustomerManagementSettings: React.FC = () => {
   };
 
   return (
-    <div className="customer-management-settings-container">
-      <Title level={2} className="customer-management-settings-title">
+    <div className="settings-management-container">
+      <Title level={2} className="settings-management-title">
         Customer Management
       </Title>
       <div style={{ textAlign: "right", marginBottom: "20px" }}>

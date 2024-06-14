@@ -55,12 +55,15 @@ const Sidebar: React.FC = () => {
           <Menu.Item key="6">
             <Link to="/agent-management-settings">Agent Settings</Link>
           </Menu.Item>
+          <Menu.Item key="7">
+            <Link to="/terminal-management-settings">Terminal Settings</Link>
+          </Menu.Item>
         </SubMenu>
         <SubMenu key="categories" icon={<SettingOutlined />} title="Categories">
-          <Menu.Item key="7">
+          <Menu.Item key="8">
             <Link to="/activity-types">Activity Types</Link>
           </Menu.Item>
-          <Menu.Item key="8">
+          <Menu.Item key="9">
             <Link to="/product-types">Product Types</Link>
           </Menu.Item>
         </SubMenu>

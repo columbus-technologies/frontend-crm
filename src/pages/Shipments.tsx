@@ -136,8 +136,8 @@ const ShipmentsManagement: React.FC = () => {
   ];
 
   return (
-    <div className="shipments-management-container">
-      <Title level={2} className="shipments-management-title">
+    <div className="settings-management-container">
+      <Title level={2} className="settings-management-title">
         Shipments Management
       </Title>
       <div style={{ textAlign: "right", marginBottom: "20px" }}>

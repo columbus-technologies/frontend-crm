@@ -82,7 +82,7 @@ const CategoryManagementActivityType: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="settings-management-container">
       <h1>Category Management</h1>
       <p>
         Please note that changes made here will affect the field options in the

@@ -39,7 +39,7 @@ const Dashboard: React.FC = () => {
   }, []);
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div className="settings-management-container">
       <UnauthorizedModal
         visible={isUnauthorizedModalVisible}
         onClose={() => setIsUnauthorizedModalVisible(false)}

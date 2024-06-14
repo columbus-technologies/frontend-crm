@@ -14,7 +14,7 @@ const Feed: React.FC = () => {
   );
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div className="settings-management-container">
       <Title level={2}>Feed</Title>
       <Card>
         {errorMessage ? (
