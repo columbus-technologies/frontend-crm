@@ -11,6 +11,8 @@ const ActivityForm = ({
   filteredSubProductTypes,
   handleProductTypeChange,
   handleSubProductTypeSearch,
+  terminalLocations, // Add terminal locations prop
+  customerNames, // Add customer names prop
 }: {
   form: any;
   productTypes: string[];
@@ -18,6 +20,8 @@ const ActivityForm = ({
   filteredSubProductTypes: { [key: string]: string[] };
   handleProductTypeChange: (value: string, index: number) => void;
   handleSubProductTypeSearch: (value: string, index: number) => void;
+  terminalLocations: string[]; // Add terminal locations prop
+  customerNames: string[]; // Add customer names prop
 }) => (
   <Form
     form={form}
@@ -34,7 +38,7 @@ const ActivityForm = ({
             contact: "",
           },
           anchorage_location: "",
-          terminal_location: "",
+          terminal_name: "",
           shipment_product: {
             product_type: "",
             sub_products_type: [""],
@@ -63,35 +67,36 @@ const ActivityForm = ({
                 name={[name, "customer_specifications", "customer"]}
                 label="Customer"
               >
-                <Input placeholder="Customer" />
+                <AutoComplete
+                  options={customerNames.map((customer) => ({
+                    value: customer,
+                  }))}
+                  placeholder="Customer"
+                  style={{ width: "100%" }}
+                  filterOption={(inputValue, option) =>
+                    option!.value
+                      .toLowerCase()
+                      .includes(inputValue.toLowerCase())
+                  }
+                />
               </Form.Item>
               <Form.Item
                 {...restField}
-                name={[name, "customer_specifications", "company"]}
-                label="Company"
+                name={[name, "terminal_name"]}
+                label="Terminal Name"
               >
-                <Input placeholder="Company" />
-              </Form.Item>
-              <Form.Item
-                {...restField}
-                name={[name, "customer_specifications", "email"]}
-                label="Email"
-              >
-                <Input placeholder="Email" />
-              </Form.Item>
-              <Form.Item
-                {...restField}
-                name={[name, "customer_specifications", "contact"]}
-                label="Contact"
-              >
-                <Input placeholder="Contact" />
-              </Form.Item>
-              <Form.Item
-                {...restField}
-                name={[name, "terminal_location"]}
-                label="Terminal Location"
-              >
-                <Input placeholder="Terminal Location" />
+                <AutoComplete
+                  options={terminalLocations.map((location) => ({
+                    value: location,
+                  }))}
+                  placeholder="Terminal Name"
+                  style={{ width: "100%" }}
+                  filterOption={(inputValue, option) =>
+                    option!.value
+                      .toLowerCase()
+                      .includes(inputValue.toLowerCase())
+                  }
+                />
               </Form.Item>
               <Form.Item
                 {...restField}
@@ -146,7 +151,7 @@ const ActivityForm = ({
                   }))}
                   style={{ width: "100%" }}
                   onChange={(value) => handleProductTypeChange(value, key)}
-                  placeholder="Product Name"
+                  placeholder="Start typing to search"
                 />
               </Form.Item>
               <Form.List name={[name, "shipment_product", "sub_products_type"]}>
@@ -196,7 +201,7 @@ const ActivityForm = ({
                                 form.setFieldsValue({ activity });
                               }
                             }}
-                            placeholder="Sub Product Name"
+                            placeholder="Start typing to search"
                           />
                         </Form.Item>
                         <Button

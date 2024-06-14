@@ -7,7 +7,10 @@ export interface TerminalSpecifications {
 
 export interface TerminalResponse {
   ID: string;
-  terminal_specifications: TerminalSpecifications;
+  name: string;
+  address: string;
+  email: string;
+  contact: string;
   created_at: string;
   updated_at: string;
 }

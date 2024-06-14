@@ -21,7 +21,7 @@ export interface Activity {
   activity_type: string;
   customer_specifications: CustomerSpecifications;
   anchorage_location: string;
-  terminal_location: string;
+  terminal_name: string;
   shipment_product: ShipmentProduct;
   readiness: string; // Use string type for date-time fields
   etb: string;

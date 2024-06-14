@@ -61,7 +61,7 @@ const AgentFormAutoComplete: React.FC<AgentFormProps> = ({ form }) => {
           options={nameOptions}
           onSearch={handleNameSearch}
           onSelect={handleAgentSelect}
-          placeholder="Select Agent"
+          placeholder="Start typing to search"
         />
       </Form.Item>
       <Form.Item

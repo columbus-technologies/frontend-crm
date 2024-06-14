@@ -9,5 +9,10 @@ export interface Customer {
 
 export interface CustomerResponse {
   ID: string;
-  customer: Customer;
+  customer: string;
+  company: string;
+  email: string;
+  contact: string;
+  created_at?: string;
+  updated_at?: string;
 }

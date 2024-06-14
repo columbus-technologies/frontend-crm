@@ -77,12 +77,12 @@ const ShipmentsManagement: React.FC = () => {
   const columns = [
     { title: "Date Created", dataIndex: "created_at", key: "created_at" },
     {
-      title: "ETA Status",
-      dataIndex: "ETA",
-      key: "eta_status",
-      render: (eta: string) => (
-        <div>{new Date(eta) > new Date() ? "Upcoming" : "Past"}</div>
-      ),
+      title: "Status",
+      dataIndex: "current_status",
+      key: "current_status",
+      // render: (eta: string) => (
+      //   <div>{new Date(eta) > new Date() ? "Upcoming" : "Past"}</div>
+      // ),
     },
     {
       title: "IMO Number",
@@ -102,30 +102,26 @@ const ShipmentsManagement: React.FC = () => {
     {
       title: "Customer Name(s)",
       dataIndex: ["activity"],
-      key: "customer_names",
+      key: "customer_name",
       render: (activities: any[]) =>
         activities.map((activity) => (
-          <div key={activity.customer_specifications.customer}>
-            {activity.customer_specifications.customer}
-          </div>
+          <div key={activity.customer_name}>{activity.customer_name}</div>
         )),
     },
     {
-      title: "Terminal Location(s)",
+      title: "Terminal Name(s)",
       dataIndex: ["activity"],
-      key: "terminal_location",
+      key: "terminal_name",
       render: (activities: any[]) =>
         activities.map((activity) => (
-          <div key={activity.terminal_location}>
-            {activity.terminal_location}
-          </div>
+          <div key={activity.terminal_name}>{activity.terminal_name}</div>
         )),
     },
     {
       title: "Action",
       key: "action",
       render: (text: string, record: ShipmentResponse) => {
-        console.log("Record:", record); // Debugging statement
+        // console.log("Record:", record); // Debugging statement
         return (
           <Button type="primary" danger onClick={() => handleDelete(record.ID)}>
             Delete
