@@ -76,12 +76,12 @@ const GeneralInformationForm: React.FC<GeneralInformationFormProps> = ({
       <Form.Item name={["shipment_type", "bunkering"]} valuePropName="checked">
         <Checkbox> Bunkering </Checkbox>
       </Form.Item>
-      <Form.Item
+      {/* <Form.Item
         name={["shipment_type", "owner_matters"]}
         valuePropName="checked"
       >
         <Checkbox> Owner Matters </Checkbox>
-      </Form.Item>
+      </Form.Item> */}
     </div>
   </Form>
 );

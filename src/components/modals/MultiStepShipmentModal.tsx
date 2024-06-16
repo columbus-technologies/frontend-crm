@@ -13,6 +13,7 @@ import VesselFormAutoComplete from "../forms/VesselSettingsFormAutoComplete";
 import AgentFormAutoComplete from "../forms/AgentSettingsFormAutoComplete";
 import GeneralInformationForm from "../forms/GeneralInformationForm";
 import ActivityForm from "../forms/ActivityForm";
+import { validateAtLeastOneCheckbox } from "../../utils/validationUtils";
 
 const { Step } = Steps;
 
@@ -101,10 +102,31 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
   }, []);
 
   const next = () => {
-    form.validateFields().then((values) => {
-      setFormValues({ ...formValues, ...values });
-      setCurrentStep(currentStep + 1);
-    });
+    form
+      .validateFields()
+      .then((values) => {
+        if (
+          currentStep === 0 &&
+          !validateAtLeastOneCheckbox(
+            ["shipment_type.cargo_operations", "shipment_type.bunkering"],
+            form
+          )
+        ) {
+          message.error(
+            "At least one of Cargo Operations or Bunkering must be selected"
+          );
+          return;
+        }
+        setFormValues({ ...formValues, ...values });
+        setCurrentStep(currentStep + 1);
+      })
+      .catch((errorInfo) => {
+        message.error("Please fill in all required fields.");
+        // scroll to the first error field
+        form.scrollToField(errorInfo.errorFields[0].name, {
+          behavior: "smooth",
+        });
+      });
   };
 
   const prev = () => {
