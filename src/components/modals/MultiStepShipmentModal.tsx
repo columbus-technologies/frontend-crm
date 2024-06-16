@@ -7,6 +7,7 @@ import {
   getShipmentStatuses,
   getAllTerminals, // Import the function
   getAllCustomers, // Import getAllCustomers
+  getAllActivityTypes,
 } from "../../api";
 import VesselFormAutoComplete from "../forms/VesselSettingsFormAutoComplete";
 import AgentFormAutoComplete from "../forms/AgentSettingsFormAutoComplete";
@@ -39,6 +40,7 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
   }>({});
   const [terminalLocations, setTerminalLocations] = useState<string[]>([]); // Add state for terminal locations
   const [customerNames, setCustomerNames] = useState<string[]>([]); // Add state for customer names
+  const [activityTypes, setActivityTypes] = useState<string[]>([]); // Add state for activity types
 
   useEffect(() => {
     if (!visible) {
@@ -51,13 +53,19 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [shipmentStatuses, productTypesData, terminals, customers] =
-          await Promise.all([
-            getShipmentStatuses(),
-            getAllProductTypes(),
-            getAllTerminals(),
-            getAllCustomers(),
-          ]);
+        const [
+          shipmentStatuses,
+          productTypesData,
+          terminals,
+          customers,
+          activities,
+        ] = await Promise.all([
+          getShipmentStatuses(),
+          getAllProductTypes(),
+          getAllTerminals(),
+          getAllCustomers(),
+          getAllActivityTypes(),
+        ]);
         setShipmentStatuses(shipmentStatuses);
         const productTypes = productTypesData.map(
           (product: any) => product.product_type
@@ -71,12 +79,9 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
         );
         setProductTypes(productTypes);
         setSubProductTypes(subProductTypes);
-        // console.log(productTypes, "product");
-
+        // const shipmentStatusesWithColours = await PromosegetShipmentStatusesWithColours();
         // setTerminalLocations(terminals);
         const terminalNames = terminals.map((terminal) => terminal.name); // Extract terminal names
-        console.log(terminalNames, "ter");
-        console.log(customers);
 
         setTerminalLocations(terminalNames);
         const customerNames = customers.map((customer) => customer.customer); // Extract customer names
@@ -84,6 +89,10 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
         console.log(customerNames);
 
         setCustomerNames(customerNames);
+        const activityTypeNames = activities.map(
+          (activity) => activity.activity_type
+        );
+        setActivityTypes(activityTypeNames);
       } catch (error) {
         console.error("Failed to fetch data:", error);
       }
@@ -293,6 +302,7 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
           handleSubProductTypeSearch={handleSubProductTypeSearch}
           terminalLocations={terminalLocations} // Pass terminal locations
           customerNames={customerNames}
+          activityTypes={activityTypes}
         />
       ),
     },

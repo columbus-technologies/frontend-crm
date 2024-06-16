@@ -26,7 +26,7 @@ const VesselFormAutoComplete: React.FC<VesselFormProps> = ({ form }) => {
     fetchAllVessels();
   }, []);
 
-  const handleVesselSelect = (value: string, option: any) => {
+  const handleVesselSelect = (value: string) => {
     const selectedVessel = vesselOptions.find(
       (vessel) =>
         vessel.imo_number.toString() === value || vessel.vessel_name === value
@@ -63,6 +63,18 @@ const VesselFormAutoComplete: React.FC<VesselFormProps> = ({ form }) => {
     );
   };
 
+  const handleImoFocus = () => {
+    setImoOptions(
+      vesselOptions.map((vessel) => ({ value: vessel.imo_number.toString() }))
+    );
+  };
+
+  const handleNameFocus = () => {
+    setNameOptions(
+      vesselOptions.map((vessel) => ({ value: vessel.vessel_name }))
+    );
+  };
+
   return (
     <Form form={form} layout="vertical">
       <Form.Item
@@ -77,6 +89,7 @@ const VesselFormAutoComplete: React.FC<VesselFormProps> = ({ form }) => {
           options={imoOptions}
           onSearch={handleImoSearch}
           onSelect={handleVesselSelect}
+          onFocus={handleImoFocus}
           placeholder="Select IMO Number"
         />
       </Form.Item>
@@ -89,6 +102,7 @@ const VesselFormAutoComplete: React.FC<VesselFormProps> = ({ form }) => {
           options={nameOptions}
           onSearch={handleNameSearch}
           onSelect={handleVesselSelect}
+          onFocus={handleNameFocus}
           placeholder="Select Vessel Name"
         />
       </Form.Item>

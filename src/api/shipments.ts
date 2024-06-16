@@ -3,9 +3,27 @@ import { prepareAuthHeaders } from "../utils/auth";
 
 const SHIPMENTS_URL = "http://localhost:8080/shipments";
 const SHIPMENT_STATUSES_URL = "http://localhost:8080/shipments/statuses";
+const SHIPMENT_STATUSES_WITH_COLOURS_URL =
+  "http://localhost:8080/shipments/statuses_with_colours";
 
 export const getShipmentStatuses = async (): Promise<string[]> => {
   const response = await fetch(SHIPMENT_STATUSES_URL, {
+    method: "GET",
+    headers: prepareAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Error: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return data.shipment_statuses;
+};
+
+export const getShipmentStatusesWithColours = async (): Promise<
+  Map<string, string>
+> => {
+  const response = await fetch(SHIPMENT_STATUSES_WITH_COLOURS_URL, {
     method: "GET",
     headers: prepareAuthHeaders(),
   });

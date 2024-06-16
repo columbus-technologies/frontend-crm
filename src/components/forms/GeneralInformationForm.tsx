@@ -1,14 +1,17 @@
 import React from "react";
 import { Form, Input, Checkbox, DatePicker, Select } from "antd";
+import { validateEmail } from "../../utils/validationUtils";
 
 const { Option } = Select;
 
-const GeneralInformationForm = ({
-  form,
-  shipmentStatuses,
-}: {
+interface GeneralInformationFormProps {
   form: any;
   shipmentStatuses: string[];
+}
+
+const GeneralInformationForm: React.FC<GeneralInformationFormProps> = ({
+  form,
+  shipmentStatuses,
 }) => (
   <Form
     form={form}
@@ -29,7 +32,10 @@ const GeneralInformationForm = ({
     <Form.Item
       name="master_email"
       label="Master Email"
-      rules={[{ required: true, message: "Please input the Master Email!" }]}
+      rules={[
+        { required: true, message: "Please input the Master Email!" },
+        { validator: validateEmail },
+      ]}
     >
       <Input type="email" />
     </Form.Item>

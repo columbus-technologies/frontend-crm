@@ -19,7 +19,7 @@ export interface CustomerSpecifications {
 
 export interface Activity {
   activity_type: string;
-  customer_specifications: CustomerSpecifications;
+  customer_name: string;
   anchorage_location: string;
   terminal_name: string;
   shipment_product: ShipmentProduct;

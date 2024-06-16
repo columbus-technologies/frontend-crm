@@ -1,16 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Card, Typography, Table, Button, message, Modal } from "antd";
+import { Card, Typography, Table, Button, message, Tag } from "antd";
 import { ShipmentResponse } from "../types";
-import {
-  getAllShipments,
-  createShipment,
-  updateShipment,
-  deleteShipment,
-} from "../api";
+import { getAllShipments, deleteShipment } from "../api";
 import "../styles/index.css"; // Ensure the CSS file is imported
 import MultiStepShipmentModal from "../components/modals/MultiStepShipmentModal";
-// import { useNavigate } from "react-router-dom";
 import UnauthorizedModal from "../components/modals/UnauthorizedModal";
+import { useStatusColours } from "../context/StatusColoursContext"; // Import the context
+import { formatDateToLocalString } from "../utils/dateTimeUtils";
 
 const { Title } = Typography;
 
@@ -20,7 +16,7 @@ const ShipmentsManagement: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isUnauthorizedModalVisible, setIsUnauthorizedModalVisible] =
     useState(false);
-  // const navigate = useNavigate();
+  const statusColours = useStatusColours();
 
   const fetchData = async () => {
     try {
@@ -69,20 +65,20 @@ const ShipmentsManagement: React.FC = () => {
     fetchData(); // Refresh the table data after creation
   };
 
-  // const handleUnauthorizedModalOk = () => {
-  //   setIsUnauthorizedModalVisible(false);
-  //   navigate("/login");
-  // };
-
   const columns = [
-    { title: "Date Created", dataIndex: "created_at", key: "created_at" },
+    {
+      title: "Date Created",
+      dataIndex: "created_at",
+      key: "created_at",
+      render: (date: string) => formatDateToLocalString(date),
+    },
     {
       title: "Status",
       dataIndex: "current_status",
       key: "current_status",
-      // render: (eta: string) => (
-      //   <div>{new Date(eta) > new Date() ? "Upcoming" : "Past"}</div>
-      // ),
+      render: (status: string) => (
+        <Tag color={statusColours[status] || "default"}>{status}</Tag>
+      ),
     },
     {
       title: "IMO Number",
@@ -118,10 +114,20 @@ const ShipmentsManagement: React.FC = () => {
         )),
     },
     {
+      title: "Agent Assigned",
+      dataIndex: ["shipment_details", "agent_details"],
+      key: "agent_details",
+      render: (agent_details: any) => (
+        <div>
+          <div>{agent_details.name}</div>
+          <div>{agent_details.contact}</div>
+        </div>
+      ),
+    },
+    {
       title: "Action",
       key: "action",
       render: (text: string, record: ShipmentResponse) => {
-        // console.log("Record:", record); // Debugging statement
         return (
           <Button type="primary" danger onClick={() => handleDelete(record.ID)}>
             Delete

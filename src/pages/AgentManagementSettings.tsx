@@ -6,6 +6,7 @@ import "../styles/index.css";
 import { useNavigate } from "react-router-dom";
 import AddAgentModal from "../components/modals/AddAgentSettingsModal";
 import UnauthorizedModal from "../components/modals/UnauthorizedModal";
+import { formatDateToLocalString } from "../utils/dateTimeUtils";
 
 const { Title } = Typography;
 
@@ -42,8 +43,18 @@ const AgentManagementSettings: React.FC = () => {
     { title: "Name", dataIndex: "name", key: "name" },
     { title: "Email", dataIndex: "email", key: "email" },
     { title: "Contact", dataIndex: "contact", key: "contact" },
-    { title: "Created At", dataIndex: "created_at", key: "created_at" },
-    { title: "Updated At", dataIndex: "updated_at", key: "updated_at" },
+    {
+      title: "Created At",
+      dataIndex: "created_at",
+      key: "created_at",
+      render: (date: string) => formatDateToLocalString(date),
+    },
+    {
+      title: "Updated At",
+      dataIndex: "updated_at",
+      key: "updated_at",
+      render: (date: string) => formatDateToLocalString(date),
+    },
     {
       title: "Action",
       key: "action",

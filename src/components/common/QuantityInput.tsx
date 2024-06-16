@@ -1,5 +1,6 @@
 import React from "react";
 import { Form, Input, Select } from "antd";
+import { validateInteger } from "../../utils/validationUtils"; // Import your validateInteger function
 
 const { Option } = Select;
 
@@ -40,9 +41,19 @@ const QuantityInput: React.FC<QuantityInputProps> = ({
       <Form.Item
         name={[name, "shipment_product", "quantity"]}
         noStyle
-        rules={[{ required: true, message: "Please input the Quantity!" }]}
+        rules={[
+          { required: true, message: "Please input the Quantity!" },
+          { validator: validateInteger },
+        ]}
       >
-        <Input style={{ width: "70%" }} placeholder="Quantity" />
+        <Input style={{ width: "40%" }} placeholder="Quantity" />
+      </Form.Item>
+      <Form.Item
+        name={[name, "shipment_product", "percentage"]}
+        noStyle
+        rules={[{ required: true, message: "Please input the Percentage!" }]}
+      >
+        <Input style={{ width: "30%" }} placeholder="Enter %" prefix="±" />
       </Form.Item>
     </Input.Group>
   );

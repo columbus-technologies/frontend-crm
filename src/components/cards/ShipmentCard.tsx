@@ -1,5 +1,5 @@
-import React from "react";
-import { Card, Button, Carousel } from "antd";
+import React, { useEffect } from "react";
+import { Card, Button, Carousel, Tag } from "antd";
 import {
   EyeOutlined,
   EditOutlined,
@@ -9,6 +9,7 @@ import moment from "moment";
 import { ShipmentResponse } from "../../types";
 import StatusTag from "../common/StatusTag";
 import ProductTypes from "../common/ProductTypes";
+import { useStatusColours } from "../../context/StatusColoursContext";
 
 interface ShipmentCardProps {
   shipment: ShipmentResponse;
@@ -30,13 +31,18 @@ const onChange = (currentSlide: number) => {
 };
 
 const ShipmentCard: React.FC<ShipmentCardProps> = ({ shipment }) => {
+  const statusColours = useStatusColours();
+  const statusColour = statusColours[shipment.current_status] || "default";
+
+  console.log(statusColour, "statcolor");
+
   return (
     <Card
       title={
         <>
-          <p>
-            <StatusTag activity={shipment.activity[0]} />
-          </p>
+          <div>
+            <Tag color={statusColour}> {shipment.current_status} </Tag>
+          </div>
           <div style={{ marginTop: "10px" }}>
             <ClockCircleOutlined /> {shipment.vessel_specifications.imo_number}{" "}
             {shipment.vessel_specifications.vessel_name}
@@ -83,9 +89,10 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({ shipment }) => {
         {shipment.activity.map((activity, index) => (
           <div key={index}>
             <h5 style={contentStyle}>
+              <StatusTag activity={shipment.activity[0]} />
               <p>Activity Type: {activity.activity_type} </p>
               <p>Anchorage Location: {activity.anchorage_location} </p>
-              <p>Customer: {activity.customer_specifications.customer} </p>
+              <p>Customer: {activity.customer_name} </p>
               <p>
                 <ProductTypes
                   productType={activity.shipment_product.product_type}

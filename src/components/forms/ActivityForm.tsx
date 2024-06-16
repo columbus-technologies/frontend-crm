@@ -1,27 +1,40 @@
 import React from "react";
-import { Form, Input, DatePicker, Button, AutoComplete, Row, Col } from "antd";
+import {
+  Form,
+  Input,
+  DatePicker,
+  Button,
+  AutoComplete,
+  Row,
+  Col,
+  Select,
+} from "antd";
 import InputWithUnit from "../common/InputWithUnit";
 import QuantityInput from "../common/QuantityInput";
 import { validateFloat } from "../../utils/validationUtils";
 
-const ActivityForm = ({
-  form,
-  productTypes,
-  subProductTypes,
-  filteredSubProductTypes,
-  handleProductTypeChange,
-  handleSubProductTypeSearch,
-  terminalLocations, // Add terminal locations prop
-  customerNames, // Add customer names prop
-}: {
+interface ActivityFormProps {
   form: any;
   productTypes: string[];
   subProductTypes: { [key: string]: string[] };
   filteredSubProductTypes: { [key: string]: string[] };
   handleProductTypeChange: (value: string, index: number) => void;
   handleSubProductTypeSearch: (value: string, index: number) => void;
-  terminalLocations: string[]; // Add terminal locations prop
-  customerNames: string[]; // Add customer names prop
+  terminalLocations: string[];
+  customerNames: string[];
+  activityTypes: string[];
+}
+
+const ActivityForm: React.FC<ActivityFormProps> = ({
+  form,
+  productTypes,
+  subProductTypes,
+  filteredSubProductTypes,
+  handleProductTypeChange,
+  handleSubProductTypeSearch,
+  terminalLocations,
+  customerNames,
+  activityTypes,
 }) => (
   <Form
     form={form}
@@ -60,7 +73,18 @@ const ActivityForm = ({
                 name={[name, "activity_type"]}
                 label="Activity Type"
               >
-                <Input placeholder="Activity Type" />
+                <AutoComplete
+                  options={activityTypes.map((activity) => ({
+                    value: activity,
+                  }))}
+                  placeholder="Activity Type"
+                  style={{ width: "100%" }}
+                  filterOption={(inputValue, option) =>
+                    option!.value
+                      .toLowerCase()
+                      .includes(inputValue.toLowerCase())
+                  }
+                />
               </Form.Item>
               <Form.Item
                 {...restField}
@@ -235,6 +259,9 @@ const ActivityForm = ({
                   </div>
                 )}
               </Form.List>
+              <Form.Item label="Approx. Qty" style={{ marginBottom: 16 }}>
+                <QuantityInput form={form} name={key} fieldKey={key} />
+              </Form.Item>
               <Row gutter={16}>
                 <Col span={12}>
                   <Form.Item

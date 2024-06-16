@@ -6,6 +6,7 @@ import "../styles/index.css"; // Ensure the CSS file is imported
 // import { useNavigate } from "react-router-dom";
 import AddCustomerModal from "../components/modals/AddCustomerSettingsModal";
 import UnauthorizedModal from "../components/modals/UnauthorizedModal";
+import { formatDateToLocalString } from "../utils/dateTimeUtils";
 
 const { Title } = Typography;
 
@@ -54,18 +55,23 @@ const CustomerManagementSettings: React.FC = () => {
     }
   };
 
-  // const handleUnauthorizedModalOk = () => {
-  //   setIsUnauthorizedModalVisible(false);
-  //   navigate("/login");
-  // };
-
   const columns = [
     { title: "Customer", dataIndex: "customer", key: "customer" },
     { title: "Company", dataIndex: "company", key: "company" },
     { title: "Email", dataIndex: "email", key: "email" },
     { title: "Contact", dataIndex: "contact", key: "contact" },
-    { title: "Created At", dataIndex: "created_at", key: "created_at" },
-    { title: "Updated At", dataIndex: "updated_at", key: "updated_at" },
+    {
+      title: "Created At",
+      dataIndex: "created_at",
+      key: "created_at",
+      render: (date: string) => formatDateToLocalString(date),
+    },
+    {
+      title: "Updated At",
+      dataIndex: "updated_at",
+      key: "updated_at",
+      render: (date: string) => formatDateToLocalString(date),
+    },
     {
       title: "Action",
       key: "action",

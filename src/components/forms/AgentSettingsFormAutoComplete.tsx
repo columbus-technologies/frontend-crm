@@ -16,6 +16,7 @@ const AgentFormAutoComplete: React.FC<AgentFormProps> = ({ form }) => {
       try {
         const agents = await getAllAgents();
         setAgentOptions(agents);
+        setNameOptions(agents.map((agent) => ({ value: agent.name })));
       } catch (error) {
         console.error("Failed to fetch agents:", error);
       }
@@ -24,7 +25,7 @@ const AgentFormAutoComplete: React.FC<AgentFormProps> = ({ form }) => {
     fetchAllAgents();
   }, []);
 
-  const handleAgentSelect = (value: string, option: any) => {
+  const handleAgentSelect = (value: string) => {
     const selectedAgent = agentOptions.find((agent) => agent.name === value);
     if (selectedAgent) {
       // Use regex to split the contact string
@@ -50,6 +51,10 @@ const AgentFormAutoComplete: React.FC<AgentFormProps> = ({ form }) => {
     );
   };
 
+  const handleNameFocus = () => {
+    setNameOptions(agentOptions.map((agent) => ({ value: agent.name })));
+  };
+
   return (
     <Form form={form} layout="vertical">
       <Form.Item
@@ -61,6 +66,7 @@ const AgentFormAutoComplete: React.FC<AgentFormProps> = ({ form }) => {
           options={nameOptions}
           onSearch={handleNameSearch}
           onSelect={handleAgentSelect}
+          onFocus={handleNameFocus}
           placeholder="Start typing to search"
         />
       </Form.Item>

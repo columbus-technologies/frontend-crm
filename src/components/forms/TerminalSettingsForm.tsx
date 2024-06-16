@@ -1,6 +1,7 @@
 import React from "react";
 import { Form, Input } from "antd";
 import ContactInput from "../common/ContactNumberCountryCodeInput";
+import { validateEmail } from "../../utils/validationUtils";
 
 interface TerminalFormProps {
   form: any;
@@ -26,7 +27,10 @@ const TerminalForm: React.FC<TerminalFormProps> = ({ form }) => {
       <Form.Item
         name="email"
         label="Email"
-        rules={[{ required: true, message: "Please input the Email!" }]}
+        rules={[
+          { required: true, message: "Please input the Email!" },
+          { validator: validateEmail },
+        ]}
       >
         <Input type="email" />
       </Form.Item>

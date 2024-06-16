@@ -13,3 +13,15 @@ export const validateFloat = (_: any, value: any) => {
   }
   return Promise.resolve();
 };
+
+export const validateEmail = (_: any, value: any) => {
+  // Regular expression for validating an Email
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!value) {
+    return Promise.reject(new Error("Email is required"));
+  }
+  if (!emailPattern.test(value)) {
+    return Promise.reject(new Error("Invalid email address"));
+  }
+  return Promise.resolve();
+};

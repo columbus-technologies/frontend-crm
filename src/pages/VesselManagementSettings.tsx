@@ -6,6 +6,7 @@ import "../styles/index.css"; // Ensure the CSS file is imported
 // import { useNavigate } from "react-router-dom";
 import AddVesselModal from "../components/modals/AddVesselSettingsModal";
 import UnauthorizedModal from "../components/modals/UnauthorizedModal";
+import { formatDateToLocalString } from "../utils/dateTimeUtils";
 
 const { Title } = Typography;
 
@@ -53,8 +54,18 @@ const VesselManagementSettings: React.FC = () => {
     { title: "Flag", dataIndex: "flag", key: "flag" },
     { title: "GRT", dataIndex: "grt", key: "grt" },
     { title: "LOA", dataIndex: "loa", key: "loa" },
-    { title: "Created At", dataIndex: "created_at", key: "created_at" },
-    { title: "Updated At", dataIndex: "updated_at", key: "updated_at" },
+    {
+      title: "Created At",
+      dataIndex: "created_at",
+      key: "created_at",
+      render: (date: string) => formatDateToLocalString(date),
+    },
+    {
+      title: "Updated At",
+      dataIndex: "updated_at",
+      key: "updated_at",
+      render: (date: string) => formatDateToLocalString(date),
+    },
     {
       title: "Action",
       key: "action",
