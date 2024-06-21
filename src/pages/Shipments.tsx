@@ -97,20 +97,28 @@ const ShipmentsManagement: React.FC = () => {
     },
     {
       title: "Customer Name(s)",
-      dataIndex: ["activity"],
+      dataIndex: [
+        "shipment_type",
+        "cargo_operations",
+        "cargo_operations_activity",
+      ],
       key: "customer_name",
       render: (activities: any[]) =>
-        activities.map((activity) => (
-          <div key={activity.customer_name}>{activity.customer_name}</div>
+        activities.map((activity: any, index: number) => (
+          <div key={index}>{activity.customer_name}</div>
         )),
     },
     {
       title: "Terminal Name(s)",
-      dataIndex: ["activity"],
+      dataIndex: [
+        "shipment_type",
+        "cargo_operations",
+        "cargo_operations_activity",
+      ],
       key: "terminal_name",
       render: (activities: any[]) =>
-        activities.map((activity) => (
-          <div key={activity.terminal_name}>{activity.terminal_name}</div>
+        activities.map((activity: any, index: number) => (
+          <div key={index}>{activity.terminal_name}</div>
         )),
     },
     {

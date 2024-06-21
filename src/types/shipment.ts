@@ -17,7 +17,7 @@ export interface CustomerSpecifications {
   contact: string;
 }
 
-export interface Activity {
+export interface CargoOperationsActivity {
   activity_type: string;
   customer_name: string;
   anchorage_location: string;
@@ -37,10 +37,56 @@ export interface ShipmentProduct {
   percentage: number;
 }
 
-export interface ShipmentType {
+export interface CargoOperations {
   cargo_operations: boolean;
+  cargo_operations_activity: CargoOperationsActivity[];
+}
+
+export interface BunkeringActivity {
+  supplier: string;
+  supplier_contact: string;
+  appointed_surveyor: string;
+  docking: Docking;
+  supplier_vessel: string;
+  bunker_intake_product: ShipmentProduct;
+  bunker_hose_product: ShipmentProduct;
+  freeboard: number;
+  readiness: string;
+  etb: string;
+  etd: string;
+}
+
+export interface Docking {
+  starboard: boolean;
+  port: boolean;
+}
+
+export interface Bunkering {
   bunkering: boolean;
+  bunkering_activity: BunkeringActivity[];
+}
+
+export interface OwnerMatters {
   owner_matters: boolean;
+  activity: Activity[];
+}
+
+export interface Activity {
+  activity_type: string;
+  customer_name: string;
+  anchorage_location: string;
+  terminal_name: string;
+  shipment_product: ShipmentProduct;
+  readiness: string;
+  etb: string;
+  etd: string;
+  arrival_departure_information: ArrivalDepartureInformation;
+}
+
+export interface ShipmentType {
+  cargo_operations: CargoOperations;
+  bunkering: Bunkering;
+  owner_matters: OwnerMatters;
 }
 
 export interface ShipmentDetails {
@@ -55,7 +101,6 @@ export interface Shipment {
   shipment_type: ShipmentType;
   vessel_specifications: VesselSpecifications;
   shipment_details: ShipmentDetails;
-  activity: Activity[];
 }
 
 export interface ShipmentResponse {
@@ -67,7 +112,7 @@ export interface ShipmentResponse {
   shipment_type: ShipmentType;
   vessel_specifications: VesselSpecifications;
   shipment_details: ShipmentDetails;
-  activity: Activity[];
+  activity: CargoOperationsActivity[];
   created_at: string;
   updated_at: string;
 }

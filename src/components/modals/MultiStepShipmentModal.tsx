@@ -5,14 +5,15 @@ import {
   createShipment,
   getAllProductTypes,
   getShipmentStatuses,
-  getAllTerminals, // Import the function
-  getAllCustomers, // Import getAllCustomers
+  getAllTerminals,
+  getAllCustomers,
   getAllActivityTypes,
 } from "../../api";
 import VesselFormAutoComplete from "../forms/VesselSettingsFormAutoComplete";
 import AgentFormAutoComplete from "../forms/AgentSettingsFormAutoComplete";
 import GeneralInformationForm from "../forms/GeneralInformationForm";
-import ActivityForm from "../forms/ActivityForm";
+import CargoOperationsActivityForm from "../forms/CargoOperationsActivityForm";
+import BunkeringActivityForm from "../forms/BunkeringActivityForm";
 import { validateAtLeastOneCheckbox } from "../../utils/validationUtils";
 
 const { Step } = Steps;
@@ -39,9 +40,10 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
   const [filteredSubProductTypes, setFilteredSubProductTypes] = useState<{
     [key: string]: string[];
   }>({});
-  const [terminalLocations, setTerminalLocations] = useState<string[]>([]); // Add state for terminal locations
-  const [customerNames, setCustomerNames] = useState<string[]>([]); // Add state for customer names
-  const [activityTypes, setActivityTypes] = useState<string[]>([]); // Add state for activity types
+  const [terminalLocations, setTerminalLocations] = useState<string[]>([]);
+  const [customerNames, setCustomerNames] = useState<string[]>([]);
+  const [activityTypes, setActivityTypes] = useState<string[]>([]);
+  const [selectedActivities, setSelectedActivities] = useState<string[]>([]);
 
   useEffect(() => {
     if (!visible) {
@@ -80,15 +82,9 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
         );
         setProductTypes(productTypes);
         setSubProductTypes(subProductTypes);
-        // const shipmentStatusesWithColours = await PromosegetShipmentStatusesWithColours();
-        // setTerminalLocations(terminals);
-        const terminalNames = terminals.map((terminal) => terminal.name); // Extract terminal names
-
+        const terminalNames = terminals.map((terminal) => terminal.name);
         setTerminalLocations(terminalNames);
-        const customerNames = customers.map((customer) => customer.customer); // Extract customer names
-
-        console.log(customerNames);
-
+        const customerNames = customers.map((customer) => customer.customer);
         setCustomerNames(customerNames);
         const activityTypeNames = activities.map(
           (activity) => activity.activity_type
@@ -108,7 +104,10 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
         if (
           currentStep === 0 &&
           !validateAtLeastOneCheckbox(
-            ["shipment_type.cargo_operations", "shipment_type.bunkering"],
+            [
+              "shipment_type.cargo_operations.cargo_operations",
+              "shipment_type.bunkering.bunkering",
+            ],
             form
           )
         ) {
@@ -122,7 +121,6 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
       })
       .catch((errorInfo) => {
         message.error("Please fill in all required fields.");
-        // scroll to the first error field
         form.scrollToField(errorInfo.errorFields[0].name, {
           behavior: "smooth",
         });
@@ -140,15 +138,179 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
         const now = moment().toISOString();
         const mergedValues = { ...formValues, ...values };
         console.log(mergedValues);
+
         const payload = {
           master_email: mergedValues.master_email || "",
           ETA: mergedValues.ETA ? mergedValues.ETA.toISOString() : now,
           voyage_number: mergedValues.voyage_number || "",
           current_status: mergedValues.current_status || "",
-          shipment_type: mergedValues.shipment_type || {
-            cargo_operations: false,
-            bunkering: false,
-            owner_matters: false,
+          shipment_type: {
+            cargo_operations: {
+              cargo_operations:
+                mergedValues.shipment_type?.cargo_operations.cargo_operations ||
+                false,
+              cargo_operations_activity:
+                mergedValues.cargo_operations_activity?.map(
+                  (cargo_operation_activity: any) => ({
+                    activity_type: cargo_operation_activity.activity_type || "",
+                    customer_name:
+                      cargo_operation_activity.customer_specifications
+                        ?.customer || "",
+                    anchorage_location:
+                      cargo_operation_activity.anchorage_location || "",
+                    terminal_name: cargo_operation_activity.terminal_name || "",
+                    shipment_product: {
+                      product_type:
+                        cargo_operation_activity.shipment_product
+                          ?.product_type || "",
+                      sub_products_type:
+                        cargo_operation_activity.shipment_product
+                          ?.sub_products_type || [],
+                      quantity:
+                        parseInt(
+                          cargo_operation_activity.shipment_product?.quantity,
+                          10
+                        ) || -1,
+                      dimensions:
+                        cargo_operation_activity.shipment_product
+                          ?.quantityCode || "",
+                      percentage: cargo_operation_activity.shipment_product
+                        ?.percentage
+                        ? parseInt(
+                            cargo_operation_activity.shipment_product
+                              .percentage,
+                            10
+                          )
+                        : -1,
+                    },
+                    readiness: cargo_operation_activity.Readiness || null,
+                    etb: cargo_operation_activity.ETB || null,
+                    etd: cargo_operation_activity.ETD || null,
+                    arrival_departure_information: {
+                      arrival_displacement: cargo_operation_activity
+                        .arrival_departure_information?.arrival_displacement
+                        ? parseInt(
+                            cargo_operation_activity
+                              .arrival_departure_information
+                              .arrival_displacement,
+                            10
+                          )
+                        : -1,
+                      departure_displacement: cargo_operation_activity
+                        .arrival_departure_information?.departure_displacement
+                        ? parseInt(
+                            cargo_operation_activity
+                              .arrival_departure_information
+                              .departure_displacement,
+                            10
+                          )
+                        : -1,
+                      arrival_draft: cargo_operation_activity
+                        .arrival_departure_information?.arrival_draft
+                        ? parseFloat(
+                            cargo_operation_activity
+                              .arrival_departure_information.arrival_draft
+                          )
+                        : -1,
+                      departure_draft: cargo_operation_activity
+                        .arrival_departure_information?.departure_draft
+                        ? parseFloat(
+                            cargo_operation_activity
+                              .arrival_departure_information.departure_draft
+                          )
+                        : -1,
+                      arrival_mast_height: cargo_operation_activity
+                        .arrival_departure_information?.arrival_mast_height
+                        ? parseFloat(
+                            cargo_operation_activity
+                              .arrival_departure_information.arrival_mast_height
+                          )
+                        : -1,
+                      departure_mast_height: cargo_operation_activity
+                        .arrival_departure_information?.departure_mast_height
+                        ? parseFloat(
+                            cargo_operation_activity
+                              .arrival_departure_information
+                              .departure_mast_height
+                          )
+                        : -1,
+                    },
+                  })
+                ) || [],
+            },
+            bunkering: {
+              bunkering:
+                mergedValues.shipment_type?.bunkering.bunkering || false,
+              bunkering_activity:
+                mergedValues.bunkering_activity?.map(
+                  (bunkering_activity: any) => ({
+                    supplier: bunkering_activity.supplier || "",
+                    supplier_contact: bunkering_activity.supplier_contact || "",
+                    appointed_surveyor:
+                      bunkering_activity.appointed_surveyor || "",
+                    docking: {
+                      starboard: bunkering_activity.docking?.starboard || false,
+                      port: bunkering_activity.docking?.port || false,
+                    },
+                    shipment_product: {
+                      product_type:
+                        bunkering_activity.shipment_product?.product_type || "",
+                      sub_products_type:
+                        bunkering_activity.shipment_product
+                          ?.sub_products_type || [],
+                      quantity:
+                        parseInt(
+                          bunkering_activity.shipment_product?.quantity,
+                          10
+                        ) || -1,
+                      dimensions:
+                        bunkering_activity.shipment_product?.quantityCode || "",
+                      percentage: bunkering_activity.shipment_product
+                        ?.percentage
+                        ? parseInt(
+                            bunkering_activity.shipment_product.percentage,
+                            10
+                          )
+                        : -1,
+                    },
+                    supplier_vessel: bunkering_activity.supplier_vessel || "",
+                    bunker_intake_product: {
+                      bunker_product_type:
+                        bunkering_activity.bunker_intake_product
+                          ?.bunker_product_type || "",
+                      quantity:
+                        parseInt(
+                          bunkering_activity.bunker_intake_product?.quantity,
+                          10
+                        ) || -1,
+                      dimensions:
+                        bunkering_activity.bunker_intake_product?.dimensions ||
+                        "",
+                    },
+                    bunker_hose_product: {
+                      bunker_hose_type:
+                        bunkering_activity.bunker_hose_product
+                          ?.bunker_hose_type || "",
+                      quantity:
+                        parseInt(
+                          bunkering_activity.bunker_hose_product?.quantity,
+                          10
+                        ) || -1,
+                      dimensions:
+                        bunkering_activity.bunker_hose_product?.dimensions ||
+                        "",
+                    },
+                    freeboard: parseInt(bunkering_activity.freeboard, 10) || -1,
+                    readiness: bunkering_activity.readiness || null,
+                    etb: bunkering_activity.etb || null,
+                    etd: bunkering_activity.etd || null,
+                  })
+                ) || [],
+            },
+            owner_matters: {
+              owner_matters: false,
+              activity: [],
+            },
           },
           vessel_specifications: {
             imo_number: parseInt(mergedValues?.imo_number, 10) || 0,
@@ -168,69 +330,6 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
                 mergedValues?.phoneCode + " " + mergedValues?.contact || "",
             },
           },
-          activity: (mergedValues.activity && mergedValues.activity.length > 0
-            ? mergedValues.activity
-            : [{}]
-          ).map((activity: any) => ({
-            activity_type: activity.activity_type || "",
-            customer_name: activity.customer_specifications?.customer || "",
-            anchorage_location: activity.anchorage_location || "",
-            terminal_name: activity.terminal_name || "",
-            shipment_product: {
-              product_type: activity.shipment_product?.product_type || "",
-              sub_products_type:
-                activity.shipment_product?.sub_products_type || [],
-              quantity: parseInt(activity.shipment_product?.quantity, 10) || -1,
-              dimensions: activity.shipment_product?.quantityCode || "",
-              percentage: activity.shipment_product?.percentage
-                ? parseInt(activity.shipment_product.percentage, 10)
-                : -1,
-            },
-            readiness: activity.Readiness || null,
-            etb: activity.ETB || null,
-            etd: activity.ETD || null,
-            arrival_departure_information: {
-              arrival_displacement: activity.arrival_departure_information
-                ?.arrival_displacement
-                ? parseInt(
-                    activity.arrival_departure_information.arrival_displacement,
-                    10
-                  )
-                : -1,
-              departure_displacement: activity.arrival_departure_information
-                ?.departure_displacement
-                ? parseInt(
-                    activity.arrival_departure_information
-                      .departure_displacement,
-                    10
-                  )
-                : -1,
-              arrival_draft: activity.arrival_departure_information
-                ?.arrival_draft
-                ? parseFloat(
-                    activity.arrival_departure_information.arrival_draft
-                  )
-                : -1,
-              departure_draft: activity.arrival_departure_information
-                ?.departure_draft
-                ? parseFloat(
-                    activity.arrival_departure_information.departure_draft
-                  )
-                : -1,
-              arrival_mast_height: activity.arrival_departure_information
-                ?.arrival_mast_height
-                ? parseFloat(
-                    activity.arrival_departure_information.arrival_mast_height
-                  )
-                : -1,
-              departure_mast_height: activity.arrival_departure_information
-                ?.departure_mast_height
-                ? parseFloat(
-                    activity.arrival_departure_information.departure_mast_height
-                  )
-                : -1,
-            },
-          })),
         };
 
         createShipment(payload)
@@ -246,7 +345,6 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
       })
       .catch((errorInfo) => {
         message.error("Please fill in all required fields.");
-        // scroll to the first error field
         form.scrollToField(errorInfo.errorFields[0].name, {
           behavior: "smooth",
         });
@@ -301,6 +399,7 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
         <GeneralInformationForm
           form={form}
           shipmentStatuses={shipmentStatuses}
+          onActivitySelectionChange={setSelectedActivities}
         />
       ),
     },
@@ -312,22 +411,46 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
       title: "Agent",
       content: <AgentFormAutoComplete form={form} />,
     },
-    {
-      title: "Activity",
-      content: (
-        <ActivityForm
-          form={form}
-          productTypes={productTypes}
-          subProductTypes={subProductTypes}
-          filteredSubProductTypes={filteredSubProductTypes}
-          handleProductTypeChange={handleProductTypeChange}
-          handleSubProductTypeSearch={handleSubProductTypeSearch}
-          terminalLocations={terminalLocations} // Pass terminal locations
-          customerNames={customerNames}
-          activityTypes={activityTypes}
-        />
-      ),
-    },
+    ...(selectedActivities.includes("cargo_operations")
+      ? [
+          {
+            title: "Cargo Operations Activity",
+            content: (
+              <CargoOperationsActivityForm
+                form={form}
+                productTypes={productTypes}
+                subProductTypes={subProductTypes}
+                filteredSubProductTypes={filteredSubProductTypes}
+                handleProductTypeChange={handleProductTypeChange}
+                handleSubProductTypeSearch={handleSubProductTypeSearch}
+                terminalLocations={terminalLocations}
+                customerNames={customerNames}
+                activityTypes={activityTypes}
+              />
+            ),
+          },
+        ]
+      : []),
+    ...(selectedActivities.includes("bunkering")
+      ? [
+          {
+            title: "Bunkering Activity",
+            content: (
+              <BunkeringActivityForm
+                form={form}
+                productTypes={productTypes}
+                subProductTypes={subProductTypes}
+                filteredSubProductTypes={filteredSubProductTypes}
+                handleProductTypeChange={handleProductTypeChange}
+                handleSubProductTypeSearch={handleSubProductTypeSearch}
+                terminalLocations={terminalLocations}
+                customerNames={customerNames}
+                activityTypes={activityTypes}
+              />
+            ),
+          },
+        ]
+      : []),
   ];
 
   return (

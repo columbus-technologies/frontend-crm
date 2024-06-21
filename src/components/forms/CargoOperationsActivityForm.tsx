@@ -13,7 +13,7 @@ import InputWithUnit from "../common/InputWithUnit";
 import QuantityInput from "../common/QuantityInput";
 import { validateFloat } from "../../utils/validationUtils";
 
-interface ActivityFormProps {
+interface CargoOperationsActivityFormProps {
   form: any;
   productTypes: string[];
   subProductTypes: { [key: string]: string[] };
@@ -25,7 +25,9 @@ interface ActivityFormProps {
   activityTypes: string[];
 }
 
-const ActivityForm: React.FC<ActivityFormProps> = ({
+const CargoOperationsActivityForm: React.FC<
+  CargoOperationsActivityFormProps
+> = ({
   form,
   productTypes,
   subProductTypes,
@@ -39,7 +41,7 @@ const ActivityForm: React.FC<ActivityFormProps> = ({
   <Form
     form={form}
     layout="vertical"
-    name="activity"
+    name="cargo_operations_activity"
     initialValues={{
       activity: [
         {
@@ -63,7 +65,7 @@ const ActivityForm: React.FC<ActivityFormProps> = ({
       ],
     }}
   >
-    <Form.List name="activity">
+    <Form.List name="cargo_operations_activity">
       {(fields, { add, remove }) => (
         <>
           {fields.map(({ key, name, ...restField }) => (
@@ -209,7 +211,9 @@ const ActivityForm: React.FC<ActivityFormProps> = ({
                               handleSubProductTypeSearch(value, key)
                             }
                             onSelect={(value) => {
-                              const activity = form.getFieldValue("activity");
+                              const activity = form.getFieldValue(
+                                "cargo_operations_activity"
+                              );
                               if (
                                 !activity[
                                   key
@@ -230,12 +234,14 @@ const ActivityForm: React.FC<ActivityFormProps> = ({
                         </Form.Item>
                         <Button
                           onClick={() => {
-                            const activity = form.getFieldValue("activity");
+                            const activity = form.getFieldValue(
+                              "cargo_operations_activity"
+                            );
                             const subProducts =
                               activity[key].shipment_product.sub_products_type;
                             const subProductIndex = subProducts.indexOf(
                               form.getFieldValue([
-                                "activity",
+                                "cargo_operations_activity",
                                 key,
                                 "shipment_product",
                                 "sub_products_type",
@@ -373,23 +379,23 @@ const ActivityForm: React.FC<ActivityFormProps> = ({
                 style={{ marginBottom: 16 }}
                 block
               >
-                Remove Activity
+                Remove Cargo Operations Activity
               </Button>
               <Button
                 onClick={() => {
                   const values = form.getFieldsValue();
-                  add(values.activity[name]);
+                  add(values.cargo_operations_activity[name]);
                 }}
                 type="dashed"
                 style={{ marginBottom: 16 }}
                 block
               >
-                Duplicate Activity
+                Duplicate Cargo Operations Activity
               </Button>
             </div>
           ))}
           <Button type="dashed" onClick={() => add()} block>
-            Add Activity
+            Add Cargo Operations Activity
           </Button>
         </>
       )}
@@ -397,4 +403,4 @@ const ActivityForm: React.FC<ActivityFormProps> = ({
   </Form>
 );
 
-export default ActivityForm;
+export default CargoOperationsActivityForm;
