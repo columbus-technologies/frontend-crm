@@ -137,8 +137,7 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
       .then((values) => {
         const now = moment().toISOString();
         const mergedValues = { ...formValues, ...values };
-        console.log(mergedValues);
-
+        console.log("mergedValues", mergedValues);
         const payload = {
           master_email: mergedValues.master_email || "",
           ETA: mergedValues.ETA ? mergedValues.ETA.toISOString() : now,
@@ -248,36 +247,17 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
                     supplier_contact: bunkering_activity.supplier_contact || "",
                     appointed_surveyor:
                       bunkering_activity.appointed_surveyor || "",
-                    docking: {
-                      starboard: bunkering_activity.docking?.starboard || false,
-                      port: bunkering_activity.docking?.port || false,
-                    },
-                    shipment_product: {
-                      product_type:
-                        bunkering_activity.shipment_product?.product_type || "",
-                      sub_products_type:
-                        bunkering_activity.shipment_product
-                          ?.sub_products_type || [],
-                      quantity:
-                        parseInt(
-                          bunkering_activity.shipment_product?.quantity,
-                          10
-                        ) || -1,
-                      dimensions:
-                        bunkering_activity.shipment_product?.quantityCode || "",
-                      percentage: bunkering_activity.shipment_product
-                        ?.percentage
-                        ? parseInt(
-                            bunkering_activity.shipment_product.percentage,
-                            10
-                          )
-                        : -1,
-                    },
+                    docking: bunkering_activity.docking || "",
                     supplier_vessel: bunkering_activity.supplier_vessel || "",
                     bunker_intake_product: {
-                      bunker_product_type:
+                      product_type:
                         bunkering_activity.bunker_intake_product
-                          ?.bunker_product_type || "",
+                          ?.product_type || "",
+                      sub_products_type:
+                        [
+                          bunkering_activity.bunker_intake_product
+                            ?.sub_products_type,
+                        ] || [],
                       quantity:
                         parseInt(
                           bunkering_activity.bunker_intake_product?.quantity,
@@ -288,9 +268,14 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
                         "",
                     },
                     bunker_hose_product: {
-                      bunker_hose_type:
-                        bunkering_activity.bunker_hose_product
-                          ?.bunker_hose_type || "",
+                      product_type:
+                        bunkering_activity.bunker_hose_product?.product_type ||
+                        "",
+                      sub_products_type:
+                        [
+                          bunkering_activity.bunker_hose_product
+                            ?.sub_products_type,
+                        ] || [],
                       quantity:
                         parseInt(
                           bunkering_activity.bunker_hose_product?.quantity,
@@ -352,9 +337,10 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
   };
 
   const handleProductTypeChange = (value: string, index: number) => {
+    console.log(form.getFieldsValue());
     form.setFieldsValue({
       activity: form
-        .getFieldValue("activity")
+        .getFieldValue("cargo_operations_activity")
         .map((activity: any, i: number) => {
           if (i === index) {
             return {
@@ -373,6 +359,99 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
     setFilteredSubProductTypes((prev) => ({
       ...prev,
       [index]: subProductTypes[value] || [],
+    }));
+  };
+
+  const handleBunkeringIntakeProductTypeChange = (
+    value: string,
+    index: number
+  ) => {
+    console.log("Form Values Before Change:", form.getFieldsValue());
+    const activities = form.getFieldValue("bunkering_activity");
+
+    if (!activities) {
+      console.error("Bunkering activity field is undefined");
+      return;
+    }
+
+    const updatedActivities = activities.map((activity: any, i: number) => {
+      if (i === index) {
+        return {
+          ...activity,
+          bunker_intake_product: {
+            ...activity.bunker_intake_product,
+            product_type: value,
+            sub_products_type: [],
+          },
+        };
+      }
+      return activity;
+    });
+
+    form.setFieldsValue({ bunkering_activity: updatedActivities });
+
+    setFilteredSubProductTypes((prev) => ({
+      ...prev,
+      [index]: subProductTypes[value] || [],
+    }));
+  };
+
+  const handleBunkeringHoseProductTypeChange = (
+    value: string,
+    index: number
+  ) => {
+    console.log("Form Values Before Change:", form.getFieldsValue());
+    const activities = form.getFieldValue("bunkering_activity");
+
+    if (!activities) {
+      console.error("Bunkering activity field is undefined");
+      return;
+    }
+
+    const updatedActivities = activities.map((activity: any, i: number) => {
+      if (i === index) {
+        return {
+          ...activity,
+          bunker_hose_product: {
+            ...activity.bunker_hose_product,
+            product_type: value,
+            sub_products_type: [],
+          },
+        };
+      }
+      return activity;
+    });
+
+    form.setFieldsValue({ bunkering_activity: updatedActivities });
+
+    setFilteredSubProductTypes((prev) => ({
+      ...prev,
+      [index]: subProductTypes[value] || [],
+    }));
+  };
+
+  const handleBunkeringSubProductTypeSearch = (
+    value: string,
+    index: number
+  ) => {
+    const productType = form.getFieldValue([
+      "bunkering_activity",
+      index,
+      "bunker_intake_product",
+      "product_type",
+    ]);
+
+    if (!productType) {
+      console.error("Product type is undefined");
+      return;
+    }
+
+    const subProducts = subProductTypes[productType] || [];
+    setFilteredSubProductTypes((prev) => ({
+      ...prev,
+      [index]: subProducts.filter((subProduct) =>
+        subProduct.toLowerCase().includes(value.toLowerCase())
+      ),
     }));
   };
 
@@ -441,8 +520,15 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
                 productTypes={productTypes}
                 subProductTypes={subProductTypes}
                 filteredSubProductTypes={filteredSubProductTypes}
-                handleProductTypeChange={handleProductTypeChange}
-                handleSubProductTypeSearch={handleSubProductTypeSearch}
+                handleBunkeringIntakeProductTypeChange={
+                  handleBunkeringIntakeProductTypeChange
+                }
+                handleBunkeringHoseProductTypeChange={
+                  handleBunkeringHoseProductTypeChange
+                }
+                handleBunkeringSubProductTypeSearch={
+                  handleBunkeringSubProductTypeSearch
+                }
                 terminalLocations={terminalLocations}
                 customerNames={customerNames}
                 activityTypes={activityTypes}
