@@ -8,6 +8,7 @@ import {
   Row,
   Col,
   Select,
+  Divider,
 } from "antd";
 import InputWithUnit from "../common/InputWithUnit";
 import QuantityInput from "../common/QuantityInput";
@@ -124,47 +125,60 @@ const CargoOperationsActivityForm: React.FC<
                   }
                 />
               </Form.Item>
-              <Form.Item
-                {...restField}
-                name={[name, "Readiness"]}
-                label="Readiness"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input the Readiness!",
-                  },
-                ]}
-              >
-                <DatePicker
-                  showTime={{ format: "HH:00" }}
-                  format="YYYY-MM-DD HH:00"
-                  placeholder="Readiness"
-                />
-              </Form.Item>
-              <Form.Item
-                {...restField}
-                name={[name, "ETB"]}
-                label="ETB"
-                rules={[{ required: true, message: "Please input the ETB!" }]}
-              >
-                <DatePicker
-                  showTime={{ format: "HH:00" }}
-                  format="YYYY-MM-DD HH:00"
-                  placeholder="ETB"
-                />
-              </Form.Item>
-              <Form.Item
-                {...restField}
-                name={[name, "ETD"]}
-                label="ETD"
-                rules={[{ required: true, message: "Please input the ETD!" }]}
-              >
-                <DatePicker
-                  showTime={{ format: "HH:00" }}
-                  format="YYYY-MM-DD HH:00"
-                  placeholder="ETD"
-                />
-              </Form.Item>
+              <Divider />
+              <Row gutter={16}>
+                <Col span={8}>
+                  <Form.Item
+                    {...restField}
+                    name={[name, "Readiness"]}
+                    label="Readiness"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input the Readiness!",
+                      },
+                    ]}
+                  >
+                    <DatePicker
+                      showTime={{ format: "HH:00" }}
+                      format="YYYY-MM-DD HH:00"
+                      placeholder="Readiness"
+                    />
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item
+                    {...restField}
+                    name={[name, "ETB"]}
+                    label="ETB"
+                    rules={[
+                      { required: true, message: "Please input the ETB!" },
+                    ]}
+                  >
+                    <DatePicker
+                      showTime={{ format: "HH:00" }}
+                      format="YYYY-MM-DD HH:00"
+                      placeholder="ETB"
+                    />
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item
+                    {...restField}
+                    name={[name, "ETD"]}
+                    label="ETD"
+                    rules={[
+                      { required: true, message: "Please input the ETD!" },
+                    ]}
+                  >
+                    <DatePicker
+                      showTime={{ format: "HH:00" }}
+                      format="YYYY-MM-DD HH:00"
+                      placeholder="ETD"
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
               <Form.Item
                 {...restField}
                 name={[name, "shipment_product", "product_type"]}
@@ -268,6 +282,7 @@ const CargoOperationsActivityForm: React.FC<
               <Form.Item label="Approx. Qty" style={{ marginBottom: 16 }}>
                 <QuantityInput form={form} name={key} fieldKey={key} />
               </Form.Item>
+              <Divider />
               <Row gutter={16}>
                 <Col span={12}>
                   <Form.Item

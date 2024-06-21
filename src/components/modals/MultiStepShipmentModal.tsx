@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Modal, Steps, Form, Button, message } from "antd";
 import moment from "moment";
 import {
@@ -44,6 +44,9 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
   const [customerNames, setCustomerNames] = useState<string[]>([]);
   const [activityTypes, setActivityTypes] = useState<string[]>([]);
   const [selectedActivities, setSelectedActivities] = useState<string[]>([]);
+
+  // Reference to the top of the modal content
+  const modalContentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!visible) {
@@ -96,6 +99,14 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    // Scroll to the top of the modal content whenever the step changes
+    console.log(currentStep);
+    if (modalContentRef.current) {
+      modalContentRef.current.scrollTop = 0;
+    }
+  }, [currentStep]);
 
   const next = () => {
     form
@@ -249,42 +260,17 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
                       bunkering_activity.appointed_surveyor || "",
                     docking: bunkering_activity.docking || "",
                     supplier_vessel: bunkering_activity.supplier_vessel || "",
-                    bunker_intake_product: {
-                      product_type:
-                        bunkering_activity.bunker_intake_product
-                          ?.product_type || "",
-                      sub_products_type:
-                        [
-                          bunkering_activity.bunker_intake_product
-                            ?.sub_products_type,
-                        ] || [],
-                      quantity:
-                        parseInt(
-                          bunkering_activity.bunker_intake_product?.quantity,
-                          10
-                        ) || -1,
-                      dimensions:
-                        bunkering_activity.bunker_intake_product?.dimensions ||
-                        "",
-                    },
-                    bunker_hose_product: {
-                      product_type:
-                        bunkering_activity.bunker_hose_product?.product_type ||
-                        "",
-                      sub_products_type:
-                        [
-                          bunkering_activity.bunker_hose_product
-                            ?.sub_products_type,
-                        ] || [],
-                      quantity:
-                        parseInt(
-                          bunkering_activity.bunker_hose_product?.quantity,
-                          10
-                        ) || -1,
-                      dimensions:
-                        bunkering_activity.bunker_hose_product?.dimensions ||
-                        "",
-                    },
+                    bunker_intake_specifications:
+                      bunkering_activity.bunker_intake_specifications?.map(
+                        (spec: any) => ({
+                          product_type: spec.product_type || "",
+                          sub_product_type: spec.sub_product_type || "",
+                          maximum_quantity_intake:
+                            parseInt(spec.maximum_quantity_intake, 10) || -1,
+                          maximum_host_size:
+                            parseInt(spec.maximum_host_size, 10) || -1,
+                        })
+                      ) || [],
                     freeboard: parseInt(bunkering_activity.freeboard, 10) || -1,
                     readiness: bunkering_activity.readiness || null,
                     etb: bunkering_activity.etb || null,
@@ -540,13 +526,17 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
   ];
 
   return (
-    <Modal open={visible} onCancel={onCancel} footer={null} width={800}>
+    <Modal open={visible} onCancel={onCancel} footer={null} width={900}>
       <Steps current={currentStep}>
         {steps.map((item, index) => (
           <Step key={index} title={item.title} />
         ))}
       </Steps>
-      <div className="steps-content" style={{ marginTop: "24px" }}>
+      <div
+        className="steps-content"
+        style={{ marginTop: "24px", height: "400px", overflowY: "auto" }}
+        ref={modalContentRef}
+      >
         {steps[currentStep].content}
       </div>
       <div

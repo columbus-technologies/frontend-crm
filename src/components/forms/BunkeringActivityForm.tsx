@@ -53,20 +53,14 @@ const BunkeringActivityForm: React.FC<BunkeringActivityFormProps> = ({
           appointed_surveyor: "",
           docking: "",
           supplier_vessel: "",
-          bunker_intake_product: {
-            product_type: "",
-            sub_products_type: [""],
-            quantity: 0,
-            dimensions: "",
-            percentage: 0,
-          },
-          bunker_hose_product: {
-            product_type: "",
-            sub_products_type: [""],
-            quantity: 0,
-            dimensions: "",
-            percentage: 0,
-          },
+          bunker_intake_specifications: [
+            {
+              product_type: "",
+              sub_product_type: "",
+              maximum_quantity_intake: 0,
+              maximum_hose_size: 0,
+            },
+          ],
           freeboard: null,
           readiness: null,
           etb: null,
@@ -142,108 +136,102 @@ const BunkeringActivityForm: React.FC<BunkeringActivityFormProps> = ({
                 </Col>
               </Row>
               <Divider />
+              <Form.List name={[name, "bunker_intake_specifications"]}>
+                {(specFields, { add: addSpec, remove: removeSpec }) => (
+                  <>
+                    {specFields.map((specField, specIndex) => (
+                      <Row key={specField.key} gutter={16}>
+                        <Col span={6}>
+                          <Form.Item
+                            {...specField}
+                            name={[specField.name, "product_type"]}
+                            label="Bunker Intake"
+                          >
+                            <AutoComplete
+                              options={productTypes.map((pt) => ({
+                                value: pt,
+                              }))}
+                              style={{ width: "100%" }}
+                              onChange={(value) =>
+                                handleBunkeringIntakeProductTypeChange(
+                                  value,
+                                  key
+                                )
+                              }
+                              placeholder="Bunker Intake Product"
+                            />
+                          </Form.Item>
+                        </Col>
+                        <Col span={6}>
+                          <Form.Item
+                            {...specField}
+                            name={[specField.name, "sub_product_type"]}
+                            label="Bunker Intake Sub-Product"
+                          >
+                            <AutoComplete
+                              options={
+                                filteredSubProductTypes[key]?.map((spt) => ({
+                                  value: spt,
+                                })) || []
+                              }
+                              style={{ width: "100%" }}
+                              onSearch={(value) =>
+                                handleBunkeringSubProductTypeSearch(value, key)
+                              }
+                              placeholder="Start typing to search"
+                            />
+                          </Form.Item>
+                        </Col>
+                        <Col span={6}>
+                          <Form.Item
+                            {...specField}
+                            name={[specField.name, "maximum_quantity_intake"]}
+                            label="Maximum Quantity Intake"
+                            rules={[{ validator: validateFloat }]}
+                          >
+                            <InputWithUnit
+                              unit="m^3"
+                              placeholder="Enter quantity intake"
+                            />
+                          </Form.Item>
+                        </Col>
+                        <Col span={6}>
+                          <Form.Item
+                            {...specField}
+                            name={[specField.name, "maximum_hose_size"]}
+                            label="Maximum Hose Size"
+                            rules={[{ validator: validateFloat }]}
+                          >
+                            <InputWithUnit
+                              unit="inches"
+                              placeholder="Enter hose size"
+                            />
+                          </Form.Item>
+                        </Col>
+                        <Col span={24}>
+                          <Button
+                            type="dashed"
+                            onClick={() => removeSpec(specField.name)}
+                            block
+                          >
+                            Remove Specification
+                          </Button>
+                        </Col>
+                      </Row>
+                    ))}
+                    <Button
+                      type="dashed"
+                      onClick={() => addSpec()}
+                      block
+                      style={{ marginBottom: 16 }}
+                    >
+                      Add Specification
+                    </Button>
+                  </>
+                )}
+              </Form.List>
               <Row gutter={16}>
-                <Col span={8}>
-                  <Form.Item
-                    {...restField}
-                    name={[name, "bunker_intake_product", "product_type"]}
-                    label="Bunker Intake"
-                  >
-                    <AutoComplete
-                      options={productTypes.map((pt) => ({
-                        value: pt,
-                      }))}
-                      style={{ width: "100%" }}
-                      onChange={(value) =>
-                        handleBunkeringIntakeProductTypeChange(value, key)
-                      }
-                      placeholder="Start typing to search"
-                    />
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item
-                    {...restField}
-                    name={[name, "bunker_intake_product", "sub_products_type"]}
-                    label="Bunker Intake Sub-Product"
-                  >
-                    <AutoComplete
-                      options={
-                        filteredSubProductTypes[key]?.map((spt) => ({
-                          value: spt,
-                        })) || []
-                      }
-                      style={{ width: "100%" }}
-                      onSearch={(value) =>
-                        handleBunkeringSubProductTypeSearch(value, key)
-                      }
-                      placeholder="Start typing to search"
-                    />
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item
-                    {...restField}
-                    name={[name, "bunker_intake_product", "quantity"]}
-                    label="Quantity"
-                    rules={[{ validator: validateFloat }]}
-                  >
-                    <InputWithUnit unit="m^3" placeholder="Enter quantity" />
-                  </Form.Item>
-                </Col>
-              </Row>
-              <Row gutter={16}>
-                <Col span={8}>
-                  <Form.Item
-                    {...restField}
-                    name={[name, "bunker_hose_product", "product_type"]}
-                    label="Bunker Hose"
-                  >
-                    <AutoComplete
-                      options={productTypes.map((pt) => ({
-                        value: pt,
-                      }))}
-                      style={{ width: "100%" }}
-                      onChange={(value) =>
-                        handleBunkeringHoseProductTypeChange(value, key)
-                      }
-                      placeholder="Start typing to search"
-                    />
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item
-                    {...restField}
-                    name={[name, "bunker_hose_product", "sub_products_type"]}
-                    label="Bunker Hose Sub-Product"
-                  >
-                    <AutoComplete
-                      options={
-                        filteredSubProductTypes[key]?.map((spt) => ({
-                          value: spt,
-                        })) || []
-                      }
-                      style={{ width: "100%" }}
-                      onSearch={(value) =>
-                        handleBunkeringSubProductTypeSearch(value, key)
-                      }
-                      placeholder="Start typing to search"
-                    />
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item
-                    {...restField}
-                    name={[name, "bunker_hose_product", "quantity"]}
-                    label="Quantity"
-                    rules={[{ validator: validateFloat }]}
-                  >
-                    <InputWithUnit unit="inches" placeholder="Enter quantity" />
-                  </Form.Item>
-                </Col>
-              </Row>
-              <Row gutter={16}>
-                <Col span={8}>
+                <Col span={6}>
                   <Form.Item
                     {...restField}
                     name={[name, "readiness"]}
@@ -262,7 +250,7 @@ const BunkeringActivityForm: React.FC<BunkeringActivityFormProps> = ({
                     />
                   </Form.Item>
                 </Col>
-                <Col span={8}>
+                <Col span={6}>
                   <Form.Item
                     {...restField}
                     name={[name, "etb"]}
@@ -278,7 +266,7 @@ const BunkeringActivityForm: React.FC<BunkeringActivityFormProps> = ({
                     />
                   </Form.Item>
                 </Col>
-                <Col span={8}>
+                <Col span={6}>
                   <Form.Item
                     {...restField}
                     name={[name, "etd"]}

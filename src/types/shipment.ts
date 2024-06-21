@@ -48,17 +48,22 @@ export interface BunkeringActivity {
   appointed_surveyor: string;
   docking: Docking;
   supplier_vessel: string;
-  bunker_intake_product: ShipmentProduct;
-  bunker_hose_product: ShipmentProduct;
+  bunker_intake_specifications: BunkerIntakeSpecifications;
   freeboard: number;
   readiness: string;
   etb: string;
   etd: string;
 }
 
+export interface BunkerIntakeSpecifications {
+  product_type: string;
+  sub_product_type: string;
+  maximum_quantity_intake: number;
+  maximum_hose_size: number;
+}
+
 export interface Docking {
-  starboard: boolean;
-  port: boolean;
+  docking: string;
 }
 
 export interface Bunkering {
