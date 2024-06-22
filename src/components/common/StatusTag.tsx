@@ -1,10 +1,10 @@
 import React from "react";
 import { Tag } from "antd";
 import moment from "moment";
-import { Activity } from "../../types";
+import { BunkeringActivity, CargoOperationsActivity } from "../../types";
 
 interface StatusTagProps {
-  activity: Activity;
+  activity: CargoOperationsActivity | BunkeringActivity;
 }
 
 const StatusTag: React.FC<StatusTagProps> = ({ activity }) => {

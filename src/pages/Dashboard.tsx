@@ -49,7 +49,7 @@ const Dashboard: React.FC = () => {
         <Row gutter={16}>
           {shipments.map((shipment) => {
             console.log(
-              `Shipment ${shipment.ID} has ${shipment.activity.length} activities`
+              `Shipment ${shipment.ID} has ${shipment.shipment_type.cargo_operations.cargo_operations_activity.length} activities`
             );
             return (
               <Col span={8} key={shipment.ID}>

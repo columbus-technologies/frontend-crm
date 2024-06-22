@@ -43,12 +43,13 @@ export interface CargoOperations {
 }
 
 export interface BunkeringActivity {
+  activity_type: string;
   supplier: string;
   supplier_contact: string;
   appointed_surveyor: string;
   docking: Docking;
   supplier_vessel: string;
-  bunker_intake_specifications: BunkerIntakeSpecifications;
+  bunker_intake_specifications: BunkerIntakeSpecifications[];
   freeboard: number;
   readiness: string;
   etb: string;
@@ -86,6 +87,12 @@ export interface Activity {
   etb: string;
   etd: string;
   arrival_departure_information: ArrivalDepartureInformation;
+}
+
+export interface StatusTimes {
+  readiness: string;
+  etb: string;
+  etd: string;
 }
 
 export interface ShipmentType {

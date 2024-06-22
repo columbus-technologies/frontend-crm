@@ -46,32 +46,23 @@ const BunkeringActivityForm: React.FC<BunkeringActivityFormProps> = ({
     layout="vertical"
     name="bunkering_activity"
     initialValues={{
-      bunkering_activity: [
-        {
-          supplier: "",
-          supplier_contact: "",
-          appointed_surveyor: "",
-          docking: "",
-          supplier_vessel: "",
-          bunker_intake_specifications: [
-            {
-              product_type: "",
-              sub_product_type: "",
-              maximum_quantity_intake: 0,
-              maximum_hose_size: 0,
-            },
-          ],
-          freeboard: null,
-          readiness: null,
-          etb: null,
-          etd: null,
-        },
-      ],
+      bunkering_activity: [],
     }}
   >
     <Form.List name="bunkering_activity">
       {(fields, { add, remove }) => (
         <>
+          {fields.length === 0 && (
+            <Button
+              type="dashed"
+              onClick={() => add()}
+              block
+              style={{ marginBottom: 16 }}
+            >
+              Add Bunkering Activity
+            </Button>
+          )}
+
           {fields.map(({ key, name, ...restField }) => (
             <div key={key} style={{ marginBottom: 16 }}>
               <Row gutter={16}>
@@ -214,7 +205,7 @@ const BunkeringActivityForm: React.FC<BunkeringActivityFormProps> = ({
                             onClick={() => removeSpec(specField.name)}
                             block
                           >
-                            Remove Specification
+                            Remove Bunker Intake Specification
                           </Button>
                         </Col>
                       </Row>
@@ -225,7 +216,7 @@ const BunkeringActivityForm: React.FC<BunkeringActivityFormProps> = ({
                       block
                       style={{ marginBottom: 16 }}
                     >
-                      Add Specification
+                      Add Bunker Intake Specification
                     </Button>
                   </>
                 )}
@@ -303,22 +294,8 @@ const BunkeringActivityForm: React.FC<BunkeringActivityFormProps> = ({
               >
                 Remove Bunkering Activity
               </Button>
-              <Button
-                onClick={() => {
-                  const values = form.getFieldsValue();
-                  add(values.bunkering_activity[name]);
-                }}
-                type="dashed"
-                style={{ marginBottom: 16 }}
-                block
-              >
-                Duplicate Bunkering Activity
-              </Button>
             </div>
           ))}
-          <Button type="dashed" onClick={() => add()} block>
-            Add Bunkering Activity
-          </Button>
         </>
       )}
     </Form.List>

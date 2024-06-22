@@ -267,8 +267,8 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
                           sub_product_type: spec.sub_product_type || "",
                           maximum_quantity_intake:
                             parseInt(spec.maximum_quantity_intake, 10) || -1,
-                          maximum_host_size:
-                            parseInt(spec.maximum_host_size, 10) || -1,
+                          maximum_hose_size:
+                            parseInt(spec.maximum_hose_size, 10) || -1,
                         })
                       ) || [],
                     freeboard: parseInt(bunkering_activity.freeboard, 10) || -1,
