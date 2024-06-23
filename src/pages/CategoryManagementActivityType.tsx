@@ -39,15 +39,13 @@ const CategoryManagementActivityType: React.FC = () => {
   }, []);
 
   const handleAddActivityType = async () => {
-    if (
-      inputValue &&
-      !activityTypes.some((item) => item.activity_type === inputValue)
-    ) {
+    if (inputValue) {
       const newActivityType: ActivityType = {
         activity_type: inputValue,
       };
 
       try {
+        console.log("here");
         await createActivityType(newActivityType);
         // Fetch updated activity types
         const response = await getAllActivityTypes();
@@ -57,6 +55,8 @@ const CategoryManagementActivityType: React.FC = () => {
       } catch (error) {
         message.error("Failed to add activity type");
       }
+    } else {
+      message.error("Please enter an activity type.");
     }
   };
 
@@ -111,18 +111,22 @@ const CategoryManagementActivityType: React.FC = () => {
       </Form>
       <Divider />
       <h3>Existing Types</h3>
-      <div>
-        {activityTypes.map((type) => (
-          <Tag
-            key={type.ID}
-            closable
-            onClose={() => handleRemoveActivityType(type.ID)}
-            style={{ marginBottom: 8 }}
-          >
-            {type.activity_type}
-          </Tag>
-        ))}
-      </div>
+      {activityTypes && activityTypes.length > 0 ? (
+        <div>
+          {activityTypes.map((type) => (
+            <Tag
+              key={type.ID}
+              closable
+              onClose={() => handleRemoveActivityType(type.ID)}
+              style={{ marginBottom: 8 }}
+            >
+              {type.activity_type}
+            </Tag>
+          ))}
+        </div>
+      ) : (
+        <p>No activity types</p>
+      )}
       <UnauthorizedModal
         visible={isUnauthorizedModalVisible}
         onClose={() => setIsUnauthorizedModalVisible(false)}
