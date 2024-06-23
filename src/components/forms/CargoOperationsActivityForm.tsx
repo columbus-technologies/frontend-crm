@@ -48,7 +48,7 @@ const CargoOperationsActivityForm: React.FC<
           shipment_product: [
             {
               sub_product_type: "",
-              quantityCode: "",
+              quantityCode: "KB",
               quantity: "",
               percentage: "",
             },

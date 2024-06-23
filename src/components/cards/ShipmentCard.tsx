@@ -13,8 +13,8 @@ import {
   BunkerIntakeSpecifications,
 } from "../../types";
 import StatusTag from "../common/StatusTag";
-import ProductTypes from "../common/ProductTypes";
 import { useStatusColours } from "../../context/StatusColoursContext";
+import SubProductTypes from "../common/SubProductTypes";
 
 interface ShipmentCardProps {
   shipment: ShipmentResponse;
@@ -54,8 +54,6 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({ shipment }) => {
     return "activity_type" in activity;
   };
 
-  console.log(statusColour, "statcolor");
-
   return (
     <Card
       title={
@@ -92,8 +90,7 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({ shipment }) => {
     >
       <p>
         <strong>ETA:</strong>{" "}
-        {moment(shipment.ETA).format("DD-MMM-YYYY, dddd, HH:mm")}
-        HRS
+        {moment(shipment.ETA).format("DD-MMM-YYYY, dddd, HH:mm")} HRS
       </p>
       {shipment.shipment_details?.agent_details && (
         <>
@@ -121,14 +118,18 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({ shipment }) => {
                   <p>Activity Type: {activity.activity_type} </p>
                   <p>Anchorage Location: {activity.anchorage_location} </p>
                   <p>Customer: {activity.customer_name} </p>
-                  <p>
-                    <ProductTypes
-                      productType={activity.shipment_product.product_type}
-                      subProductsType={
-                        activity.shipment_product.sub_products_type
-                      }
-                    />
-                  </p>
+                  {activity.shipment_product.map((product, idx) => (
+                    <div key={idx}>
+                      <p>
+                        <SubProductTypes
+                          subProductType={product.sub_product_type}
+                        />
+                      </p>
+                      <p>Quantity Code: {product.dimensions}</p>
+                      <p>Quantity: {product.quantity}</p>
+                      <p>Percentage: {product.percentage}</p>
+                    </div>
+                  ))}
                 </>
               ) : (
                 <>
@@ -144,7 +145,7 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({ shipment }) => {
                           <p key={idx}>
                             <strong>Bunker Intake {idx + 1}:</strong>
                             <br />
-                            Product Type: {spec.product_type}
+                            Product Type: {spec.sub_product_type}
                             <br />
                             Sub Product Type: {spec.sub_product_type}
                           </p>

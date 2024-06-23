@@ -52,6 +52,7 @@ const QuantityInput: React.FC<QuantityInputProps> = ({
                 {...productField}
                 name={[productField.name, "quantityCode"]}
                 noStyle
+                initialValue={quantityCodes[0].code} // Ensure initial value is set here as well
                 rules={[
                   {
                     required: true,
@@ -94,7 +95,7 @@ const QuantityInput: React.FC<QuantityInputProps> = ({
                 ]}
               >
                 <Input
-                  style={{ width: "15%", marginRight: 8 }}
+                  style={{ width: "30%", marginRight: 8 }}
                   placeholder="Enter %"
                   prefix="±"
                 />

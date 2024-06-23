@@ -16,10 +16,6 @@ import { validateFloat } from "../../utils/validationUtils";
 interface BunkeringActivityFormProps {
   form: any;
   subProductTypes: string[];
-  handleBunkeringIntakeProductTypeChange: (
-    value: string,
-    index: number
-  ) => void;
   terminalLocations: string[];
   customerNames: string[];
   activityTypes: string[];
@@ -28,8 +24,6 @@ interface BunkeringActivityFormProps {
 const BunkeringActivityForm: React.FC<BunkeringActivityFormProps> = ({
   form,
   subProductTypes,
-  handleBunkeringIntakeProductTypeChange,
-  handleBunkeringSubProductTypeSearch,
   terminalLocations,
   customerNames,
   activityTypes,
@@ -148,41 +142,20 @@ const BunkeringActivityForm: React.FC<BunkeringActivityFormProps> = ({
                         <Col span={6}>
                           <Form.Item
                             {...specField}
-                            name={[specField.name, "product_type"]}
-                            label="Bunker Intake"
-                          >
-                            <AutoComplete
-                              options={productTypes.map((pt) => ({
-                                value: pt,
-                              }))}
-                              style={{ width: "100%" }}
-                              onChange={(value) =>
-                                handleBunkeringIntakeProductTypeChange(
-                                  value,
-                                  key
-                                )
-                              }
-                              placeholder="Bunker Intake Product"
-                            />
-                          </Form.Item>
-                        </Col>
-                        <Col span={6}>
-                          <Form.Item
-                            {...specField}
                             name={[specField.name, "sub_product_type"]}
                             label="Bunker Intake Sub-Product"
                           >
                             <AutoComplete
-                              options={
-                                filteredSubProductTypes[key]?.map((spt) => ({
-                                  value: spt,
-                                })) || []
-                              }
+                              options={subProductTypes.map((spt) => ({
+                                value: spt,
+                              }))}
                               style={{ width: "100%" }}
-                              onSearch={(value) =>
-                                handleBunkeringSubProductTypeSearch(value, key)
-                              }
                               placeholder="Start typing to search"
+                              filterOption={(inputValue, option) =>
+                                option!.value
+                                  .toLowerCase()
+                                  .includes(inputValue.toLowerCase())
+                              }
                             />
                           </Form.Item>
                         </Col>
