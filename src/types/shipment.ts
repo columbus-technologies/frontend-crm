@@ -22,7 +22,7 @@ export interface CargoOperationsActivity {
   customer_name: string;
   anchorage_location: string;
   terminal_name: string;
-  shipment_product: ShipmentProduct;
+  shipment_product: ShipmentProduct[];
   readiness: string; // Use string type for date-time fields
   etb: string;
   etd: string;
@@ -30,8 +30,7 @@ export interface CargoOperationsActivity {
 }
 
 export interface ShipmentProduct {
-  product_type: string;
-  sub_products_type: string[];
+  sub_product_type: string;
   quantity: number;
   dimensions: string;
   percentage: number;
@@ -43,11 +42,11 @@ export interface CargoOperations {
 }
 
 export interface BunkeringActivity {
-  activity_type: string;
+  customer_name: string;
   supplier: string;
   supplier_contact: string;
   appointed_surveyor: string;
-  docking: Docking;
+  docking: string;
   supplier_vessel: string;
   bunker_intake_specifications: BunkerIntakeSpecifications[];
   freeboard: number;
@@ -57,14 +56,9 @@ export interface BunkeringActivity {
 }
 
 export interface BunkerIntakeSpecifications {
-  product_type: string;
   sub_product_type: string;
   maximum_quantity_intake: number;
   maximum_hose_size: number;
-}
-
-export interface Docking {
-  docking: string;
 }
 
 export interface Bunkering {

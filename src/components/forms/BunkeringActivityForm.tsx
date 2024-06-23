@@ -15,15 +15,11 @@ import { validateFloat } from "../../utils/validationUtils";
 
 interface BunkeringActivityFormProps {
   form: any;
-  productTypes: string[];
-  subProductTypes: { [key: string]: string[] };
-  filteredSubProductTypes: { [key: string]: string[] };
+  subProductTypes: string[];
   handleBunkeringIntakeProductTypeChange: (
     value: string,
     index: number
   ) => void;
-  handleBunkeringHoseProductTypeChange: (value: string, index: number) => void;
-  handleBunkeringSubProductTypeSearch: (value: string, index: number) => void;
   terminalLocations: string[];
   customerNames: string[];
   activityTypes: string[];
@@ -31,11 +27,8 @@ interface BunkeringActivityFormProps {
 
 const BunkeringActivityForm: React.FC<BunkeringActivityFormProps> = ({
   form,
-  productTypes,
   subProductTypes,
-  filteredSubProductTypes,
   handleBunkeringIntakeProductTypeChange,
-  handleBunkeringHoseProductTypeChange,
   handleBunkeringSubProductTypeSearch,
   terminalLocations,
   customerNames,
@@ -104,7 +97,7 @@ const BunkeringActivityForm: React.FC<BunkeringActivityFormProps> = ({
                     <Input placeholder="Appointed Surveyor" />
                   </Form.Item>
                 </Col>
-                <Col span={8}>
+                <Col span={6}>
                   <Form.Item
                     {...restField}
                     name={[name, "supplier_vessel"]}
@@ -113,7 +106,27 @@ const BunkeringActivityForm: React.FC<BunkeringActivityFormProps> = ({
                     <Input placeholder="Supplier Vessel" />
                   </Form.Item>
                 </Col>
-                <Col span={8}>
+                <Col span={6}>
+                  <Form.Item
+                    {...restField}
+                    name={[name, "customer_name"]}
+                    label="Customer"
+                  >
+                    <AutoComplete
+                      options={customerNames.map((customer) => ({
+                        value: customer,
+                      }))}
+                      placeholder="Customer"
+                      style={{ width: "100%" }}
+                      filterOption={(inputValue, option) =>
+                        option!.value
+                          .toLowerCase()
+                          .includes(inputValue.toLowerCase())
+                      }
+                    />
+                  </Form.Item>
+                </Col>
+                <Col span={6}>
                   <Form.Item
                     {...restField}
                     name={[name, "docking"]}

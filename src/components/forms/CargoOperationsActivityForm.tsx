@@ -1,26 +1,20 @@
 import React from "react";
 import {
   Form,
-  Input,
   DatePicker,
   Button,
   AutoComplete,
   Row,
   Col,
-  Select,
   Divider,
 } from "antd";
-import InputWithUnit from "../common/InputWithUnit";
 import QuantityInput from "../common/QuantityInput";
 import { validateFloat } from "../../utils/validationUtils";
+import InputWithUnit from "../common/InputWithUnit";
 
 interface CargoOperationsActivityFormProps {
   form: any;
-  productTypes: string[];
-  subProductTypes: { [key: string]: string[] };
-  filteredSubProductTypes: { [key: string]: string[] };
-  handleProductTypeChange: (value: string, index: number) => void;
-  handleSubProductTypeSearch: (value: string, index: number) => void;
+  subProductTypes: string[];
   terminalLocations: string[];
   customerNames: string[];
   activityTypes: string[];
@@ -30,11 +24,7 @@ const CargoOperationsActivityForm: React.FC<
   CargoOperationsActivityFormProps
 > = ({
   form,
-  productTypes,
   subProductTypes,
-  filteredSubProductTypes,
-  handleProductTypeChange,
-  handleSubProductTypeSearch,
   terminalLocations,
   customerNames,
   activityTypes,
@@ -44,7 +34,7 @@ const CargoOperationsActivityForm: React.FC<
     layout="vertical"
     name="cargo_operations_activity"
     initialValues={{
-      activity: [
+      cargo_operations_activity: [
         {
           activity_type: "",
           customer_specifications: {
@@ -55,10 +45,14 @@ const CargoOperationsActivityForm: React.FC<
           },
           anchorage_location: "",
           terminal_name: "",
-          shipment_product: {
-            product_type: "",
-            sub_products_type: [""],
-          },
+          shipment_product: [
+            {
+              sub_product_type: "",
+              quantityCode: "",
+              quantity: "",
+              percentage: "",
+            },
+          ],
           readiness: null,
           etb: null,
           etd: null,
@@ -130,7 +124,7 @@ const CargoOperationsActivityForm: React.FC<
                 <Col span={8}>
                   <Form.Item
                     {...restField}
-                    name={[name, "Readiness"]}
+                    name={[name, "readiness"]}
                     label="Readiness"
                     rules={[
                       {
@@ -149,7 +143,7 @@ const CargoOperationsActivityForm: React.FC<
                 <Col span={8}>
                   <Form.Item
                     {...restField}
-                    name={[name, "ETB"]}
+                    name={[name, "etb"]}
                     label="ETB"
                     rules={[
                       { required: true, message: "Please input the ETB!" },
@@ -165,7 +159,7 @@ const CargoOperationsActivityForm: React.FC<
                 <Col span={8}>
                   <Form.Item
                     {...restField}
-                    name={[name, "ETD"]}
+                    name={[name, "etd"]}
                     label="ETD"
                     rules={[
                       { required: true, message: "Please input the ETD!" },
@@ -179,109 +173,11 @@ const CargoOperationsActivityForm: React.FC<
                   </Form.Item>
                 </Col>
               </Row>
-              <Form.Item
-                {...restField}
-                name={[name, "shipment_product", "product_type"]}
-                label="Product"
-                style={{ flex: 1, marginRight: 8 }}
-              >
-                <AutoComplete
-                  options={productTypes.map((pt) => ({
-                    value: pt,
-                  }))}
-                  style={{ width: "100%" }}
-                  onChange={(value) => handleProductTypeChange(value, key)}
-                  placeholder="Start typing to search"
-                />
-              </Form.Item>
-              <Form.List name={[name, "shipment_product", "sub_products_type"]}>
-                {(subFields, { add: addSub, remove: removeSub }) => (
-                  <div>
-                    {subFields.map((subField) => (
-                      <div
-                        key={subField.key}
-                        style={{
-                          display: "flex",
-                          marginBottom: 8,
-                        }}
-                      >
-                        <Form.Item
-                          {...subField}
-                          name={[subField.name]}
-                          label="Sub Product"
-                          style={{
-                            flex: 1,
-                            marginRight: 8,
-                          }}
-                        >
-                          <AutoComplete
-                            options={
-                              filteredSubProductTypes[key]?.map((spt) => ({
-                                value: spt,
-                              })) || []
-                            }
-                            style={{ width: "100%" }}
-                            onSearch={(value) =>
-                              handleSubProductTypeSearch(value, key)
-                            }
-                            onSelect={(value) => {
-                              const activity = form.getFieldValue(
-                                "cargo_operations_activity"
-                              );
-                              if (
-                                !activity[
-                                  key
-                                ].shipment_product.sub_products_type.includes(
-                                  value
-                                )
-                              ) {
-                                activity[
-                                  key
-                                ].shipment_product.sub_products_type.push(
-                                  value
-                                );
-                                form.setFieldsValue({ activity });
-                              }
-                            }}
-                            placeholder="Start typing to search"
-                          />
-                        </Form.Item>
-                        <Button
-                          onClick={() => {
-                            const activity = form.getFieldValue(
-                              "cargo_operations_activity"
-                            );
-                            const subProducts =
-                              activity[key].shipment_product.sub_products_type;
-                            const subProductIndex = subProducts.indexOf(
-                              form.getFieldValue([
-                                "cargo_operations_activity",
-                                key,
-                                "shipment_product",
-                                "sub_products_type",
-                                subField.name,
-                              ])
-                            );
-                            if (subProductIndex > -1) {
-                              subProducts.splice(subProductIndex, 1);
-                              form.setFieldsValue({ activity });
-                            }
-                            removeSub(subField.name);
-                          }}
-                        >
-                          Remove Sub-Product
-                        </Button>
-                      </div>
-                    ))}
-                    <Button type="dashed" onClick={() => addSub()} block>
-                      Add Sub-Product
-                    </Button>
-                  </div>
-                )}
-              </Form.List>
-              <Form.Item label="Approx. Qty" style={{ marginBottom: 16 }}>
-                <QuantityInput form={form} name={key} fieldKey={key} />
-              </Form.Item>
+              <QuantityInput
+                form={form}
+                name={name}
+                subProductTypes={subProductTypes}
+              />
               <Divider />
               <Row gutter={16}>
                 <Col span={12}>

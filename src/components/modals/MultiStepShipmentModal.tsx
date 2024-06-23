@@ -3,11 +3,11 @@ import { Modal, Steps, Form, Button, message } from "antd";
 import moment from "moment";
 import {
   createShipment,
-  getAllProductTypes,
   getShipmentStatuses,
   getAllTerminals,
   getAllCustomers,
   getAllActivityTypes,
+  getAllOnlySubProductTypes,
 } from "../../api";
 import VesselFormAutoComplete from "../forms/VesselSettingsFormAutoComplete";
 import AgentFormAutoComplete from "../forms/AgentSettingsFormAutoComplete";
@@ -33,19 +33,12 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
   const [form] = Form.useForm();
   const [formValues, setFormValues] = useState({});
   const [shipmentStatuses, setShipmentStatuses] = useState<string[]>([]);
-  const [productTypes, setProductTypes] = useState<string[]>([]);
-  const [subProductTypes, setSubProductTypes] = useState<{
-    [key: string]: string[];
-  }>({});
-  const [filteredSubProductTypes, setFilteredSubProductTypes] = useState<{
-    [key: string]: string[];
-  }>({});
+  const [subProductTypes, setSubProductTypes] = useState<string[]>([]);
   const [terminalLocations, setTerminalLocations] = useState<string[]>([]);
   const [customerNames, setCustomerNames] = useState<string[]>([]);
   const [activityTypes, setActivityTypes] = useState<string[]>([]);
   const [selectedActivities, setSelectedActivities] = useState<string[]>([]);
 
-  // Reference to the top of the modal content
   const modalContentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -61,48 +54,34 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
       try {
         const [
           shipmentStatuses,
-          productTypesData,
+          subProductTypesData,
           terminals,
           customers,
           activities,
         ] = await Promise.all([
           getShipmentStatuses(),
-          getAllProductTypes(),
+          getAllOnlySubProductTypes(),
           getAllTerminals(),
           getAllCustomers(),
           getAllActivityTypes(),
         ]);
+
         setShipmentStatuses(shipmentStatuses);
-        const productTypes = productTypesData.map(
-          (product: any) => product.product_type
-        );
-        const subProductTypes = productTypesData.reduce(
-          (acc: any, product: any) => {
-            acc[product.product_type] = product.sub_products_type;
-            return acc;
-          },
-          {}
-        );
-        setProductTypes(productTypes);
-        setSubProductTypes(subProductTypes);
-        const terminalNames = terminals.map((terminal) => terminal.name);
-        setTerminalLocations(terminalNames);
-        const customerNames = customers.map((customer) => customer.customer);
-        setCustomerNames(customerNames);
-        const activityTypeNames = activities.map(
-          (activity) => activity.activity_type
-        );
-        setActivityTypes(activityTypeNames);
+        setSubProductTypes(subProductTypesData);
+        setTerminalLocations(terminals.map((terminal) => terminal.name));
+        setCustomerNames(customers.map((customer) => customer.customer));
+        setActivityTypes(activities.map((activity) => activity.activity_type));
+
+        console.log(subProductTypes);
       } catch (error) {
         console.error("Failed to fetch data:", error);
       }
     };
+
     fetchData();
   }, []);
 
   useEffect(() => {
-    // Scroll to the top of the modal content whenever the step changes
-    console.log(currentStep);
     if (modalContentRef.current) {
       modalContentRef.current.scrollTop = 0;
     }
@@ -161,86 +140,63 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
                 false,
               cargo_operations_activity:
                 mergedValues.cargo_operations_activity?.map(
-                  (cargo_operation_activity: any) => ({
-                    activity_type: cargo_operation_activity.activity_type || "",
+                  (activity: any) => ({
+                    activity_type: activity.activity_type || "",
                     customer_name:
-                      cargo_operation_activity.customer_specifications
-                        ?.customer || "",
-                    anchorage_location:
-                      cargo_operation_activity.anchorage_location || "",
-                    terminal_name: cargo_operation_activity.terminal_name || "",
-                    shipment_product: {
-                      product_type:
-                        cargo_operation_activity.shipment_product
-                          ?.product_type || "",
-                      sub_products_type:
-                        cargo_operation_activity.shipment_product
-                          ?.sub_products_type || [],
-                      quantity:
-                        parseInt(
-                          cargo_operation_activity.shipment_product?.quantity,
-                          10
-                        ) || -1,
-                      dimensions:
-                        cargo_operation_activity.shipment_product
-                          ?.quantityCode || "",
-                      percentage: cargo_operation_activity.shipment_product
-                        ?.percentage
-                        ? parseInt(
-                            cargo_operation_activity.shipment_product
-                              .percentage,
-                            10
-                          )
-                        : -1,
-                    },
-                    readiness: cargo_operation_activity.Readiness || null,
-                    etb: cargo_operation_activity.ETB || null,
-                    etd: cargo_operation_activity.ETD || null,
+                      activity.customer_specifications?.customer || "",
+                    anchorage_location: activity.anchorage_location || "",
+                    terminal_name: activity.terminal_name || "",
+                    shipment_product:
+                      activity.shipment_product?.map((product: any) => ({
+                        sub_product_type: product.sub_product_type || "",
+                        quantityCode: product.quantityCode || "",
+                        quantity: parseInt(product.quantity, 10) || "",
+                        percentage: parseInt(product.percentage, 10) || "",
+                      })) || [],
+                    readiness: activity.Readiness || null,
+                    etb: activity.ETB || null,
+                    etd: activity.ETD || null,
                     arrival_departure_information: {
-                      arrival_displacement: cargo_operation_activity
+                      arrival_displacement: activity
                         .arrival_departure_information?.arrival_displacement
                         ? parseInt(
-                            cargo_operation_activity
-                              .arrival_departure_information
+                            activity.arrival_departure_information
                               .arrival_displacement,
                             10
                           )
                         : -1,
-                      departure_displacement: cargo_operation_activity
+                      departure_displacement: activity
                         .arrival_departure_information?.departure_displacement
                         ? parseInt(
-                            cargo_operation_activity
-                              .arrival_departure_information
+                            activity.arrival_departure_information
                               .departure_displacement,
                             10
                           )
                         : -1,
-                      arrival_draft: cargo_operation_activity
-                        .arrival_departure_information?.arrival_draft
+                      arrival_draft: activity.arrival_departure_information
+                        ?.arrival_draft
                         ? parseFloat(
-                            cargo_operation_activity
-                              .arrival_departure_information.arrival_draft
+                            activity.arrival_departure_information.arrival_draft
                           )
                         : -1,
-                      departure_draft: cargo_operation_activity
-                        .arrival_departure_information?.departure_draft
+                      departure_draft: activity.arrival_departure_information
+                        ?.departure_draft
                         ? parseFloat(
-                            cargo_operation_activity
-                              .arrival_departure_information.departure_draft
+                            activity.arrival_departure_information
+                              .departure_draft
                           )
                         : -1,
-                      arrival_mast_height: cargo_operation_activity
+                      arrival_mast_height: activity
                         .arrival_departure_information?.arrival_mast_height
                         ? parseFloat(
-                            cargo_operation_activity
-                              .arrival_departure_information.arrival_mast_height
+                            activity.arrival_departure_information
+                              .arrival_mast_height
                           )
                         : -1,
-                      departure_mast_height: cargo_operation_activity
+                      departure_mast_height: activity
                         .arrival_departure_information?.departure_mast_height
                         ? parseFloat(
-                            cargo_operation_activity
-                              .arrival_departure_information
+                            activity.arrival_departure_information
                               .departure_mast_height
                           )
                         : -1,
@@ -252,31 +208,27 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
               bunkering:
                 mergedValues.shipment_type?.bunkering.bunkering || false,
               bunkering_activity:
-                mergedValues.bunkering_activity?.map(
-                  (bunkering_activity: any) => ({
-                    supplier: bunkering_activity.supplier || "",
-                    supplier_contact: bunkering_activity.supplier_contact || "",
-                    appointed_surveyor:
-                      bunkering_activity.appointed_surveyor || "",
-                    docking: bunkering_activity.docking || "",
-                    supplier_vessel: bunkering_activity.supplier_vessel || "",
-                    bunker_intake_specifications:
-                      bunkering_activity.bunker_intake_specifications?.map(
-                        (spec: any) => ({
-                          product_type: spec.product_type || "",
-                          sub_product_type: spec.sub_product_type || "",
-                          maximum_quantity_intake:
-                            parseInt(spec.maximum_quantity_intake, 10) || -1,
-                          maximum_hose_size:
-                            parseInt(spec.maximum_hose_size, 10) || -1,
-                        })
-                      ) || [],
-                    freeboard: parseInt(bunkering_activity.freeboard, 10) || -1,
-                    readiness: bunkering_activity.readiness || null,
-                    etb: bunkering_activity.etb || null,
-                    etd: bunkering_activity.etd || null,
-                  })
-                ) || [],
+                mergedValues.bunkering_activity?.map((activity: any) => ({
+                  supplier: activity.supplier || "",
+                  customer_name: activity.customer_name || "",
+                  supplier_contact: activity.supplier_contact || "",
+                  appointed_surveyor: activity.appointed_surveyor || "",
+                  docking: activity.docking || "",
+                  supplier_vessel: activity.supplier_vessel || "",
+                  bunker_intake_specifications:
+                    activity.bunker_intake_specifications?.map((spec: any) => ({
+                      product_type: spec.product_type || "",
+                      sub_product_type: spec.sub_product_type || "",
+                      maximum_quantity_intake:
+                        parseInt(spec.maximum_quantity_intake, 10) || -1,
+                      maximum_hose_size:
+                        parseInt(spec.maximum_hose_size, 10) || -1,
+                    })) || [],
+                  freeboard: parseInt(activity.freeboard, 10) || -1,
+                  readiness: activity.readiness || null,
+                  etb: activity.etb || null,
+                  etd: activity.etd || null,
+                })) || [],
             },
             owner_matters: {
               owner_matters: false,
@@ -322,139 +274,26 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
       });
   };
 
-  const handleProductTypeChange = (value: string, index: number) => {
+  const handleSubProductTypeChange = (
+    value: string,
+    index: number,
+    field: string
+  ) => {
     console.log(form.getFieldsValue());
     form.setFieldsValue({
-      activity: form
-        .getFieldValue("cargo_operations_activity")
-        .map((activity: any, i: number) => {
-          if (i === index) {
-            return {
-              ...activity,
-              shipment_product: {
-                ...activity.shipment_product,
-                product_type: value,
-                sub_products_type: [],
-              },
-            };
-          }
-          return activity;
-        }),
+      [field]: form.getFieldValue(field).map((activity: any, i: number) => {
+        if (i === index) {
+          return {
+            ...activity,
+            shipment_product: {
+              ...activity.shipment_product,
+              sub_products_type: [value],
+            },
+          };
+        }
+        return activity;
+      }),
     });
-
-    setFilteredSubProductTypes((prev) => ({
-      ...prev,
-      [index]: subProductTypes[value] || [],
-    }));
-  };
-
-  const handleBunkeringIntakeProductTypeChange = (
-    value: string,
-    index: number
-  ) => {
-    console.log("Form Values Before Change:", form.getFieldsValue());
-    const activities = form.getFieldValue("bunkering_activity");
-
-    if (!activities) {
-      console.error("Bunkering activity field is undefined");
-      return;
-    }
-
-    const updatedActivities = activities.map((activity: any, i: number) => {
-      if (i === index) {
-        return {
-          ...activity,
-          bunker_intake_product: {
-            ...activity.bunker_intake_product,
-            product_type: value,
-            sub_products_type: [],
-          },
-        };
-      }
-      return activity;
-    });
-
-    form.setFieldsValue({ bunkering_activity: updatedActivities });
-
-    setFilteredSubProductTypes((prev) => ({
-      ...prev,
-      [index]: subProductTypes[value] || [],
-    }));
-  };
-
-  const handleBunkeringHoseProductTypeChange = (
-    value: string,
-    index: number
-  ) => {
-    console.log("Form Values Before Change:", form.getFieldsValue());
-    const activities = form.getFieldValue("bunkering_activity");
-
-    if (!activities) {
-      console.error("Bunkering activity field is undefined");
-      return;
-    }
-
-    const updatedActivities = activities.map((activity: any, i: number) => {
-      if (i === index) {
-        return {
-          ...activity,
-          bunker_hose_product: {
-            ...activity.bunker_hose_product,
-            product_type: value,
-            sub_products_type: [],
-          },
-        };
-      }
-      return activity;
-    });
-
-    form.setFieldsValue({ bunkering_activity: updatedActivities });
-
-    setFilteredSubProductTypes((prev) => ({
-      ...prev,
-      [index]: subProductTypes[value] || [],
-    }));
-  };
-
-  const handleBunkeringSubProductTypeSearch = (
-    value: string,
-    index: number
-  ) => {
-    const productType = form.getFieldValue([
-      "bunkering_activity",
-      index,
-      "bunker_intake_product",
-      "product_type",
-    ]);
-
-    if (!productType) {
-      console.error("Product type is undefined");
-      return;
-    }
-
-    const subProducts = subProductTypes[productType] || [];
-    setFilteredSubProductTypes((prev) => ({
-      ...prev,
-      [index]: subProducts.filter((subProduct) =>
-        subProduct.toLowerCase().includes(value.toLowerCase())
-      ),
-    }));
-  };
-
-  const handleSubProductTypeSearch = (value: string, index: number) => {
-    const productType = form.getFieldValue([
-      "activity",
-      index,
-      "shipment_product",
-      "product_type",
-    ]);
-    const subProducts = subProductTypes[productType] || [];
-    setFilteredSubProductTypes((prev) => ({
-      ...prev,
-      [index]: subProducts.filter((subProduct) =>
-        subProduct.toLowerCase().includes(value.toLowerCase())
-      ),
-    }));
   };
 
   const steps = [
@@ -483,11 +322,7 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
             content: (
               <CargoOperationsActivityForm
                 form={form}
-                productTypes={productTypes}
                 subProductTypes={subProductTypes}
-                filteredSubProductTypes={filteredSubProductTypes}
-                handleProductTypeChange={handleProductTypeChange}
-                handleSubProductTypeSearch={handleSubProductTypeSearch}
                 terminalLocations={terminalLocations}
                 customerNames={customerNames}
                 activityTypes={activityTypes}
@@ -503,17 +338,9 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
             content: (
               <BunkeringActivityForm
                 form={form}
-                productTypes={productTypes}
                 subProductTypes={subProductTypes}
-                filteredSubProductTypes={filteredSubProductTypes}
-                handleBunkeringIntakeProductTypeChange={
-                  handleBunkeringIntakeProductTypeChange
-                }
-                handleBunkeringHoseProductTypeChange={
-                  handleBunkeringHoseProductTypeChange
-                }
-                handleBunkeringSubProductTypeSearch={
-                  handleBunkeringSubProductTypeSearch
+                handleBunkeringIntakeProductTypeChange={(value, index) =>
+                  handleSubProductTypeChange(value, index, "bunkering_activity")
                 }
                 terminalLocations={terminalLocations}
                 customerNames={customerNames}

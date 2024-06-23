@@ -8,3 +8,7 @@ export interface ProductTypeResponse {
   product_type: string;
   sub_products_type: string[];
 }
+
+export interface OnlySubProductTypesResponse {
+  only_sub_product_types: string[];
+}

@@ -48,6 +48,12 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({ shipment }) => {
     activities = shipment.shipment_type.bunkering.bunkering_activity;
   }
 
+  const isCargoOperations = (
+    activity: any
+  ): activity is CargoOperationsActivity => {
+    return "activity_type" in activity;
+  };
+
   console.log(statusColour, "statcolor");
 
   return (
@@ -110,51 +116,43 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({ shipment }) => {
           <div key={index}>
             <h5 style={contentStyle}>
               <StatusTag activity={activity} />
-              <p>Activity Type: {activity.activity_type} </p>
-              {"anchorage_location" in activity && (
-                <p>
-                  Anchorage Location:{" "}
-                  {(activity as CargoOperationsActivity).anchorage_location}{" "}
-                </p>
-              )}
-              {"customer_name" in activity && (
-                <p>
-                  Customer:{" "}
-                  {(activity as CargoOperationsActivity).customer_name}{" "}
-                </p>
-              )}
-              {"shipment_product" in activity && (
-                <p>
-                  <ProductTypes
-                    productType={
-                      (activity as CargoOperationsActivity).shipment_product
-                        .product_type
-                    }
-                    subProductsType={
-                      (activity as CargoOperationsActivity).shipment_product
-                        .sub_products_type
-                    }
-                  />
-                </p>
-              )}
-              {"bunker_intake_specifications" in activity && (
-                <div>
-                  {(
-                    activity as BunkeringActivity
-                  ).bunker_intake_specifications?.map(
-                    (spec: BunkerIntakeSpecifications, idx: number) => (
-                      <p key={idx}>
-                        <strong>Bunker Intake {idx + 1}:</strong>
-                        <br />
-                        Sub Product Type: {spec.sub_product_type}
-                        <br />
-                        Maximum Quantity Intake: {spec.maximum_quantity_intake}
-                        <br />
-                        Maximum Hose Size: {spec.maximum_hose_size}
-                      </p>
-                    )
+              {isCargoOperations(activity) ? (
+                <>
+                  <p>Activity Type: {activity.activity_type} </p>
+                  <p>Anchorage Location: {activity.anchorage_location} </p>
+                  <p>Customer: {activity.customer_name} </p>
+                  <p>
+                    <ProductTypes
+                      productType={activity.shipment_product.product_type}
+                      subProductsType={
+                        activity.shipment_product.sub_products_type
+                      }
+                    />
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p>Supplier: {activity.supplier} </p>
+                  <p>Supplier Contact: {activity.supplier_contact} </p>
+                  <p>Appointed Surveyor: {activity.appointed_surveyor} </p>
+                  {"bunker_intake_specifications" in activity && (
+                    <div>
+                      {(
+                        activity as BunkeringActivity
+                      ).bunker_intake_specifications?.map(
+                        (spec: BunkerIntakeSpecifications, idx: number) => (
+                          <p key={idx}>
+                            <strong>Bunker Intake {idx + 1}:</strong>
+                            <br />
+                            Product Type: {spec.product_type}
+                            <br />
+                            Sub Product Type: {spec.sub_product_type}
+                          </p>
+                        )
+                      )}
+                    </div>
                   )}
-                </div>
+                </>
               )}
               <p>
                 ETD: {moment(activity.etd).format("DD-MMM-YYYY, dddd, HH:mm")}

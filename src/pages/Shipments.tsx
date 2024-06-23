@@ -97,29 +97,50 @@ const ShipmentsManagement: React.FC = () => {
     },
     {
       title: "Customer Name(s)",
-      dataIndex: [
-        "shipment_type",
-        "cargo_operations",
-        "cargo_operations_activity",
-      ],
+      dataIndex: "shipment_type",
       key: "customer_name",
-      render: (activities: any[]) =>
-        activities.map((activity: any, index: number) => (
-          <div key={index}>{activity.customer_name}</div>
-        )),
+      render: (shipment_type: any) => {
+        const cargoActivities =
+          shipment_type?.cargo_operations?.cargo_operations_activity || [];
+        const bunkeringActivities =
+          shipment_type?.bunkering?.bunkering_activity || [];
+
+        return (
+          <>
+            {cargoActivities.map((activity: any, index: number) => (
+              <div key={`cargo-${index}`}>{activity.customer_name}</div>
+            ))}
+            {bunkeringActivities.map((activity: any, index: number) => (
+              <div key={`bunkering-${index}`}>{activity.customer_name}</div>
+            ))}
+          </>
+        );
+      },
     },
     {
-      title: "Terminal Name(s)",
-      dataIndex: [
-        "shipment_type",
-        "cargo_operations",
-        "cargo_operations_activity",
-      ],
-      key: "terminal_name",
-      render: (activities: any[]) =>
-        activities.map((activity: any, index: number) => (
-          <div key={index}>{activity.terminal_name}</div>
-        )),
+      title: "Activity",
+      dataIndex: "shipment_type",
+      key: "activity",
+      render: (shipment_type: any) => {
+        const cargoOperations =
+          shipment_type?.cargo_operations?.cargo_operations;
+        const bunkering = shipment_type?.bunkering?.bunkering;
+
+        if (cargoOperations && bunkering) {
+          return (
+            <>
+              <div>cargo_operations</div>
+              <div>bunkering</div>
+            </>
+          );
+        } else if (cargoOperations) {
+          return <div>cargo_operations</div>;
+        } else if (bunkering) {
+          return <div>bunkering</div>;
+        } else {
+          return <div>No activity</div>;
+        }
+      },
     },
     {
       title: "Agent Assigned",
@@ -128,7 +149,7 @@ const ShipmentsManagement: React.FC = () => {
       render: (agent_details: any) => (
         <div>
           <div>{agent_details.name}</div>
-          <div>{agent_details.contact}</div>
+          {/* <div>{agent_details.contact}</div> */}
         </div>
       ),
     },
