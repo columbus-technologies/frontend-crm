@@ -7,6 +7,7 @@ import Shipments from "./pages/Shipments";
 import VesselManagementSettings from "./pages/VesselManagementSettings";
 import AgentManagementSettings from "./pages/AgentManagementSettings";
 import TerminalManagementSettings from "./pages/TerminalManagementSettings";
+import SupplierManagementSettings from "./pages/SupplierManagementSettings";
 import CustomerManagementSettings from "./pages/CustomerManagementSettings";
 import CategoryManagementActivityType from "./pages/CategoryManagementActivityType";
 import CategoryManagementProductType from "./pages/CategoryManagementProductType";
@@ -47,6 +48,10 @@ const AppRoutes: React.FC = () => {
               <Route
                 path="/terminal-management-settings"
                 element={<TerminalManagementSettings />}
+              />
+              <Route
+                path="/supplier-management-settings"
+                element={<SupplierManagementSettings />}
               />
               <Route
                 path="/activity-types"

@@ -34,30 +34,7 @@ const CargoOperationsActivityForm: React.FC<
     layout="vertical"
     name="cargo_operations_activity"
     initialValues={{
-      cargo_operations_activity: [
-        {
-          activity_type: "",
-          customer_specifications: {
-            customer: "",
-            company: "",
-            email: "",
-            contact: "",
-          },
-          anchorage_location: "",
-          terminal_name: "",
-          shipment_product: [
-            {
-              sub_product_type: "",
-              quantityCode: "KB",
-              quantity: "",
-              percentage: "",
-            },
-          ],
-          readiness: null,
-          etb: null,
-          etd: null,
-        },
-      ],
+      cargo_operations_activity: [],
     }}
   >
     <Form.List name="cargo_operations_activity">

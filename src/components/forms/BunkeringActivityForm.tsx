@@ -12,6 +12,7 @@ import {
 } from "antd";
 import InputWithUnit from "../common/InputWithUnit";
 import { validateFloat } from "../../utils/validationUtils";
+import SupplierFormAutoComplete from "../forms/SupplierSettingsFormAutoComplete";
 
 interface BunkeringActivityFormProps {
   form: any;
@@ -52,35 +53,7 @@ const BunkeringActivityForm: React.FC<BunkeringActivityFormProps> = ({
 
           {fields.map(({ key, name, ...restField }) => (
             <div key={key} style={{ marginBottom: 16 }}>
-              <Row gutter={16}>
-                <Col span={8}>
-                  <Form.Item
-                    {...restField}
-                    name={[name, "supplier"]}
-                    label="Supplier"
-                  >
-                    <Input placeholder="Supplier" />
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item
-                    {...restField}
-                    name={[name, "supplier_contact"]}
-                    label="Contact"
-                  >
-                    <Input placeholder="Contact" />
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item
-                    {...restField}
-                    name={[name, "supplier_email"]}
-                    label="Email"
-                  >
-                    <Input placeholder="Email" />
-                  </Form.Item>
-                </Col>
-              </Row>
+              <SupplierFormAutoComplete form={form} />
               <Row gutter={16}>
                 <Col span={8}>
                   <Form.Item

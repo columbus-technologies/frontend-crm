@@ -212,6 +212,7 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
                   supplier: activity.supplier || "",
                   customer_name: activity.customer_name || "",
                   supplier_contact: activity.supplier_contact || "",
+                  supplier_email: activity.supplier_email || "",
                   appointed_surveyor: activity.appointed_surveyor || "",
                   docking: activity.docking || "",
                   supplier_vessel: activity.supplier_vessel || "",
@@ -339,9 +340,6 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
               <BunkeringActivityForm
                 form={form}
                 subProductTypes={subProductTypes}
-                handleBunkeringIntakeProductTypeChange={(value, index) =>
-                  handleSubProductTypeChange(value, index, "bunkering_activity")
-                }
                 terminalLocations={terminalLocations}
                 customerNames={customerNames}
                 activityTypes={activityTypes}
@@ -370,9 +368,9 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
         className="steps-action"
         style={{ marginTop: "24px", textAlign: "right" }}
       >
-        {currentStep < steps.length - 1 && (
-          <Button type="primary" onClick={next}>
-            Next
+        {currentStep > 0 && (
+          <Button style={{ margin: "0 8px" }} onClick={prev}>
+            Previous
           </Button>
         )}
         {currentStep === steps.length - 1 && (
@@ -380,9 +378,9 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
             Done
           </Button>
         )}
-        {currentStep > 0 && (
-          <Button style={{ margin: "0 8px" }} onClick={prev}>
-            Previous
+        {currentStep < steps.length - 1 && (
+          <Button type="primary" onClick={next}>
+            Next
           </Button>
         )}
       </div>

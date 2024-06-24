@@ -117,6 +117,11 @@ const ShipmentsManagement: React.FC = () => {
         );
       },
     },
+    //   <Tag color="blue"> Cargo Operations </Tag>
+    // )}
+    // {shipment.shipment_type.bunkering.bunkering && (
+    //   <Tag color="green"> Bunkering </Tag>
+
     {
       title: "Activity",
       dataIndex: "shipment_type",
@@ -129,16 +134,16 @@ const ShipmentsManagement: React.FC = () => {
         if (cargoOperations && bunkering) {
           return (
             <>
-              <div>cargo_operations</div>
-              <div>bunkering</div>
+              <Tag color="blue"> Cargo Operations </Tag>
+              <Tag color="green"> Bunkering </Tag>
             </>
           );
         } else if (cargoOperations) {
-          return <div>cargo_operations</div>;
+          return <Tag color="blue"> Cargo Operations </Tag>;
         } else if (bunkering) {
-          return <div>bunkering</div>;
+          return <Tag color="green"> Bunkering </Tag>;
         } else {
-          return <div>No activity</div>;
+          return <Tag color="orange"> No Activity </Tag>;
         }
       },
     },
