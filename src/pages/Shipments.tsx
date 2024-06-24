@@ -117,11 +117,6 @@ const ShipmentsManagement: React.FC = () => {
         );
       },
     },
-    //   <Tag color="blue"> Cargo Operations </Tag>
-    // )}
-    // {shipment.shipment_type.bunkering.bunkering && (
-    //   <Tag color="green"> Bunkering </Tag>
-
     {
       title: "Activity",
       dataIndex: "shipment_type",
@@ -130,6 +125,15 @@ const ShipmentsManagement: React.FC = () => {
         const cargoOperations =
           shipment_type?.cargo_operations?.cargo_operations;
         const bunkering = shipment_type?.bunkering?.bunkering;
+
+        const noActivity =
+          (shipment_type?.cargo_operations?.cargo_operations_activity?.length ||
+            0) === 0 &&
+          (shipment_type?.bunkering?.bunkering_activity?.length || 0) === 0;
+
+        if (noActivity) {
+          return <Tag color="orange"> No Activity </Tag>;
+        }
 
         if (cargoOperations && bunkering) {
           return (
@@ -142,8 +146,6 @@ const ShipmentsManagement: React.FC = () => {
           return <Tag color="blue"> Cargo Operations </Tag>;
         } else if (bunkering) {
           return <Tag color="green"> Bunkering </Tag>;
-        } else {
-          return <Tag color="orange"> No Activity </Tag>;
         }
       },
     },

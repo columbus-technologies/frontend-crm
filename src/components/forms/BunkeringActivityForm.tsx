@@ -203,22 +203,6 @@ const BunkeringActivityForm: React.FC<BunkeringActivityFormProps> = ({
                 <Col span={6}>
                   <Form.Item
                     {...restField}
-                    name={[name, "etb"]}
-                    label="ETB"
-                    rules={[
-                      { required: true, message: "Please input the ETB!" },
-                    ]}
-                  >
-                    <DatePicker
-                      showTime={{ format: "HH:00" }}
-                      format="YYYY-MM-DD HH:00"
-                      placeholder="Enter ETB"
-                    />
-                  </Form.Item>
-                </Col>
-                <Col span={6}>
-                  <Form.Item
-                    {...restField}
                     name={[name, "etd"]}
                     label="ETD"
                     rules={[
