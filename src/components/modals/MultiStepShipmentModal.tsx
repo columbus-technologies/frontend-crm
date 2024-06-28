@@ -153,9 +153,9 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
                         quantity: parseInt(product.quantity, 10) || "",
                         percentage: parseInt(product.percentage, 10) || "",
                       })) || [],
-                    readiness: activity.Readiness || null,
-                    etb: activity.ETB || null,
-                    etd: activity.ETD || null,
+                    readiness: activity.readiness || null,
+                    etb: activity.etb || null,
+                    etd: activity.etd || null,
                     arrival_departure_information: {
                       arrival_displacement: activity
                         .arrival_departure_information?.arrival_displacement
