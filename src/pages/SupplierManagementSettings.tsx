@@ -1,13 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Card, Typography, Table, Button, message, Modal } from "antd";
+import { Card, Typography, Table, Button, message } from "antd";
 import { SupplierResponse } from "../types";
-import {
-  fetchSuppliers,
-  createSupplier,
-  deleteSupplier,
-  getSupplierById,
-  updateSupplier,
-} from "../api";
+import { fetchSuppliers, deleteSupplier } from "../api";
 import "../styles/index.css"; // Ensure the CSS file is imported
 import AddSupplierModal from "../components/modals/AddSupplierSettingsModal";
 import UnauthorizedModal from "../components/modals/UnauthorizedModal";
@@ -79,7 +73,7 @@ const SupplierManagementSettings: React.FC = () => {
     {
       title: "Action",
       key: "action",
-      render: (text: string, record: SupplierResponse) => (
+      render: (record: SupplierResponse) => (
         <Button type="primary" danger onClick={() => handleDelete(record.ID)}>
           Delete
         </Button>

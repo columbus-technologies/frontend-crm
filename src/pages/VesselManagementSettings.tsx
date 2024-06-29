@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Typography, Table, Button, message, Modal } from "antd";
+import { Card, Typography, Table, Button, message } from "antd";
 import { VesselResponse } from "../types";
 import { fetchVessels, deleteVessel } from "../api";
 import "../styles/index.css"; // Ensure the CSS file is imported
@@ -69,7 +69,7 @@ const VesselManagementSettings: React.FC = () => {
     {
       title: "Action",
       key: "action",
-      render: (text: string, record: VesselResponse) => (
+      render: (record: VesselResponse) => (
         <Button type="primary" danger onClick={() => handleDelete(record.ID)}>
           Delete
         </Button>

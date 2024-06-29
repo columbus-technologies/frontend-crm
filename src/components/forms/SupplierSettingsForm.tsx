@@ -73,8 +73,7 @@
 // export default SupplierForm;
 
 import React from "react";
-import { Form, Input, Button, Space } from "antd";
-import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import { Form, Input } from "antd";
 import ContactInput from "../common/ContactNumberCountryCodeInput";
 import { validateEmail } from "../../utils/validationUtils";
 

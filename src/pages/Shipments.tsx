@@ -163,7 +163,7 @@ const ShipmentsManagement: React.FC = () => {
     {
       title: "Action",
       key: "action",
-      render: (text: string, record: ShipmentResponse) => {
+      render: (record: ShipmentResponse) => {
         return (
           <Button type="primary" danger onClick={() => handleDelete(record.ID)}>
             Delete

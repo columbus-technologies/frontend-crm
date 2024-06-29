@@ -16,7 +16,6 @@ interface QuantityInputProps {
 }
 
 const QuantityInput: React.FC<QuantityInputProps> = ({
-  form,
   name,
   subProductTypes,
 }) => {
@@ -24,7 +23,7 @@ const QuantityInput: React.FC<QuantityInputProps> = ({
     <Form.List name={[name, "shipment_product"]}>
       {(productFields, { add: addProduct, remove: removeProduct }) => (
         <div>
-          {productFields.map((productField, index) => (
+          {productFields.map((productField) => (
             <div
               key={productField.key}
               style={{ display: "flex", alignItems: "center", marginBottom: 8 }}

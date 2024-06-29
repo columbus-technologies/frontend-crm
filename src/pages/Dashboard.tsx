@@ -28,6 +28,7 @@ const Dashboard: React.FC = () => {
             setIsUnauthorizedModalVisible(true);
           }
           setErrorMessage(error.message);
+          console.log(errorMessage);
         } else {
           setErrorMessage(String(error));
         }

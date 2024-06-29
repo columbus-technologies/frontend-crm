@@ -25,9 +25,7 @@ interface BunkeringActivityFormProps {
 const BunkeringActivityForm: React.FC<BunkeringActivityFormProps> = ({
   form,
   subProductTypes,
-  terminalLocations,
   customerNames,
-  activityTypes,
 }) => (
   <Form
     form={form}
@@ -110,7 +108,7 @@ const BunkeringActivityForm: React.FC<BunkeringActivityFormProps> = ({
               <Form.List name={[name, "bunker_intake_specifications"]}>
                 {(specFields, { add: addSpec, remove: removeSpec }) => (
                   <>
-                    {specFields.map((specField, specIndex) => (
+                    {specFields.map((specField) => (
                       <Row key={specField.key} gutter={16}>
                         <Col span={6}>
                           <Form.Item

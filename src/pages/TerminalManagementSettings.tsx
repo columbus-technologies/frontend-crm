@@ -1,13 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Card, Typography, Table, Button, message, Modal } from "antd";
+import { Card, Typography, Table, Button, message } from "antd";
 import { TerminalResponse } from "../types";
-import {
-  getAllTerminals,
-  createTerminal,
-  deleteTerminal,
-  getTerminalById,
-  updateTerminal,
-} from "../api";
+import { getAllTerminals, deleteTerminal } from "../api";
 import "../styles/index.css"; // Ensure the CSS file is imported
 // import { useNavigate } from "react-router-dom";
 import AddTerminalModal from "../components/modals/AddTerminalSettingsModal";
@@ -58,7 +52,7 @@ const TerminalManagementSettings: React.FC = () => {
     {
       title: "Action",
       key: "action",
-      render: (text: string, record: TerminalResponse) => (
+      render: (record: TerminalResponse) => (
         <Button type="primary" danger onClick={() => handleDelete(record.ID)}>
           Delete
         </Button>

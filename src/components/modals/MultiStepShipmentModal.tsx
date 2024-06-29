@@ -275,27 +275,27 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
       });
   };
 
-  const handleSubProductTypeChange = (
-    value: string,
-    index: number,
-    field: string
-  ) => {
-    console.log(form.getFieldsValue());
-    form.setFieldsValue({
-      [field]: form.getFieldValue(field).map((activity: any, i: number) => {
-        if (i === index) {
-          return {
-            ...activity,
-            shipment_product: {
-              ...activity.shipment_product,
-              sub_products_type: [value],
-            },
-          };
-        }
-        return activity;
-      }),
-    });
-  };
+  // const handleSubProductTypeChange = (
+  //   value: string,
+  //   index: number,
+  //   field: string
+  // ) => {
+  //   console.log(form.getFieldsValue());
+  //   form.setFieldsValue({
+  //     [field]: form.getFieldValue(field).map((activity: any, i: number) => {
+  //       if (i === index) {
+  //         return {
+  //           ...activity,
+  //           shipment_product: {
+  //             ...activity.shipment_product,
+  //             sub_products_type: [value],
+  //           },
+  //         };
+  //       }
+  //       return activity;
+  //     }),
+  //   });
+  // };
 
   const steps = [
     {

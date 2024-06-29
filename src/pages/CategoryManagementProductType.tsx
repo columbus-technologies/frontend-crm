@@ -37,6 +37,7 @@ const CategoryManagementProductType: React.FC = () => {
           setIsUnauthorizedModalVisible(true);
         }
         setErrorMessage(error.message);
+        console.log(errorMessage);
       } else {
         setErrorMessage(String(error));
       }

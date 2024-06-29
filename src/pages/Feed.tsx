@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Card, Typography, Tabs } from "antd";
 
 const { Title } = Typography;
 const { TabPane } = Tabs;
 
 const Feed: React.FC = () => {
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [errorMessage] = useState<string | null>(null);
 
   const renderContent = (content: string) => (
     <div>

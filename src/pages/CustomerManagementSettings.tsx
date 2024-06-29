@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Typography, Table, Button, message, Modal } from "antd";
+import { Card, Typography, Table, Button, message } from "antd";
 import { CustomerResponse } from "../types";
 import { getAllCustomers, deleteCustomer } from "../api";
 import "../styles/index.css"; // Ensure the CSS file is imported
@@ -75,7 +75,7 @@ const CustomerManagementSettings: React.FC = () => {
     {
       title: "Action",
       key: "action",
-      render: (text: string, record: CustomerResponse) => {
+      render: (record: CustomerResponse) => {
         console.log("Record:", record); // Debugging statement
         return (
           <Button type="primary" danger onClick={() => handleDelete(record.ID)}>

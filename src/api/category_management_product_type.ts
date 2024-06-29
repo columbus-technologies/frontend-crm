@@ -1,9 +1,5 @@
 import { prepareAuthHeaders } from "../utils/auth";
-import {
-  OnlySubProductTypesResponse,
-  ProductType,
-  ProductTypeResponse,
-} from "../types";
+import { ProductType, ProductTypeResponse } from "../types";
 
 const CATEGORY_MANAGEMENT_PRODUCT_TYPE_URL =
   "http://localhost:8080/category_management/product_type";

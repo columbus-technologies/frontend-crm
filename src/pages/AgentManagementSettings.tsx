@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Card, Typography, Table, Button, Modal, message } from "antd";
+import { Card, Typography, Table, Button, message } from "antd";
 import { AgentResponse } from "../types";
 import { getAllAgents, deleteAgent } from "../api";
 import "../styles/index.css";
-import { useNavigate } from "react-router-dom";
 import AddAgentModal from "../components/modals/AddAgentSettingsModal";
 import UnauthorizedModal from "../components/modals/UnauthorizedModal";
 import { formatDateToLocalString } from "../utils/dateTimeUtils";
@@ -58,7 +57,7 @@ const AgentManagementSettings: React.FC = () => {
     {
       title: "Action",
       key: "action",
-      render: (text: string, record: AgentResponse) => (
+      render: (record: AgentResponse) => (
         <Button type="primary" danger onClick={() => handleDelete(record.ID)}>
           Delete
         </Button>
