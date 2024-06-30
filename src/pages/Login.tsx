@@ -4,16 +4,18 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate
 import "../styles/index.css"; // Ensure the CSS file is imported
 import loginImage from "../assets/columbus2.png"; // Import the image
 import LoginForm from "../components/forms/LoginForm"; // Import the LoginForm component
+import { prodEnv } from "../utils/environment";
 
 const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate(); // Initialize the navigate function
 
+  const LOGIN_SETTINGS_URL = prodEnv + "login";
   const onFinish = async (values: any) => {
     setLoading(true);
     // Example login request
     try {
-      const response = await fetch("http://localhost:8080/login", {
+      const response = await fetch(LOGIN_SETTINGS_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

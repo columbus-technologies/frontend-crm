@@ -1,7 +1,11 @@
 import { Terminal, TerminalResponse } from "../types";
 import { prepareAuthHeaders } from "../utils/auth";
 
-const TERMINAL_SETTINGS_URL = "http://localhost:8080/terminal_management";
+import { prodEnv } from "../utils/environment";
+
+const TERMINAL_SETTINGS_URL = prodEnv + "terminal_management";
+
+// const TERMINAL_SETTINGS_URL = "http://localhost:8080/terminal_management";
 
 // Get all terminals
 export const getAllTerminals = async (): Promise<TerminalResponse[]> => {

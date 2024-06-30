@@ -1,7 +1,11 @@
 import { Vessel, VesselResponse } from "../types";
 import { prepareAuthHeaders } from "../utils/auth";
 
-const VESSEL_SETTINGS_URL = "http://localhost:8080/vessel_management";
+import { prodEnv } from "../utils/environment";
+
+const VESSEL_SETTINGS_URL = prodEnv + "vessel_management";
+
+// const VESSEL_SETTINGS_URL = "http://localhost:8080/vessel_management";
 
 export const fetchVessels = async (): Promise<VesselResponse[]> => {
   const response = await fetch(VESSEL_SETTINGS_URL, {

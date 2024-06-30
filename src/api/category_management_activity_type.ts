@@ -1,8 +1,11 @@
 import { ActivityType, ActivityTypeResponse } from "../types";
 import { prepareAuthHeaders } from "../utils/auth";
+import { prodEnv } from "../utils/environment";
 
 const CATEGORY_MANAGEMENT_ACTIVITY_TYPE_URL =
-  "http://localhost:8080/category_management/activity_type";
+  prodEnv + "category_management/activity_type";
+// const CATEGORY_MANAGEMENT_ACTIVITY_TYPE_URL =
+// ("http://localhost:8080/category_management/activity_type");
 
 // Get all activity types
 export const getAllActivityTypes = async (): Promise<
