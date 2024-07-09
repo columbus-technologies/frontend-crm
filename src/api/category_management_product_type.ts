@@ -1,13 +1,8 @@
 import { prepareAuthHeaders } from "../utils/auth";
 import { ProductType, ProductTypeResponse } from "../types";
+import { BACKEND_URL } from "../config";
 
-import { prodEnv } from "../utils/environment";
-
-const CATEGORY_MANAGEMENT_PRODUCT_TYPE_URL =
-  prodEnv + "category_management/product_type";
-
-// const CATEGORY_MANAGEMENT_PRODUCT_TYPE_URL =
-// "http://localhost:8080/category_management/product_type";
+const CATEGORY_MANAGEMENT_PRODUCT_TYPE_URL = `${BACKEND_URL}category_management/product_type`;
 
 // Get all product types
 export const getAllProductTypes = async (): Promise<ProductTypeResponse[]> => {

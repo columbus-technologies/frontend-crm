@@ -1,17 +1,11 @@
 import { Shipment, ShipmentResponse } from "../types";
 import { prepareAuthHeaders } from "../utils/auth";
 
-import { prodEnv } from "../utils/environment";
+import { BACKEND_URL } from "../config";
 
-const SHIPMENTS_URL = prodEnv + "shipments";
-const SHIPMENT_STATUSES_URL = prodEnv + "shipments/statuses";
-const SHIPMENT_STATUSES_WITH_COLOURS_URL =
-  prodEnv + "shipments/statuses_with_colours";
-
-// const SHIPMENTS_URL = "http://localhost:8080/shipments";
-// const SHIPMENT_STATUSES_URL = "http://localhost:8080/shipments/statuses";
-// const SHIPMENT_STATUSES_WITH_COLOURS_URL =
-//   "http://localhost:8080/shipments/statuses_with_colours";
+const SHIPMENTS_URL = `${BACKEND_URL}shipments`;
+const SHIPMENT_STATUSES_URL = `${BACKEND_URL}shipments/statuses`;
+const SHIPMENT_STATUSES_WITH_COLOURS_URL = `${BACKEND_URL}shipments/statuses_with_colours`;
 
 export const getShipmentStatuses = async (): Promise<string[]> => {
   const response = await fetch(SHIPMENT_STATUSES_URL, {

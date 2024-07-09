@@ -4,13 +4,15 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate
 import "../styles/index.css"; // Ensure the CSS file is imported
 import loginImage from "../assets/columbus2.png"; // Import the image
 import LoginForm from "../components/forms/LoginForm"; // Import the LoginForm component
-import { prodEnv } from "../utils/environment";
+import { BACKEND_URL } from "../config";
 
 const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate(); // Initialize the navigate function
+  console.log(BACKEND_URL);
+  const LOGIN_SETTINGS_URL = BACKEND_URL + "login";
+  console.log(import.meta.env);
 
-  const LOGIN_SETTINGS_URL = prodEnv + "login";
   const onFinish = async (values: any) => {
     setLoading(true);
     // Example login request

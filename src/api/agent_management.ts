@@ -1,10 +1,8 @@
 import { Agent, AgentResponse } from "../types";
 import { prepareAuthHeaders } from "../utils/auth";
-import { prodEnv } from "../utils/environment";
+import { BACKEND_URL } from "../config";
 
-const AGENT_SETTINGS_URL = prodEnv + "agent_management";
-
-// const AGENT_SETTINGS_URL = "http://localhost:8080/agent_management";
+const AGENT_SETTINGS_URL = `${BACKEND_URL}agent_management`;
 
 // Get all agents
 export const getAllAgents = async (): Promise<AgentResponse[]> => {

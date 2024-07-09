@@ -1,11 +1,9 @@
 import { Supplier, SupplierResponse } from "../types";
 import { prepareAuthHeaders } from "../utils/auth";
 
-import { prodEnv } from "../utils/environment";
+import { BACKEND_URL } from "../config";
 
-const SUPPLIER_SETTINGS_URL = prodEnv + "supplier_management";
-
-// const SUPPLIER_SETTINGS_URL = "http://localhost:8080/supplier_management";
+const SUPPLIER_SETTINGS_URL = `${BACKEND_URL}supplier_management`;
 
 export const fetchSuppliers = async (): Promise<SupplierResponse[]> => {
   const response = await fetch(SUPPLIER_SETTINGS_URL, {

@@ -1,12 +1,8 @@
 import { Customer, CustomerResponse } from "../types";
 import { prepareAuthHeaders } from "../utils/auth";
 
-import { prodEnv } from "../utils/environment";
-
-const CUSTOMER_MANAGEMENT_SETTINGS_URL = prodEnv + "customer_management";
-
-// const CUSTOMER_MANAGEMENT_SETTINGS_URL =
-//   "http://localhost:8080/customer_management";
+import { BACKEND_URL } from "../config";
+const CUSTOMER_MANAGEMENT_SETTINGS_URL = `${BACKEND_URL}customer_management`;
 
 export const getAllCustomers = async (): Promise<CustomerResponse[]> => {
   const response = await fetch(CUSTOMER_MANAGEMENT_SETTINGS_URL, {
