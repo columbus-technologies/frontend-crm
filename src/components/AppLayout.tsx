@@ -15,6 +15,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
 
   const handleLogout = () => {
     // Clear the JWT token and redirect to the login page
+    // implement invalidating jwtToken as well
     sessionStorage.removeItem("jwtToken");
     navigate("/login");
   };

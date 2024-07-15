@@ -82,6 +82,66 @@ button:focus-visible {
   margin-bottom: 20px; /* Add margin below the title */
 }
 
+.search-bar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.search-bar {
+  width: 450px; /* Adjust the width as needed */
+}
+
+.styled-descriptions {
+  margin-bottom: 20px; /* Add margin between Descriptions components */
+  background-color: #f9f9f9; /* Light background color for Descriptions */
+  padding: 16px; /* Add padding to the Descriptions component */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Light shadow for better contrast */
+}
+
+.styled-descriptions .ant-descriptions-title {
+  background-color: #9ebad7; /* Dark blue background */
+  color: white; /* White text color */
+  padding: 8px 16px; /* Padding for the title */
+  border-radius: 8px 8px 0 0; /* Rounded corners for the title */
+}
+
+.shipment-products {
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Adjust the gap between items as needed */
+}
+
+.shipment-product {
+  display: flex;
+  flex-direction: column;
+  padding: 8px; /* Add some padding for better readability */
+  border: 1px solid #f0f0f0; /* Light border to separate items */
+  border-radius: 4px; /* Rounded corners */
+  background-color: #fafafa; /* Light background color */
+}
+
+.bunker-intake-specifications {
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Adjust the gap between items as needed */
+}
+
+.bunker-intake-specification {
+  display: flex;
+  flex-direction: column;
+  padding: 8px; /* Add some padding for better readability */
+  border: 1px solid #f0f0f0; /* Light border to separate items */
+  border-radius: 4px; /* Rounded corners */
+  background-color: #fafafa; /* Light background color */
+}
+
+.styled-descriptions .ant-descriptions-item-label {
+  font-weight: bold; /* Bold the label */
+}
+
 .card-status {
   display: inline-block;
   padding: 2px 8px;

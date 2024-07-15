@@ -1,11 +1,46 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Typography, Tabs } from "antd";
+import { useParams } from "react-router-dom"; // Import useParams
 
 const { Title } = Typography;
 const { TabPane } = Tabs;
 
+import { ShipmentResponse } from "../types";
+import { getShipmentById } from "../api"; // Remove getAllShipments import
+import UnauthorizedModal from "../components/modals/UnauthorizedModal";
+import { renderShipmentDetails } from "./feed/ShipmentDetails";
+
 const Feed: React.FC = () => {
-  const [errorMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [selectedShipment, setSelectedShipment] =
+    useState<ShipmentResponse | null>(null);
+  const [isUnauthorizedModalVisible, setIsUnauthorizedModalVisible] =
+    useState(false);
+  const { id } = useParams<{ id: string }>(); // Get the ID from the URL
+
+  const fetchData = async () => {
+    try {
+      const data = await getShipmentById(id);
+      console.log("Fetched shipment:", data); // Debugging statement
+      setSelectedShipment(data);
+      setErrorMessage(null);
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error.message === "Unauthorized") {
+          setIsUnauthorizedModalVisible(true);
+        }
+        console.log(error.message);
+        setErrorMessage(error.message);
+      } else {
+        setErrorMessage(String(error));
+      }
+      console.error("There was an error!", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [id]); // Dependency array now includes id
 
   const renderContent = (content: string) => (
     <div>
@@ -25,7 +60,7 @@ const Feed: React.FC = () => {
               {renderContent("Feed content...")}
             </TabPane>
             <TabPane tab="Shipment Details" key="2">
-              {renderContent("Shipment Details content...")}
+              {renderShipmentDetails(selectedShipment)}
             </TabPane>
             <TabPane tab="Vessel" key="3">
               {renderContent("Vessel content...")}
@@ -45,6 +80,10 @@ const Feed: React.FC = () => {
           </Tabs>
         )}
       </Card>
+      <UnauthorizedModal
+        visible={isUnauthorizedModalVisible}
+        onClose={() => setIsUnauthorizedModalVisible(false)}
+      />
     </div>
   );
 };

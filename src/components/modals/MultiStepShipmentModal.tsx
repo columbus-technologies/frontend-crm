@@ -149,7 +149,7 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
                     shipment_product:
                       activity.shipment_product?.map((product: any) => ({
                         sub_product_type: product.sub_product_type || "",
-                        quantityCode: product.quantityCode || "",
+                        quantity_code: product.quantityCode || "",
                         quantity: parseInt(product.quantity, 10) || "",
                         percentage: parseInt(product.percentage, 10) || "",
                       })) || [],
@@ -209,10 +209,10 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
                 mergedValues.shipment_type?.bunkering.bunkering || false,
               bunkering_activity:
                 mergedValues.bunkering_activity?.map((activity: any) => ({
-                  supplier: activity.supplier || "",
+                  supplier: mergedValues.supplier || "",
                   customer_name: activity.customer_name || "",
-                  supplier_contact: activity.supplier_contact || "",
-                  supplier_email: activity.supplier_email || "",
+                  supplier_contact: mergedValues.supplier_contact || "",
+                  supplier_email: mergedValues.supplier_email || "",
                   appointed_surveyor: activity.appointed_surveyor || "",
                   docking: activity.docking || "",
                   supplier_vessel: activity.supplier_vessel || "",

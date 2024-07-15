@@ -30,7 +30,7 @@ const Login: React.FC = () => {
       }
 
       const data = await response.json();
-      console.log(data);
+      console.log(data, "data");
       sessionStorage.setItem("jwtToken", data.token);
       message.success("Login successful");
       // Redirect to the dashboard after successful login

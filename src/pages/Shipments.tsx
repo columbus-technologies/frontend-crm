@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Card, Typography, Table, Button, message, Tag } from "antd";
+import {
+  Card,
+  Typography,
+  Table,
+  Button,
+  message,
+  Tag,
+  Input,
+  Select,
+} from "antd";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { ShipmentResponse } from "../types";
 import { getAllShipments, deleteShipment } from "../api";
 import "../styles/index.css"; // Ensure the CSS file is imported
@@ -9,6 +19,8 @@ import { useStatusColours } from "../context/StatusColoursContext"; // Import th
 import { formatDateToLocalString } from "../utils/dateTimeUtils";
 
 const { Title } = Typography;
+const { Search } = Input;
+const { Option } = Select;
 
 const ShipmentsManagement: React.FC = () => {
   const [shipments, setShipments] = useState<ShipmentResponse[]>([]);
@@ -16,13 +28,21 @@ const ShipmentsManagement: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isUnauthorizedModalVisible, setIsUnauthorizedModalVisible] =
     useState(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [filter, setFilter] = useState<string>("All");
+
   const statusColours = useStatusColours();
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const fetchData = async () => {
     try {
       const data = await getAllShipments();
       console.log("Fetched shipments:", data); // Debugging statement
-      setShipments(data);
+      const sortedData = data.sort(
+        (a, b) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+      setShipments(sortedData);
       setErrorMessage(null);
     } catch (error) {
       if (error instanceof Error) {
@@ -42,18 +62,8 @@ const ShipmentsManagement: React.FC = () => {
     fetchData(); // Initial fetch
   }, []); // Empty dependency array means this effect runs once on mount
 
-  const handleDelete = async (id: string) => {
-    console.log(`Attempting to delete shipment with ID: ${id}`); // Debugging statement
-    try {
-      await deleteShipment(id);
-      fetchData(); // Refresh the table data after deletion
-      message.success("Shipment deleted successfully!");
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error("Failed to delete shipment:", error.message);
-        message.error("Failed to delete shipment. Please try again.");
-      }
-    }
+  const handleView = (id: string) => {
+    navigate(`/feed/${id}`);
   };
 
   const handleModalOpen = () => {
@@ -64,6 +74,28 @@ const ShipmentsManagement: React.FC = () => {
     setIsModalVisible(false);
     fetchData(); // Refresh the table data after creation
   };
+
+  const handleSearch = (value: string) => {
+    setSearchQuery(value);
+  };
+
+  const handleFilterChange = (value: string) => {
+    setFilter(value);
+  };
+
+  const filteredShipments = shipments.filter((shipment) => {
+    const matchesSearchQuery = shipment.vessel_specifications?.vessel_name
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+
+    if (filter === "Completed") {
+      return matchesSearchQuery && shipment.current_status === "Completed";
+    } else if (filter === "Current") {
+      return matchesSearchQuery && shipment.current_status !== "Completed";
+    } else {
+      return matchesSearchQuery;
+    }
+  });
 
   const columns = [
     {
@@ -165,8 +197,8 @@ const ShipmentsManagement: React.FC = () => {
       key: "action",
       render: (record: ShipmentResponse) => {
         return (
-          <Button type="primary" danger onClick={() => handleDelete(record.ID)}>
-            Delete
+          <Button type="primary" onClick={() => handleView(record.ID)}>
+            View
           </Button>
         );
       },
@@ -178,16 +210,37 @@ const ShipmentsManagement: React.FC = () => {
       <Title level={2} className="settings-management-title">
         Shipments Management
       </Title>
-      <div style={{ textAlign: "right", marginBottom: "20px" }}>
-        <Button type="primary" onClick={handleModalOpen}>
-          Add Shipment
-        </Button>
+      <div className="search-bar-container">
+        <Search
+          placeholder="Search by Vessel Name"
+          onSearch={handleSearch}
+          onChange={(e) => handleSearch(e.target.value)}
+          className="search-bar" // Apply the class to set width
+        />
+        <div>
+          <Select
+            defaultValue="All"
+            style={{ width: 120, marginLeft: 10 }}
+            onChange={handleFilterChange}
+          >
+            <Option value="All">All</Option>
+            <Option value="Completed">Completed</Option>
+            <Option value="Current">Current</Option>
+          </Select>
+          <Button
+            type="primary"
+            onClick={handleModalOpen}
+            style={{ marginLeft: 10 }}
+          >
+            Add Shipment
+          </Button>
+        </div>
       </div>
       <Card>
         {errorMessage ? (
           <p>{errorMessage}</p>
         ) : (
-          <Table dataSource={shipments} columns={columns} rowKey="ID" />
+          <Table dataSource={filteredShipments} columns={columns} rowKey="ID" />
         )}
       </Card>
       <MultiStepShipmentModal

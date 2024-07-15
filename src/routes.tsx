@@ -31,7 +31,7 @@ const AppRoutes: React.FC = () => {
           <AppLayout>
             <Routes>
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/feed" element={<Feed />} />
+              <Route path="/feed/:id" element={<Feed />} />
               <Route path="/shipments" element={<Shipments />} />
               <Route
                 path="/customer-management-settings"
