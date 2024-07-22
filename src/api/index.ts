@@ -6,3 +6,4 @@ export * from "./terminal_management";
 export * from "./supplier_management";
 export * from "./category_management_activity_type";
 export * from "./category_management_product_type";
+export * from "./invoice";

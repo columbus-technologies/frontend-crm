@@ -118,7 +118,6 @@ export interface ShipmentResponse {
   shipment_type: ShipmentType;
   vessel_specifications: VesselSpecifications;
   shipment_details: ShipmentDetails;
-  activity: CargoOperationsActivity[];
   created_at: string;
   updated_at: string;
 }

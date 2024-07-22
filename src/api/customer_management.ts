@@ -74,3 +74,17 @@ export const getCustomerById = async (
   const data = await response.json();
   return data;
 };
+
+export const getCustomerByName = async (
+  name: string
+): Promise<CustomerResponse> => {
+  const response = await fetch(`${CUSTOMER_MANAGEMENT_SETTINGS_URL}/${name}`, {
+    method: "GET",
+    headers: prepareAuthHeaders(),
+  });
+  if (!response.ok) {
+    throw new Error(`Error: ${response.statusText}`);
+  }
+  const data = await response.json();
+  return data;
+};

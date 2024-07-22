@@ -9,6 +9,7 @@ import { ShipmentResponse } from "../types";
 import { getShipmentById } from "../api"; // Remove getAllShipments import
 import UnauthorizedModal from "../components/modals/UnauthorizedModal";
 import { renderShipmentDetails } from "./feed/ShipmentDetails";
+import Invoicing from "./feed/Invoicing";
 
 const Feed: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -74,8 +75,25 @@ const Feed: React.FC = () => {
             <TabPane tab="Documents" key="6">
               {renderContent("Documents content...")}
             </TabPane>
-            <TabPane tab="Accounting" key="7">
-              {renderContent("Accounting content...")}
+            <TabPane tab="Invoicing" key="7">
+              {/* {selectedShipment && (
+                <Invoicing
+                  shipmentId={selectedShipment.ID}
+                  grt={selectedShipment.vessel_specifications.grt}
+                  eta={selectedShipment.ETA}
+                  etd={
+                    selectedShipment.activity &&
+                    selectedShipment.activity.length > 0
+                      ? selectedShipment.activity[
+                          selectedShipment.activity.length - 1
+                        ].etd
+                      : selectedShipment.ETA
+                  }
+                />
+              )} */}
+              {selectedShipment && (
+                <Invoicing selectedShipment={selectedShipment} />
+              )}
             </TabPane>
           </Tabs>
         )}

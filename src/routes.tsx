@@ -13,6 +13,7 @@ import CategoryManagementActivityType from "./pages/CategoryManagementActivityTy
 import CategoryManagementProductType from "./pages/CategoryManagementProductType";
 import Login from "./pages/Login";
 import Feed from "./pages/Feed";
+import Invoicing from "./pages/feed/Invoicing";
 
 const AppRoutes: React.FC = () => {
   return (
@@ -32,6 +33,7 @@ const AppRoutes: React.FC = () => {
             <Routes>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/feed/:id" element={<Feed />} />
+              <Route path="/accounting" element={<Invoicing />} />
               <Route path="/shipments" element={<Shipments />} />
               <Route
                 path="/customer-management-settings"
