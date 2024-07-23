@@ -2,6 +2,7 @@ export interface InvoicePricing {
   tenant: string;
   shipment_id: string;
   invoice_pricing_details: { [key: string]: string };
+  created_at: string;
 }
 
 export interface InvoicePricingResponse {
@@ -9,6 +10,8 @@ export interface InvoicePricingResponse {
   tenant: string;
   shipment_id: string;
   invoice_pricing_details: { [key: string]: string };
+  created_at: string;
+  updated_at: string;
 }
 
 export interface InvoiceFees {

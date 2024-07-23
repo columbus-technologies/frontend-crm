@@ -55,6 +55,7 @@ export const getInvoiceById = async (
     throw new Error(`Error: ${response.statusText}`);
   }
   const data = await response.json();
+  console.log(data, "lala");
   return data;
 };
 

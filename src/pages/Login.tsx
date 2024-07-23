@@ -17,6 +17,7 @@ const Login: React.FC = () => {
     setLoading(true);
     // Example login request
     try {
+      console.log("start");
       const response = await fetch(LOGIN_SETTINGS_URL, {
         method: "POST",
         headers: {
@@ -24,7 +25,7 @@ const Login: React.FC = () => {
         },
         body: JSON.stringify(values),
       });
-
+      console.log("end");
       if (!response.ok) {
         throw new Error("Login failed");
       }

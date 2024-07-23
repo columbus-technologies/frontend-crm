@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Layout,
   Card,
@@ -13,25 +13,14 @@ import {
 } from "antd";
 import { FilePdfOutlined, EditOutlined } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  createInvoice,
-  editInvoice,
-  getCustomerByName,
-  getInvoiceById,
-  getInvoiceFeesFromPortAuthority,
-} from "../../api";
-import {
-  CustomerResponse,
-  GetInvoiceFeesFromPortAuthorityResponse,
-  InvoicePricing,
-  ShipmentResponse,
-} from "../../types";
+import { createInvoice, editInvoice } from "../../api";
+import { InvoicePricing, ShipmentResponse } from "../../types";
 
 import InvoiceImage from "../../assets/bluShipping.png"; // Import the image
 
 import "../../styles/InvoicingPage.css";
 import getLatestETD from "../../utils/dateTimeUtils";
-import getPilotageFees from "../../utils/invoice";
+import useInvoiceData from "../../hooks/useInvoiceData";
 
 const { Title } = Typography;
 
@@ -41,224 +30,14 @@ interface InvoicingProps {
 
 const Invoicing: React.FC<InvoicingProps> = ({ selectedShipment }) => {
   const navigate = useNavigate();
-  const [isEditing, setIsEditing] = useState(true);
-  const [hasExistingInvoice, setHasExistingInvoice] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [hasCurrentInvoice, setHasCurrentInvoice] = useState(false);
 
   const [form] = Form.useForm();
-  const [invoiceFeesData, setInvoiceFeesData] =
-    useState<GetInvoiceFeesFromPortAuthorityResponse | null>(null);
-  const [customerData, setCustomerData] = useState<CustomerResponse | null>(
-    null
+  const { hasExistingInvoice, tenantInformation, invoiceData } = useInvoiceData(
+    selectedShipment,
+    form
   );
-  const [tenantInformation, setTenantInformation] = useState<
-    string | undefined
-  >(undefined);
-
-  const fetchData = async () => {
-    try {
-      const fetchedInvoiceFeesData = await getInvoiceFeesFromPortAuthority();
-      console.log(fetchedInvoiceFeesData, "Fetched Invoice Fees Data");
-      setInvoiceFeesData(fetchedInvoiceFeesData);
-      setTenantInformation(fetchedInvoiceFeesData.tenant);
-      const customerDataByName = await getCustomerByName(
-        selectedShipment.shipment_type.bunkering.bunkering_activity[0]
-          .customer_name ||
-          selectedShipment.shipment_type.cargo_operations
-            .cargo_operations_activity[0].customer_name ||
-          ""
-      );
-      console.log(customerDataByName);
-      setCustomerData(customerDataByName);
-      console.log(customerData, "YYY");
-    } catch (error) {
-      console.error("Failed to fetch invoice fees data", error);
-    }
-
-    try {
-      console.log(selectedShipment, "Selected Shipment");
-      const data = await getInvoiceById(selectedShipment.ID);
-      console.log(data);
-      form.setFieldsValue(data);
-      // get customer information
-      form.setFieldsValue({
-        customerName: data.invoice_pricing_details["customerName"],
-        fax: data.invoice_pricing_details["fax"],
-        imoNumber: data.invoice_pricing_details["imoNumber"],
-        vessleName: data.invoice_pricing_details["vesselName"],
-        voyageNumber: data.invoice_pricing_details["voyageNumber"],
-        callSign: data.invoice_pricing_details["callSign"],
-        location: data.invoice_pricing_details["location"],
-        purpose: data.invoice_pricing_details["purpose"],
-        contactNumber: data.invoice_pricing_details["contactNumber"],
-        email: data.invoice_pricing_details["email"],
-        grt: data.invoice_pricing_details["grt"],
-        nrt: data.invoice_pricing_details["nrt"],
-        dwt: data.invoice_pricing_details["dwt"],
-        loa: data.invoice_pricing_details["loa"],
-        eta: data.invoice_pricing_details["eta"],
-        etd: data.invoice_pricing_details["etd"],
-        port_dues_description:
-          data.invoice_pricing_details["port_dues_description"],
-        port_dues_units: data.invoice_pricing_details["port_dues_units"],
-        port_dues_unitPrice:
-          data.invoice_pricing_details["port_dues_unitPrice"],
-        port_dues_price: data.invoice_pricing_details["port_dues_price"],
-        port_dues_remarks: data.invoice_pricing_details["port_dues_remarks"],
-        pilotage_description:
-          data.invoice_pricing_details["pilotage_description"],
-        pilotage_hours: data.invoice_pricing_details["pilotage_hours"],
-        pilotage_hourlyRate:
-          data.invoice_pricing_details["pilotage_hourlyRate"],
-        pilotage_price: data.invoice_pricing_details["pilotage_price"],
-        pilotage_remarks: data.invoice_pricing_details["pilotage_remarks"],
-        service_launch_description:
-          data.invoice_pricing_details["service_launch_description"],
-        service_launch_trips:
-          data.invoice_pricing_details["service_launch_trips"],
-        service_launch_hourlyRate:
-          data.invoice_pricing_details["service_launch_hourlyRate"],
-        service_launch_price:
-          data.invoice_pricing_details["service_launch_price"],
-        service_launch_remarks:
-          data.invoice_pricing_details["service_launch_remarks"],
-        towage_description: data.invoice_pricing_details["towage_description"],
-        towage_tugRate: data.invoice_pricing_details["towage_tugRate"],
-        towage_tugs: data.invoice_pricing_details["towage_tugs"],
-        towage_hours: data.invoice_pricing_details["towage_hours"],
-        towage_bafRate: data.invoice_pricing_details["towage_bafRate"],
-        towage_price: data.invoice_pricing_details["towage_price"],
-        towage_remarks: data.invoice_pricing_details["towage_remarks"],
-        mooring_description:
-          data.invoice_pricing_details["mooring_description"],
-        mooring_price: data.invoice_pricing_details["mooring_price"],
-        mooring_remarks: data.invoice_pricing_details["mooring_remarks"],
-        agency_fee_description:
-          data.invoice_pricing_details["agency_fee_description"],
-        agency_fee_price: data.invoice_pricing_details["agency_fee_price"],
-      });
-      setIsEditing(false);
-      setHasExistingInvoice(true);
-    } catch (error) {
-      console.error("Failed to fetch PDA invoice data", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [selectedShipment, form]);
-
-  useEffect(() => {
-    if (invoiceFeesData) {
-      const latestETD = getLatestETD(selectedShipment);
-      const pilotageFees = getPilotageFees(
-        invoiceFeesData.invoiceFees.pilotage,
-        selectedShipment
-      );
-
-      // default values for invoicing
-      const pilotageDefaultHours = 7;
-      const serviceLaunchDefaultTrips = 2;
-      const towageDefaultBafPercentRate = 5;
-
-      // Get terminal name if available
-      const cargoOperationsActivity =
-        selectedShipment.shipment_type.cargo_operations
-          ?.cargo_operations_activity;
-      const terminalName =
-        cargoOperationsActivity && cargoOperationsActivity.length > 0
-          ? cargoOperationsActivity[0].terminal_name
-          : "default";
-      // Update info once invoiceFeesData is available
-      console.log(customerData, "ZZZ");
-      form.setFieldsValue({
-        agency_fee_price: invoiceFeesData.invoiceFees.agencyFee.fees,
-        mooring_price: invoiceFeesData.invoiceFees.mooring[terminalName],
-        pilotage_hourlyRate: pilotageFees,
-        pilotage_hours: pilotageDefaultHours,
-        pilotage_price: pilotageFees * pilotageDefaultHours,
-        pilotage_remarks: `Basis ${pilotageDefaultHours} Hours @ ${pilotageFees} Per Hour`,
-        service_launch_trips: serviceLaunchDefaultTrips,
-        service_launch_hourlyRate:
-          invoiceFeesData.invoiceFees.serviceLaunch["hourlyRate"],
-        service_launch_price:
-          serviceLaunchDefaultTrips *
-          invoiceFeesData.invoiceFees.serviceLaunch["hourlyRate"],
-        service_launch_remarks: `Estimated Basis ${serviceLaunchDefaultTrips} Trips`,
-        towage_bafRate: towageDefaultBafPercentRate,
-        towage_remarks: `Estimated Basis SGD /Tug/Hr x  Tugs
-        x  Hrs +  % 5 BAF`,
-        mooring_remarks: `Estimated Basis Universal Terminal Tariff`,
-        contactNumber: customerData?.contact,
-        email: customerData?.email,
-        eta: new Date(selectedShipment.ETA),
-        etd: getLatestETD(selectedShipment),
-      });
-
-      const etaDate = new Date(selectedShipment.ETA);
-
-      // divide the difference by the no. of milliseconds in a day
-      const numOfDaysShipmentStayed = Math.ceil(
-        (latestETD.getTime() - etaDate.getTime()) / (1000 * 60 * 60 * 24)
-      );
-
-      // Size of Vessel (per 100 Gross Tonnage);
-      // https://www.mpa.gov.sg/finance-e-services/tariff-fees-and-charges/ocean-going-vessels
-      const sizeOfVessel = selectedShipment.vessel_specifications.grt / 100;
-
-      if (
-        selectedShipment.shipment_type.cargo_operations.cargo_operations &&
-        !selectedShipment.shipment_type.bunkering.bunkering
-      ) {
-        const cargoPortDuesPrice =
-          invoiceFeesData.invoiceFees.cargo_operations[numOfDaysShipmentStayed];
-        form.setFieldsValue({
-          port_dues_units: sizeOfVessel,
-          port_dues_price: cargoPortDuesPrice * sizeOfVessel,
-          port_dues_unitPrice: cargoPortDuesPrice,
-          port_dues_remarks: `Basis ${sizeOfVessel} Units @ ${cargoPortDuesPrice?.toFixed(
-            2
-          )} Per Unit`,
-        });
-      }
-
-      if (
-        selectedShipment.shipment_type.bunkering.bunkering &&
-        !selectedShipment.shipment_type.cargo_operations.cargo_operations
-      ) {
-        console.log("Bunkering only");
-        const bunkeringPortDuesPrice =
-          invoiceFeesData.invoiceFees.bunkering[numOfDaysShipmentStayed];
-        console.log(bunkeringPortDuesPrice, "Bunkering Port Dues Price");
-        form.setFieldsValue({
-          port_dues_units: sizeOfVessel,
-
-          port_dues_price: bunkeringPortDuesPrice * sizeOfVessel,
-          port_dues_unitPrice: bunkeringPortDuesPrice,
-          port_dues_remarks: `Basis ${sizeOfVessel} Units @ ${bunkeringPortDuesPrice?.toFixed(
-            2
-          )} Per Unit`,
-        });
-      }
-      // to be further confimed and modified
-      if (
-        selectedShipment.shipment_type.bunkering.bunkering &&
-        selectedShipment.shipment_type.cargo_operations.cargo_operations
-      ) {
-        console.log("Both Bunkering and Cargo Operations");
-        const bunkeringPortDuesPrice =
-          invoiceFeesData.invoiceFees.bunkering[numOfDaysShipmentStayed];
-        form.setFieldsValue({
-          port_dues_units: sizeOfVessel,
-          port_dues_price: bunkeringPortDuesPrice * sizeOfVessel,
-          port_dues_unitPrice: bunkeringPortDuesPrice, // Adjust this value according to your logic
-          port_dues_remarks: `Basis ${sizeOfVessel} Units @ ${bunkeringPortDuesPrice?.toFixed(
-            2
-          )} Per Unit`,
-        });
-      }
-      //3rd scenario neither bunkering nor cargo ops, then resume default
-    }
-  }, [invoiceFeesData, customerData, selectedShipment, form]);
 
   const handleSaveInvoice = async () => {
     setIsEditing(!isEditing);
@@ -273,13 +52,16 @@ const Invoicing: React.FC<InvoicingProps> = ({ selectedShipment }) => {
         tenant: tenantInformation || "",
         shipment_id: selectedShipment.ID,
         invoice_pricing_details: stringValues,
+        created_at: invoiceData?.created_at || new Date().toISOString(), // Use a default value if created_at is undefined
       };
-      if (hasExistingInvoice) {
+      console.log(hasExistingInvoice, "hasexisting");
+      if (hasExistingInvoice || hasCurrentInvoice) {
         await editInvoice(selectedShipment.ID, payload);
         console.log("Invoice edited successfully");
       } else {
         await createInvoice(payload);
         console.log("Invoice saved successfully");
+        setHasCurrentInvoice(true);
       }
       setIsEditing(false);
     } catch (error) {
