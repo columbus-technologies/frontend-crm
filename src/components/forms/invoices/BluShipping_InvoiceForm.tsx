@@ -1,7 +1,9 @@
 import React from "react";
 import { Form, Input, InputNumber, Row, Col, Divider, Typography } from "antd";
-import { ShipmentResponse } from "../../types";
-import getLatestETD from "../../utils/dateTimeUtils";
+import { ShipmentResponse } from "../../../types";
+import getLatestETD, {
+  formatDateToLocalString,
+} from "../../../utils/dateTimeUtils";
 const { Title } = Typography;
 
 interface InvoiceFormProps {
@@ -11,7 +13,7 @@ interface InvoiceFormProps {
   onValuesChange: (changedValues: any, allValues: any) => void;
 }
 
-const InvoiceForm: React.FC<InvoiceFormProps> = ({
+const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
   form,
   selectedShipment,
   isEditing,
@@ -39,18 +41,33 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
           nrt: selectedShipment.vessel_specifications.nrt + " metres",
           dwt: selectedShipment.vessel_specifications.sdwt,
           loa: selectedShipment.vessel_specifications.loa + " metres",
-          eta: new Date(selectedShipment.ETA),
-          etd: getLatestETD(selectedShipment),
+          eta: formatDateToLocalString(selectedShipment.ETA),
+          etd: formatDateToLocalString(
+            getLatestETD(selectedShipment).toISOString()
+          ),
           imoNumber: selectedShipment.vessel_specifications.imo_number,
           location: "Location",
           fax: "Fax",
           purpose: "Purpose",
           port_dues_description: "Port Dues",
+          estimated_total_description: "Estimated Total SGD",
           pilotage_description: "Pilotage",
           service_launch_description: "Service Launch",
           towage_description: "Towage",
           mooring_description: "Mooring",
           agency_fee_description: "Agency Fee",
+
+          // bank_name: "",
+          // swift_code: "asd",
+          // bank_address: "asd",
+          // payable_to: "asd",
+          // bank_code: "asd",
+          // account_number: "asd",
+          // tenant_address: "asd",
+          // tenant_telephone: "asd",
+          // tenant_fax: "asd",
+          // tenant_hp: "asd",
+          // tenant_email: "asd",
         }}
         onValuesChange={onValuesChange}
         style={{ maxWidth: "800px", width: "100%" }} // Adjust the maxWidth as needed
@@ -109,37 +126,35 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
             </Form.Item>
           </Col>
         </Row>
-        <Row gutter={16} style={{ marginBottom: "20px" }}>
-          <Col span={6}>
+        <Row gutter={32} style={{ marginBottom: "0px" }}>
+          <Col span={8}>
             <Form.Item label="Description" name="port_dues_description">
               <Input disabled />
             </Form.Item>
           </Col>
-          <Col span={6}>
-            <Form.Item label="Units" name="port_dues_units">
+          <Col span={8}>
+            <Form.Item label="Units (Per 100GT)" name="port_dues_units">
               <InputNumber min={0} disabled={!isEditing} />
             </Form.Item>
           </Col>
-          <Col span={6}>
+          <Col span={8}>
             <Form.Item label="Unit Price" name="port_dues_unitPrice">
               <InputNumber min={0} step={0.1} disabled={!isEditing} />
             </Form.Item>
           </Col>
-          <Col span={6}>
+          <Col span={8}>
             <Form.Item label="SGD Price" name="port_dues_price">
               <InputNumber min={0} step={0.01} disabled />
             </Form.Item>
           </Col>
-        </Row>
-        <Row gutter={16} style={{ marginBottom: "20px" }}>
-          <Col span={12}>
+          <Col span={16}>
             <Form.Item label="Remarks" name="port_dues_remarks">
               <Input disabled />
             </Form.Item>
           </Col>
         </Row>
         <Divider />
-        <Row gutter={16} style={{ marginBottom: "20px" }}>
+        <Row gutter={16} style={{ marginBottom: "0px" }}>
           <Col span={6}>
             <Form.Item label="Description" name="pilotage_description">
               <Input disabled />
@@ -161,7 +176,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
             </Form.Item>
           </Col>
         </Row>
-        <Row gutter={16} style={{ marginBottom: "20px" }}>
+        <Row gutter={16} style={{ marginBottom: "0px" }}>
           <Col span={12}>
             <Form.Item label="Remarks" name="pilotage_remarks">
               <Input disabled />
@@ -169,7 +184,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
           </Col>
         </Row>
         <Divider />
-        <Row gutter={16} style={{ marginBottom: "20px" }}>
+        <Row gutter={16} style={{ marginBottom: "0px" }}>
           <Col span={6}>
             <Form.Item label="Description" name="service_launch_description">
               <Input disabled />
@@ -191,7 +206,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
             </Form.Item>
           </Col>
         </Row>
-        <Row gutter={16} style={{ marginBottom: "20px" }}>
+        <Row gutter={16} style={{ marginBottom: "0px" }}>
           <Col span={12}>
             <Form.Item label="Remarks" name="service_launch_remarks">
               <Input disabled />
@@ -199,7 +214,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
           </Col>
         </Row>
         <Divider />
-        <Row gutter={16} style={{ marginBottom: "20px" }}>
+        <Row gutter={16} style={{ marginBottom: "0px" }}>
           <Col span={6}>
             <Form.Item label="Description" name="towage_description">
               <Input disabled />
@@ -231,7 +246,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
             </Form.Item>
           </Col>
         </Row>
-        <Row gutter={16} style={{ marginBottom: "20px" }}>
+        <Row gutter={16} style={{ marginBottom: "0px" }}>
           <Col span={16}>
             <Form.Item label="Remarks" name="towage_remarks">
               <Input disabled />
@@ -239,7 +254,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
           </Col>
         </Row>
         <Divider />
-        <Row gutter={16} style={{ marginBottom: "20px" }}>
+        <Row gutter={16} style={{ marginBottom: "0px" }}>
           <Col span={6}>
             <Form.Item label="Description" name="mooring_description">
               <Input disabled />
@@ -251,7 +266,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
             </Form.Item>
           </Col>
         </Row>
-        <Row gutter={16} style={{ marginBottom: "20px" }}>
+        <Row gutter={16} style={{ marginBottom: "0px" }}>
           <Col span={16}>
             <Form.Item label="Remarks" name="mooring_remarks">
               <Input disabled />
@@ -259,7 +274,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
           </Col>
         </Row>
         <Divider />
-        <Row gutter={16} style={{ marginBottom: "20px" }}>
+        <Row gutter={16} style={{ marginBottom: "0px" }}>
           <Col span={12}>
             <Form.Item label="Description" name="agency_fee_description">
               <Input defaultValue="Agency Fee" disabled />
@@ -271,20 +286,57 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
             </Form.Item>
           </Col>
         </Row>
-        <Row gutter={16} style={{ marginTop: "20px" }}>
+        <Divider />
+        <Row gutter={16} style={{ marginBottom: "0px" }}>
           <Col span={12}>
-            <Title level={4}>Banking Details</Title>
-            <p>
-              <strong>Bank Name:</strong> XXXXXXXX
-            </p>
-            <p>
-              <strong>Swift Code:</strong> XXXXXXXX
-            </p>
+            <Form.Item label="Description" name="estimated_total_description">
+              <Input defaultValue="Estimated Total SGD" disabled />
+            </Form.Item>
+          </Col>
+          <Col span={6}>
+            <Form.Item label="SGD Price" name="estimated_total">
+              <InputNumber min={0} step={0.1} disabled={!isEditing} />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Divider />
+        <Row gutter={16} style={{ marginTop: "0px" }}>
+          <Col span={12}>
+            <Form.Item label="Bank Name" name="bank_name">
+              <Input disabled={!isEditing} />
+            </Form.Item>
+            <Form.Item label="Swift Code" name="swift_code">
+              <Input disabled={!isEditing} />
+            </Form.Item>
+            <Form.Item label="Bank Address" name="bank_address">
+              <Input disabled={!isEditing} />
+            </Form.Item>
+            <Form.Item label="Payable To" name="payable_to">
+              <Input disabled={!isEditing} />
+            </Form.Item>
+            <Form.Item label="Bank Code" name="bank_code">
+              <Input disabled={!isEditing} />
+            </Form.Item>
+            <Form.Item label="Account Number" name="account_number">
+              <Input disabled={!isEditing} />
+            </Form.Item>
           </Col>
           <Col span={12}>
-            <Title level={4}>Remarks</Title>
-            <p>XXXXXXXXXXXXXXXXXXXX</p>
-            <p>XXXXXXXXXXXXXXXXXXXX</p>
+            <Form.Item label="Address" name="tenant_address">
+              <Input disabled={!isEditing} />
+            </Form.Item>
+            <Form.Item label="Telephone" name="tenant_telephone">
+              <Input disabled={!isEditing} />
+            </Form.Item>
+            <Form.Item label="Fax" name="tenant_fax">
+              <Input disabled={!isEditing} />
+            </Form.Item>
+            <Form.Item label="HP" name="tenant_hp">
+              <Input disabled={!isEditing} />
+            </Form.Item>
+            <Form.Item label="Email" name="tenant_email">
+              <Input disabled={!isEditing} />
+            </Form.Item>
           </Col>
         </Row>
       </Form>
@@ -292,4 +344,4 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
   );
 };
 
-export default InvoiceForm;
+export default BluShipping_InvoiceForm;

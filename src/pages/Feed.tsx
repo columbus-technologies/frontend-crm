@@ -9,7 +9,7 @@ import { ShipmentResponse } from "../types";
 import { getShipmentById } from "../api"; // Remove getAllShipments import
 import UnauthorizedModal from "../components/modals/UnauthorizedModal";
 import { renderShipmentDetails } from "./feed/ShipmentDetails";
-import Invoicing from "./feed/Invoicing";
+import Invoicing from "./feed/invoices/BluShipping_Invoicing";
 
 const Feed: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);

@@ -4,15 +4,17 @@ import {
   getInvoiceById,
   getInvoiceFeesFromPortAuthority,
   getCustomerByName,
-} from "../api";
+} from "../../api";
 import {
   GetInvoiceFeesFromPortAuthorityResponse,
   CustomerResponse,
   ShipmentResponse,
   InvoicePricingResponse,
-} from "../types";
-import getLatestETD from "../utils/dateTimeUtils";
-import getPilotageFees from "../utils/invoice";
+} from "../../types";
+import getLatestETD, {
+  formatDateToLocalString,
+} from "../../utils/dateTimeUtils";
+import getPilotageFees from "../../utils/invoice";
 
 const useInvoiceData = (
   selectedShipment: ShipmentResponse,
@@ -27,12 +29,15 @@ const useInvoiceData = (
     null
   );
   const [hasExistingInvoice, setHasExistingInvoice] = useState(false);
+  const [terminalName, setTerminalName] = useState("");
+
   const [tenantInformation, setTenantInformation] = useState<
     string | undefined
   >(undefined);
 
-  const fetchData = async () => {
+  const fetchInvoiceData = async () => {
     try {
+      console.log("fetching");
       const fetchedInvoiceFeesData = await getInvoiceFeesFromPortAuthority();
       setInvoiceFeesData(fetchedInvoiceFeesData);
       setTenantInformation(fetchedInvoiceFeesData.tenant);
@@ -50,11 +55,11 @@ const useInvoiceData = (
       }
 
       const invoiceData = await getInvoiceById(selectedShipment.ID);
-      console.log(invoiceData, "invoicedata");
       if (invoiceData && Object.keys(invoiceData).length > 0) {
         form.setFieldsValue(invoiceData.invoice_pricing_details);
         setHasExistingInvoice(true);
         setInvoiceData(invoiceData);
+        console.log("settingg");
       } else {
         setHasExistingInvoice(false);
       }
@@ -64,7 +69,7 @@ const useInvoiceData = (
   };
 
   useEffect(() => {
-    fetchData();
+    fetchInvoiceData();
   }, [selectedShipment, form]);
 
   useEffect(() => {
@@ -86,9 +91,25 @@ const useInvoiceData = (
         cargoOperationsActivity && cargoOperationsActivity.length > 0
           ? cargoOperationsActivity[0].terminal_name
           : "default";
-
+      setTerminalName(terminalName);
       form.setFieldsValue({
-        agency_fee_price: invoiceFeesData.invoiceFees.agencyFee.fees,
+        bank_name: invoiceFeesData.invoiceFees.invoice_bank_details.bank_name,
+        swift_code: invoiceFeesData.invoiceFees.invoice_bank_details.swift_code,
+        bank_address:
+          invoiceFeesData.invoiceFees.invoice_bank_details.bank_address,
+        payable_to: invoiceFeesData.invoiceFees.invoice_bank_details.payable_to,
+        bank_code: invoiceFeesData.invoiceFees.invoice_bank_details.bank_code,
+        account_number:
+          invoiceFeesData.invoiceFees.invoice_bank_details.account_number,
+        tenant_address:
+          invoiceFeesData.invoiceFees.invoice_bank_details.tenant_address,
+        tenant_telephone:
+          invoiceFeesData.invoiceFees.invoice_bank_details.tenant_telephone,
+        tenant_fax: invoiceFeesData.invoiceFees.invoice_bank_details.tenant_fax,
+        tenant_hp: invoiceFeesData.invoiceFees.invoice_bank_details.tenant_hp,
+        tenant_email:
+          invoiceFeesData.invoiceFees.invoice_bank_details.tenant_email,
+        agency_fee_price: invoiceFeesData.invoiceFees.agency_fee.fees,
         mooring_price: invoiceFeesData.invoiceFees.mooring[terminalName],
         pilotage_hourlyRate: pilotageFees,
         pilotage_hours: pilotageDefaultHours,
@@ -96,25 +117,25 @@ const useInvoiceData = (
         pilotage_remarks: `Basis ${pilotageDefaultHours} Hours @ ${pilotageFees} Per Hour`,
         service_launch_trips: serviceLaunchDefaultTrips,
         service_launch_hourlyRate:
-          invoiceFeesData.invoiceFees.serviceLaunch["hourlyRate"],
+          invoiceFeesData.invoiceFees.service_launch["hourlyRate"],
         service_launch_price:
           serviceLaunchDefaultTrips *
-          invoiceFeesData.invoiceFees.serviceLaunch["hourlyRate"],
+          invoiceFeesData.invoiceFees.service_launch["hourlyRate"],
         service_launch_remarks: `Estimated Basis ${serviceLaunchDefaultTrips} Trips`,
         towage_bafRate: towageDefaultBafPercentRate,
         towage_remarks: `Estimated Basis SGD /Tug/Hr x  Tugs x  Hrs +  % 5 BAF`,
         mooring_remarks: `Estimated Basis Universal Terminal Tariff`,
         contactNumber: customerData?.contact,
         email: customerData?.email,
-        eta: new Date(selectedShipment.ETA),
-        etd: latestETD,
+        eta: formatDateToLocalString(selectedShipment.ETA),
+        etd: formatDateToLocalString(latestETD.toISOString()),
       });
 
       const etaDate = new Date(selectedShipment.ETA);
       const numOfDaysShipmentStayed = Math.ceil(
         (latestETD.getTime() - etaDate.getTime()) / (1000 * 60 * 60 * 24)
       );
-
+      // https://www.mpa.gov.sg/finance-e-services/tariff-fees-and-charges/ocean-going-vesselsBasis
       const sizeOfVessel = selectedShipment.vessel_specifications.grt / 100;
 
       if (
@@ -173,6 +194,8 @@ const useInvoiceData = (
     hasExistingInvoice,
     tenantInformation,
     invoiceData,
+    terminalName,
+    fetchInvoiceData, // Return fetchInvoiceData function
   };
 };
 

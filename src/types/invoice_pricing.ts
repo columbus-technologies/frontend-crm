@@ -15,7 +15,7 @@ export interface InvoicePricingResponse {
 }
 
 export interface InvoiceFees {
-  agencyFee: {
+  agency_fee: {
     fees: number;
   };
   cargo_operations: {
@@ -32,11 +32,14 @@ export interface InvoiceFees {
     min: number;
     value: number;
   }[];
-  serviceLaunch: {
+  service_launch: {
     [key: string]: number;
   };
   towage: {
     [key: string]: number;
+  };
+  invoice_bank_details: {
+    [key: string]: string;
   };
 }
 

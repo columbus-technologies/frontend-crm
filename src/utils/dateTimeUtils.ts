@@ -50,7 +50,6 @@ const getLatestETD = (selectedShipment: ShipmentResponse): Date => {
     }
   } else {
     if (shipment_type.bunkering?.bunkering) {
-      console.log("here");
       latestShipmentOverallETD = getLastActivityETD(
         shipment_type.bunkering.bunkering_activity
       );
