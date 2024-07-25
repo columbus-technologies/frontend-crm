@@ -282,7 +282,7 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
           </Col>
           <Col span={6}>
             <Form.Item label="SGD Price" name="agency_fee_price">
-              <InputNumber min={0} step={0.01} disabled={!isEditing} />
+              <InputNumber min={0} disabled={!isEditing} />
             </Form.Item>
           </Col>
         </Row>
@@ -295,7 +295,7 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
           </Col>
           <Col span={6}>
             <Form.Item label="SGD Price" name="estimated_total">
-              <InputNumber min={0} step={0.1} disabled={!isEditing} />
+              <InputNumber min={0} step={0.1} disabled />
             </Form.Item>
           </Col>
         </Row>

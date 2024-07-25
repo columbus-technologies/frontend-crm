@@ -59,8 +59,10 @@ const useInvoiceData = (
         form.setFieldsValue(invoiceData.invoice_pricing_details);
         setHasExistingInvoice(true);
         setInvoiceData(invoiceData);
-        console.log("settingg");
+        console.log("existing invoice");
       } else {
+        console.log("no existing invoice");
+
         setHasExistingInvoice(false);
       }
     } catch (error) {
@@ -92,6 +94,7 @@ const useInvoiceData = (
           ? cargoOperationsActivity[0].terminal_name
           : "default";
       setTerminalName(terminalName);
+
       form.setFieldsValue({
         bank_name: invoiceFeesData.invoiceFees.invoice_bank_details.bank_name,
         swift_code: invoiceFeesData.invoiceFees.invoice_bank_details.swift_code,

@@ -16,6 +16,7 @@ import ArialBold from "../../assets/fonts/Arial_Bold.ttf";
 interface InvoicePDFProps {
   selectedShipment: ShipmentResponse;
   invoicePricing: InvoicePricing;
+  invoiceType: string;
 }
 
 // Register Arial font
@@ -152,6 +153,7 @@ const styles = StyleSheet.create({
 const BluShipping_InvoicePDF: React.FC<InvoicePDFProps> = ({
   selectedShipment,
   invoicePricing,
+  invoiceType,
 }) => (
   <Document>
     <Page style={styles.page}>
@@ -219,8 +221,12 @@ const BluShipping_InvoicePDF: React.FC<InvoicePDFProps> = ({
           </Text>
         </View>
       </View>
-      <Text style={styles.title}>Performa Disbursement Account</Text>
       <View style={styles.section}>
+        {invoiceType === "PDA" ? (
+          <Text style={styles.title}>Performa Disbursement Account</Text>
+        ) : (
+          <Text style={styles.title}>Final Disbursement Account</Text>
+        )}
         <View style={styles.table}>
           <View style={styles.tableHeader}>
             <Text style={styles.tableCell}>Description</Text>

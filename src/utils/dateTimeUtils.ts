@@ -14,7 +14,6 @@ export const formatDateToLocalString = (dateString: string): string => {
 
 const getLatestETD = (selectedShipment: ShipmentResponse): Date => {
   const { shipment_type, ETA } = selectedShipment;
-  console.log(shipment_type, "ETA");
   const getLatestDate = (date1: Date, date2: Date): Date => {
     return new Date(Math.max(date1.getTime(), date2.getTime()));
   };

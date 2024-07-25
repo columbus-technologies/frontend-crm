@@ -10,6 +10,8 @@ import { getShipmentById } from "../api"; // Remove getAllShipments import
 import UnauthorizedModal from "../components/modals/UnauthorizedModal";
 import { renderShipmentDetails } from "./feed/ShipmentDetails";
 import Invoicing from "./feed/invoices/BluShipping_Invoicing";
+import { renderVesselDetails } from "./feed/VesselDetails";
+import CustomerDetailsTab from "./feed/CustomerDetails";
 
 const Feed: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -64,10 +66,10 @@ const Feed: React.FC = () => {
               {renderShipmentDetails(selectedShipment)}
             </TabPane>
             <TabPane tab="Vessel" key="3">
-              {renderContent("Vessel content...")}
+              {renderVesselDetails(selectedShipment)}
             </TabPane>
             <TabPane tab="Customer" key="4">
-              {renderContent("Customer content...")}
+              <CustomerDetailsTab selectedShipment={selectedShipment} />
             </TabPane>
             <TabPane tab="Audit" key="5">
               {renderContent("Audit content...")}
@@ -76,21 +78,6 @@ const Feed: React.FC = () => {
               {renderContent("Documents content...")}
             </TabPane>
             <TabPane tab="Invoicing" key="7">
-              {/* {selectedShipment && (
-                <Invoicing
-                  shipmentId={selectedShipment.ID}
-                  grt={selectedShipment.vessel_specifications.grt}
-                  eta={selectedShipment.ETA}
-                  etd={
-                    selectedShipment.activity &&
-                    selectedShipment.activity.length > 0
-                      ? selectedShipment.activity[
-                          selectedShipment.activity.length - 1
-                        ].etd
-                      : selectedShipment.ETA
-                  }
-                />
-              )} */}
               {selectedShipment && (
                 <Invoicing selectedShipment={selectedShipment} />
               )}
