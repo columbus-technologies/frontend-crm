@@ -1,10 +1,9 @@
 import React from "react";
-import { Form, Input, InputNumber, Row, Col, Divider, Typography } from "antd";
+import { Form, Input, InputNumber, Row, Col, Divider } from "antd";
 import { ShipmentResponse } from "../../../types";
 import getLatestETD, {
   formatDateToLocalString,
 } from "../../../utils/dateTimeUtils";
-const { Title } = Typography;
 
 interface InvoiceFormProps {
   form: any;

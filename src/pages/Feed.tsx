@@ -5,27 +5,34 @@ import { useParams } from "react-router-dom"; // Import useParams
 const { Title } = Typography;
 const { TabPane } = Tabs;
 
-import { ShipmentResponse } from "../types";
+import { CustomerResponse, ShipmentResponse } from "../types";
 import { getShipmentById } from "../api"; // Remove getAllShipments import
 import UnauthorizedModal from "../components/modals/UnauthorizedModal";
 import { renderShipmentDetails } from "./feed/ShipmentDetails";
 import Invoicing from "./feed/invoices/BluShipping_Invoicing";
 import { renderVesselDetails } from "./feed/VesselDetails";
-import CustomerDetailsTab from "./feed/CustomerDetails";
+import fetchCustomerDataByShipment from "../utils/customer";
+import renderCustomerDetails from "./feed/CustomerDetails";
 
 const Feed: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [selectedShipment, setSelectedShipment] =
     useState<ShipmentResponse | null>(null);
+  const [customerData, setCustomerData] = useState<CustomerResponse | null>(
+    null
+  );
   const [isUnauthorizedModalVisible, setIsUnauthorizedModalVisible] =
     useState(false);
   const { id } = useParams<{ id: string }>(); // Get the ID from the URL
 
-  const fetchData = async () => {
+  const fetchData = async (id: string) => {
     try {
       const data = await getShipmentById(id);
       console.log("Fetched shipment:", data); // Debugging statement
       setSelectedShipment(data);
+
+      const fetchedShipment = await fetchCustomerDataByShipment(data);
+      setCustomerData(fetchedShipment);
       setErrorMessage(null);
     } catch (error) {
       if (error instanceof Error) {
@@ -42,7 +49,11 @@ const Feed: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchData();
+    if (id) {
+      fetchData(id);
+    } else {
+      setErrorMessage("No shipment ID provided");
+    }
   }, [id]); // Dependency array now includes id
 
   const renderContent = (content: string) => (
@@ -69,7 +80,7 @@ const Feed: React.FC = () => {
               {renderVesselDetails(selectedShipment)}
             </TabPane>
             <TabPane tab="Customer" key="4">
-              <CustomerDetailsTab selectedShipment={selectedShipment} />
+              {renderCustomerDetails(customerData)}
             </TabPane>
             <TabPane tab="Audit" key="5">
               {renderContent("Audit content...")}

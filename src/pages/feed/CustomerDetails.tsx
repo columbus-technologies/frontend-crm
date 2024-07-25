@@ -1,40 +1,8 @@
-import React, { useEffect, useState } from "react";
 import { Descriptions } from "antd";
-import { ShipmentResponse, CustomerResponse } from "../../types";
-import fetchCustomerDataByShipment from "../../utils/customer";
+import { CustomerResponse } from "../../types";
 
-interface CustomerDetailsTabProps {
-  selectedShipment: ShipmentResponse | null;
-}
-
-const CustomerDetailsTab: React.FC<CustomerDetailsTabProps> = ({
-  selectedShipment,
-}) => {
-  const [customerData, setCustomerData] = useState<CustomerResponse | null>(
-    null
-  );
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchCustomerData = async () => {
-      if (selectedShipment) {
-        const data = await fetchCustomerDataByShipment(selectedShipment);
-        setCustomerData(data);
-      }
-      setLoading(false);
-    };
-
-    fetchCustomerData();
-  }, [selectedShipment]);
-
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
-  if (!customerData) {
-    return <p>No customer data available.</p>;
-  }
-
+const renderCustomerDetails = (customerData: CustomerResponse | null) => {
+  if (!customerData) return <p>No customer selected.</p>;
   return (
     <Descriptions
       bordered
@@ -58,4 +26,4 @@ const CustomerDetailsTab: React.FC<CustomerDetailsTabProps> = ({
   );
 };
 
-export default CustomerDetailsTab;
+export default renderCustomerDetails;

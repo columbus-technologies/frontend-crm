@@ -1,17 +1,8 @@
 import React, { useEffect, useState } from "react";
-import {
-  Card,
-  Typography,
-  Table,
-  Button,
-  message,
-  Tag,
-  Input,
-  Select,
-} from "antd";
+import { Card, Typography, Table, Button, Tag, Input, Select } from "antd";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { ShipmentResponse } from "../types";
-import { getAllShipments, deleteShipment } from "../api";
+import { getAllShipments } from "../api";
 import "../styles/index.css"; // Ensure the CSS file is imported
 import MultiStepShipmentModal from "../components/modals/MultiStepShipmentModal";
 import UnauthorizedModal from "../components/modals/UnauthorizedModal";
