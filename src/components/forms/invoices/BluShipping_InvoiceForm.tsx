@@ -480,7 +480,7 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
         </Row>
         <Divider />
         <Form.List name="portDues">
-          {(fields, { add, remove }) => (
+          {(fields, { remove }) => (
             <>
               {fields.map((field) => (
                 <Row
@@ -561,7 +561,7 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
         </Form.List>
         <Divider />
         <Form.List name="pilotage">
-          {(fields, { add, remove }) => (
+          {(fields, { remove }) => (
             <>
               {fields.map((field) => (
                 <Row
@@ -642,7 +642,7 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
         </Form.List>
         <Divider />
         <Form.List name="serviceLaunch">
-          {(fields, { add, remove }) => (
+          {(fields, { remove }) => (
             <>
               {fields.map((field) => (
                 <Row
@@ -726,7 +726,7 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
         </Form.List>
         <Divider />
         <Form.List name="towage">
-          {(fields, { add, remove }) => (
+          {(fields, { remove }) => (
             <>
               {fields.map((field) => (
                 <Row
@@ -825,7 +825,7 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
         </Form.List>
         <Divider />
         <Form.List name="mooring">
-          {(fields, { add, remove }) => (
+          {(fields, { remove }) => (
             <>
               {fields.map((field) => (
                 <Row
@@ -888,7 +888,7 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
         </Form.List>
         <Divider />
         <Form.List name="agencyFee">
-          {(fields, { add, remove }) => (
+          {(fields, { remove }) => (
             <>
               {fields.map((field) => (
                 <Row

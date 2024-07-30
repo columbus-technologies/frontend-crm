@@ -175,55 +175,39 @@ const BluShipping_InvoicePDF: React.FC<InvoicePDFProps> = ({
   const dynamicFields = JSON.parse(
     invoicePricing.invoice_pricing_details.dynamicFields || "[]"
   );
-  // // Combine static and dynamic fields with numbering
-  // const allFields = [
-  //   { label: "Port Dues", value: "port_dues" },
-  //   { label: "Pilotage", value: "pilotage" },
-  //   { label: "Service Launch", value: "service_launch" },
-  //   { label: "Towage", value: "towage" },
-  //   { label: "Mooring", value: "mooring" },
-  //   { label: "Agency Fee", value: "agency_fee" },
-  //   ...dynamicFields.map((field: any, index: number) => ({
-  //     label: `Dynamic ${index + 1}`,
-  //     value: `dynamic_${index}`,
-  //     description: field.description,
-  //     price: field.price,
-  //   })),
-  // ];
 
-  // Combine static and dynamic fields with numbering
   const allFields = [
-    ...portDues.map((field: any, index: number) => ({
+    ...portDues.map((field: any) => ({
       label: `Port Dues`,
       description: field.description,
       price: field.price,
       remarks: field.remarks,
     })),
-    ...pilotage.map((field: any, index: number) => ({
+    ...pilotage.map((field: any) => ({
       label: `Pilotage`,
       description: field.description,
       price: field.price,
       remarks: field.remarks,
     })),
-    ...serviceLaunch.map((field: any, index: number) => ({
+    ...serviceLaunch.map((field: any) => ({
       label: `Service Launch`,
       description: field.description,
       price: field.price,
       remarks: field.remarks,
     })),
-    ...towage.map((field: any, index: number) => ({
+    ...towage.map((field: any) => ({
       label: `Towage`,
       description: field.description,
       price: field.price,
       remarks: field.remarks,
     })),
-    ...mooring.map((field: any, index: number) => ({
+    ...mooring.map((field: any) => ({
       label: `Mooring`,
       description: field.description,
       price: field.price,
       remarks: field.remarks,
     })),
-    ...agencyFee.map((field: any, index: number) => ({
+    ...agencyFee.map((field: any) => ({
       label: `Agency Fee`,
       description: field.description,
       price: field.price,
