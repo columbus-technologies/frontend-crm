@@ -1,13 +1,18 @@
-import React from "react";
-import { Form, Input, InputNumber, Row, Col, Divider } from "antd";
+import React, { useEffect, useState } from "react";
+import { Form, Input, InputNumber, Row, Col, Divider, Button } from "antd";
 import { ShipmentResponse } from "../../../types";
 import getLatestETD, {
   formatDateToLocalString,
 } from "../../../utils/dateTimeUtils";
+import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import getPilotageFees from "../../../utils/invoice";
 
 interface InvoiceFormProps {
   form: any;
   selectedShipment: ShipmentResponse;
+  invoiceData: any; // Add this prop
+  invoiceFeesData: any;
+  terminalName: any;
   isEditing: boolean;
   onValuesChange: (changedValues: any, allValues: any) => void;
 }
@@ -15,9 +20,362 @@ interface InvoiceFormProps {
 const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
   form,
   selectedShipment,
+  invoiceData,
+  invoiceFeesData,
+  terminalName,
   isEditing,
   onValuesChange,
 }) => {
+  const [havePortDuesField, setHavePortDuesField] = useState(true);
+  const [havePilotageField, setHavePilotageField] = useState(true);
+  const [haveServiceLaunchField, setHaveServiceLaunchField] = useState(true);
+  const [haveTowageField, setHaveTowageField] = useState(true);
+  const [haveMooringField, setHaveMooringField] = useState(true);
+  const [haveAgencyFeeField, setHaveAgencyFeeField] = useState(true);
+
+  useEffect(() => {
+    if (invoiceData) {
+      // Set initial values from invoiceData
+      const initialValues = {
+        ...invoiceData.invoice_pricing_details,
+        dynamicFields: JSON.parse(
+          invoiceData.invoice_pricing_details.dynamicFields || "[]"
+        ),
+        portDues: JSON.parse(
+          invoiceData.invoice_pricing_details.portDues || "[]"
+        ),
+        agencyFee: JSON.parse(
+          invoiceData.invoice_pricing_details.agencyFee || "[]"
+        ),
+        mooring: JSON.parse(
+          invoiceData.invoice_pricing_details.mooring || "[]"
+        ),
+        pilotage: JSON.parse(
+          invoiceData.invoice_pricing_details.pilotage || "[]"
+        ),
+        serviceLaunch: JSON.parse(
+          invoiceData.invoice_pricing_details.serviceLaunch || "[]"
+        ),
+        towage: JSON.parse(invoiceData.invoice_pricing_details.towage || "[]"),
+      };
+
+      // Decide whether to display add component based on existing data
+      setHavePortDuesField(initialValues.portDues.length > 0);
+      setHavePilotageField(initialValues.pilotage.length > 0);
+      setHaveServiceLaunchField(initialValues.serviceLaunch.length > 0);
+      setHaveTowageField(initialValues.towage.length > 0);
+      setHaveMooringField(initialValues.mooring.length > 0);
+      setHaveAgencyFeeField(initialValues.agencyFee.length > 0);
+      console.log(initialValues, "james");
+      form.setFieldsValue(initialValues);
+    }
+  }, [invoiceData, form]);
+
+  const handleAddPortDuesField = () => {
+    let newPortDuesFields = [];
+
+    const latestETD = getLatestETD(selectedShipment);
+
+    if (
+      !invoiceData ||
+      !invoiceData.invoice_pricing_details.portDues ||
+      invoiceData.invoice_pricing_details.portDues === "[]"
+    ) {
+      const etaDate = new Date(selectedShipment.ETA);
+      const numOfDaysShipmentStayed = Math.ceil(
+        (latestETD.getTime() - etaDate.getTime()) / (1000 * 60 * 60 * 24)
+      );
+      const sizeOfVessel = selectedShipment.vessel_specifications.grt / 100;
+
+      if (
+        selectedShipment.shipment_type.cargo_operations.cargo_operations &&
+        !selectedShipment.shipment_type.bunkering.bunkering
+      ) {
+        const cargoPortDuesPrice =
+          invoiceFeesData.invoiceFees.cargo_operations[numOfDaysShipmentStayed];
+        newPortDuesFields = [
+          {
+            units: sizeOfVessel,
+            price: cargoPortDuesPrice * sizeOfVessel,
+            unitPrice: cargoPortDuesPrice,
+            remarks: `Basis ${sizeOfVessel} Units @ ${cargoPortDuesPrice?.toFixed(
+              2
+            )} Per Unit`,
+            description: "Port Dues",
+          },
+        ];
+      }
+
+      if (
+        selectedShipment.shipment_type.bunkering.bunkering &&
+        !selectedShipment.shipment_type.cargo_operations.cargo_operations
+      ) {
+        const bunkeringPortDuesPrice =
+          invoiceFeesData.invoiceFees.bunkering[numOfDaysShipmentStayed];
+        newPortDuesFields = [
+          {
+            units: sizeOfVessel,
+            price: bunkeringPortDuesPrice * sizeOfVessel,
+            unitPrice: bunkeringPortDuesPrice,
+            remarks: `Basis ${sizeOfVessel} Units @ ${bunkeringPortDuesPrice?.toFixed(
+              2
+            )} Per Unit`,
+            description: "Port Dues",
+          },
+        ];
+      }
+
+      if (
+        selectedShipment.shipment_type.bunkering.bunkering &&
+        selectedShipment.shipment_type.cargo_operations.cargo_operations
+      ) {
+        const combinedPortDuesPrice =
+          invoiceFeesData.invoiceFees.bunkering[numOfDaysShipmentStayed];
+        newPortDuesFields = [
+          {
+            units: sizeOfVessel,
+            price: combinedPortDuesPrice * sizeOfVessel,
+            unitPrice: combinedPortDuesPrice,
+            remarks: `Basis ${sizeOfVessel} Units @ ${combinedPortDuesPrice?.toFixed(
+              2
+            )} Per Unit`,
+            description: "Port Dues",
+          },
+        ];
+      }
+    } else {
+      newPortDuesFields = JSON.parse(
+        invoiceData.invoice_pricing_details.portDues || "[]"
+      );
+    }
+
+    form.setFieldsValue({
+      portDues: newPortDuesFields,
+    });
+
+    // Manually trigger onValuesChange
+    onValuesChange(
+      { portDues: newPortDuesFields },
+      {
+        ...form.getFieldsValue(),
+        portDues: newPortDuesFields,
+      }
+    );
+
+    setHavePortDuesField(true);
+  };
+
+  const handleAddPilotageField = () => {
+    let newPilotageFields = [];
+    const pilotageDefaultHours = 7;
+    const pilotageFees = getPilotageFees(
+      invoiceFeesData.invoiceFees.pilotage,
+      selectedShipment
+    );
+    if (
+      !invoiceData ||
+      !invoiceData.invoice_pricing_details.pilotage ||
+      invoiceData.invoice_pricing_details.pilotage == "[]"
+    ) {
+      newPilotageFields = [
+        {
+          hourlyRate: pilotageFees,
+          hours: pilotageDefaultHours,
+          price: pilotageFees * pilotageDefaultHours,
+          description: "Pilotage",
+          remarks: `Basis ${pilotageDefaultHours} Hours @ ${pilotageFees} Per Hour`,
+        },
+      ];
+    } else {
+      newPilotageFields = JSON.parse(
+        invoiceData.invoice_pricing_details.pilotage || "[]"
+      );
+    }
+
+    form.setFieldsValue({
+      pilotage: newPilotageFields,
+    });
+
+    // Manually trigger onValuesChange
+    onValuesChange(
+      { pilotage: newPilotageFields },
+      {
+        ...form.getFieldsValue(),
+        pilotage: newPilotageFields,
+      }
+    );
+
+    setHavePilotageField(true);
+  };
+
+  const handleAddServiceLaunchField = () => {
+    let newServiceLaunchFields = [];
+    const serviceLaunchDefaultTrips = 2;
+
+    if (
+      !invoiceData ||
+      !invoiceData.invoice_pricing_details.serviceLaunch ||
+      invoiceData.invoice_pricing_details.serviceLaunch == "[]"
+    ) {
+      newServiceLaunchFields = [
+        {
+          trips: serviceLaunchDefaultTrips,
+          hourlyRate: invoiceFeesData.invoiceFees.service_launch["hourlyRate"],
+          price:
+            serviceLaunchDefaultTrips *
+            invoiceFeesData.invoiceFees.service_launch["hourlyRate"],
+          description: "Service Launch",
+          remarks: `Estimated Basis ${serviceLaunchDefaultTrips} Trips`,
+        },
+      ];
+    } else {
+      newServiceLaunchFields = JSON.parse(
+        invoiceData.invoice_pricing_details.serviceLaunch || "[]"
+      );
+    }
+
+    form.setFieldsValue({
+      serviceLaunch: newServiceLaunchFields,
+    });
+
+    // Manually trigger onValuesChange
+    onValuesChange(
+      { serviceLaunch: newServiceLaunchFields },
+      {
+        ...form.getFieldsValue(),
+        serviceLaunch: newServiceLaunchFields,
+      }
+    );
+
+    setHaveServiceLaunchField(true);
+  };
+
+  const handleAddTowageField = () => {
+    const towageDefaultBafPercentRate = 5;
+    console.log(invoiceData, "as");
+    let newTowageFields = [];
+    if (
+      !invoiceData ||
+      !invoiceData.invoice_pricing_details.towage ||
+      invoiceData.invoice_pricing_details.towage == "[]"
+    ) {
+      newTowageFields = [
+        {
+          bafRate: towageDefaultBafPercentRate,
+          remarks: `Estimated Basis SGD /Tug/Hr x  Tugs x  Hrs +  % 5 BAF`,
+          description: "Towage",
+        },
+      ];
+    } else {
+      newTowageFields = JSON.parse(
+        invoiceData.invoice_pricing_details.towage || "[]"
+      );
+    }
+
+    form.setFieldsValue({
+      towage: newTowageFields,
+    });
+
+    // Manually trigger onValuesChange
+    onValuesChange(
+      { towage: newTowageFields },
+      {
+        ...form.getFieldsValue(),
+        towage: newTowageFields,
+      }
+    );
+
+    setHaveTowageField(true);
+  };
+
+  const handleAddMooringField = () => {
+    let newMooringFields = [];
+    if (
+      !invoiceData ||
+      !invoiceData.invoice_pricing_details.mooring ||
+      invoiceData.invoice_pricing_details.mooring == "[]"
+    ) {
+      newMooringFields = [
+        {
+          price: invoiceFeesData.invoiceFees.mooring[terminalName],
+          description: "Mooring",
+          remarks: `Estimated Basis ${terminalName} Tariff`,
+        },
+      ];
+    } else {
+      newMooringFields = JSON.parse(
+        invoiceData.invoice_pricing_details.mooring || "[]"
+      );
+    }
+
+    form.setFieldsValue({
+      mooring: newMooringFields,
+    });
+
+    // Manually trigger onValuesChange
+    onValuesChange(
+      { mooring: newMooringFields },
+      {
+        ...form.getFieldsValue(),
+        mooring: newMooringFields,
+      }
+    );
+
+    setHaveMooringField(true);
+  };
+
+  const handleAddAgencyFeeField = () => {
+    let newAgencyFeeFields = [];
+    console.log(invoiceData, "fleh");
+    // 1st scenario - user has not saved and hence invoiceData.invoice_pricing_details.agencyFee will be null
+    // 2nd scenario - user has saved, but removed agencyFee, hence it is empty brackets
+    if (
+      !invoiceData ||
+      !invoiceData.invoice_pricing_details.agencyFee ||
+      invoiceData.invoice_pricing_details.agencyFee == "[]"
+    ) {
+      newAgencyFeeFields = [
+        {
+          price: invoiceFeesData.invoiceFees.agency_fee.fees,
+          description: "Agency Fee",
+        },
+      ];
+    } else {
+      newAgencyFeeFields = JSON.parse(
+        invoiceData.invoice_pricing_details.agencyFee || "[]"
+      );
+    }
+    console.log(newAgencyFeeFields, "newAgencyFeeFields");
+    form.setFieldsValue({
+      agencyFee: newAgencyFeeFields,
+    });
+
+    // Manually trigger onValuesChange
+    onValuesChange(
+      { agencyFee: newAgencyFeeFields },
+      {
+        ...form.getFieldsValue(),
+        agencyFee: newAgencyFeeFields,
+      }
+    );
+
+    setHaveAgencyFeeField(true);
+  };
+
+  const handleRemove = (
+    remove: (name: any) => void,
+    name: any,
+    fieldName: string
+  ) => {
+    remove(name);
+    if (fieldName === "portDues") setHavePortDuesField(false);
+    if (fieldName === "pilotage") setHavePilotageField(false);
+    if (fieldName === "serviceLaunch") setHaveServiceLaunchField(false);
+    if (fieldName === "towage") setHaveTowageField(false);
+    if (fieldName === "mooring") setHaveMooringField(false);
+    if (fieldName === "agencyFee") setHaveAgencyFeeField(false);
+  };
+
   return (
     <div style={{ display: "flex", justifyContent: "center" }}>
       <Form
@@ -44,7 +402,7 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
           etd: formatDateToLocalString(
             getLatestETD(selectedShipment).toISOString()
           ),
-          imoNumber: selectedShipment.vessel_specifications.imo_number,
+          imoNumber: String(selectedShipment.vessel_specifications.imo_number),
           location: "Location",
           fax: "Fax",
           purpose: "Purpose",
@@ -55,18 +413,13 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
           towage_description: "Towage",
           mooring_description: "Mooring",
           agency_fee_description: "Agency Fee",
-
-          // bank_name: "",
-          // swift_code: "asd",
-          // bank_address: "asd",
-          // payable_to: "asd",
-          // bank_code: "asd",
-          // account_number: "asd",
-          // tenant_address: "asd",
-          // tenant_telephone: "asd",
-          // tenant_fax: "asd",
-          // tenant_hp: "asd",
-          // tenant_email: "asd",
+          portDues: [],
+          pilotage: [],
+          mooring: [],
+          serviceLaunch: [],
+          towage: [],
+          agencyFee: [],
+          dynamicFields: [], // Initialize dynamicFields as an array
         }}
         onValuesChange={onValuesChange}
         style={{ maxWidth: "800px", width: "100%" }} // Adjust the maxWidth as needed
@@ -125,166 +478,514 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
             </Form.Item>
           </Col>
         </Row>
-        <Row gutter={32} style={{ marginBottom: "0px" }}>
-          <Col span={8}>
-            <Form.Item label="Description" name="port_dues_description">
-              <Input disabled />
-            </Form.Item>
-          </Col>
-          <Col span={8}>
-            <Form.Item label="Units (Per 100GT)" name="port_dues_units">
-              <InputNumber min={0} disabled={!isEditing} />
-            </Form.Item>
-          </Col>
-          <Col span={8}>
-            <Form.Item label="Unit Price" name="port_dues_unitPrice">
-              <InputNumber min={0} step={0.1} disabled={!isEditing} />
-            </Form.Item>
-          </Col>
-          <Col span={8}>
-            <Form.Item label="SGD Price" name="port_dues_price">
-              <InputNumber min={0} step={0.01} disabled />
-            </Form.Item>
-          </Col>
-          <Col span={16}>
-            <Form.Item label="Remarks" name="port_dues_remarks">
-              <Input disabled />
-            </Form.Item>
-          </Col>
-        </Row>
         <Divider />
-        <Row gutter={16} style={{ marginBottom: "0px" }}>
-          <Col span={6}>
-            <Form.Item label="Description" name="pilotage_description">
-              <Input disabled />
-            </Form.Item>
-          </Col>
-          <Col span={6}>
-            <Form.Item label="Hours" name="pilotage_hours">
-              <InputNumber min={0} disabled={!isEditing} />
-            </Form.Item>
-          </Col>
-          <Col span={6}>
-            <Form.Item label="Hourly Rate" name="pilotage_hourlyRate">
-              <InputNumber min={0} step={0.1} disabled={!isEditing} />
-            </Form.Item>
-          </Col>
-          <Col span={6}>
-            <Form.Item label="SGD Price" name="pilotage_price">
-              <InputNumber min={0} step={0.01} disabled />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row gutter={16} style={{ marginBottom: "0px" }}>
-          <Col span={12}>
-            <Form.Item label="Remarks" name="pilotage_remarks">
-              <Input disabled />
-            </Form.Item>
-          </Col>
-        </Row>
+        <Form.List name="portDues">
+          {(fields, { add, remove }) => (
+            <>
+              {fields.map((field) => (
+                <Row
+                  key={field.key}
+                  gutter={16}
+                  style={{ marginBottom: "0px" }}
+                >
+                  <Col span={8}>
+                    <Form.Item
+                      {...field}
+                      name={[field.name, "description"]}
+                      label="Description"
+                    >
+                      <Input defaultValue="Port Dues" disabled={!isEditing} />
+                    </Form.Item>
+                  </Col>
+                  <Col span={8}>
+                    <Form.Item
+                      {...field}
+                      name={[field.name, "units"]}
+                      label="Units (Per 100GT)"
+                    >
+                      <InputNumber min={0} disabled={!isEditing} />
+                    </Form.Item>
+                  </Col>
+                  <Col span={8}>
+                    <Form.Item
+                      {...field}
+                      name={[field.name, "unitPrice"]}
+                      label="Unit Price"
+                    >
+                      <InputNumber min={0} step={0.1} disabled={!isEditing} />
+                    </Form.Item>
+                  </Col>
+                  <Col span={8}>
+                    <Form.Item
+                      {...field}
+                      name={[field.name, "price"]}
+                      label="SGD Price"
+                    >
+                      <InputNumber min={0} disabled />
+                    </Form.Item>
+                  </Col>
+                  <Col span={16}>
+                    <Form.Item
+                      {...field}
+                      name={[field.name, "remarks"]}
+                      label="Remarks"
+                    >
+                      <Input disabled={!isEditing} />
+                    </Form.Item>
+                  </Col>
+                  {isEditing && (
+                    <Col span={8}>
+                      <MinusCircleOutlined
+                        onClick={() =>
+                          handleRemove(remove, field.name, "portDues")
+                        }
+                      />
+                    </Col>
+                  )}
+                </Row>
+              ))}
+              <Form.Item>
+                {isEditing && !havePortDuesField && (
+                  <Button
+                    type="dashed"
+                    onClick={handleAddPortDuesField}
+                    block
+                    icon={<PlusOutlined />}
+                  >
+                    Add Port Dues field
+                  </Button>
+                )}
+              </Form.Item>
+            </>
+          )}
+        </Form.List>
         <Divider />
-        <Row gutter={16} style={{ marginBottom: "0px" }}>
-          <Col span={6}>
-            <Form.Item label="Description" name="service_launch_description">
-              <Input disabled />
-            </Form.Item>
-          </Col>
-          <Col span={6}>
-            <Form.Item label="Trips" name="service_launch_trips">
-              <InputNumber min={0} disabled={!isEditing} />
-            </Form.Item>
-          </Col>
-          <Col span={6}>
-            <Form.Item label="Hourly Rate" name="service_launch_hourlyRate">
-              <InputNumber min={0} step={0.1} disabled={!isEditing} />
-            </Form.Item>
-          </Col>
-          <Col span={6}>
-            <Form.Item label="SGD Price" name="service_launch_price">
-              <InputNumber min={0} step={0.01} disabled />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row gutter={16} style={{ marginBottom: "0px" }}>
-          <Col span={12}>
-            <Form.Item label="Remarks" name="service_launch_remarks">
-              <Input disabled />
-            </Form.Item>
-          </Col>
-        </Row>
+        <Form.List name="pilotage">
+          {(fields, { add, remove }) => (
+            <>
+              {fields.map((field) => (
+                <Row
+                  key={field.key}
+                  gutter={16}
+                  style={{ marginBottom: "0px" }}
+                >
+                  <Col span={6}>
+                    <Form.Item
+                      {...field}
+                      name={[field.name, "description"]}
+                      label="Description"
+                    >
+                      <Input defaultValue="Pilotage" disabled={!isEditing} />
+                    </Form.Item>
+                  </Col>
+                  <Col span={6}>
+                    <Form.Item
+                      {...field}
+                      name={[field.name, "hours"]}
+                      label="Hours"
+                    >
+                      <InputNumber min={0} disabled={!isEditing} />
+                    </Form.Item>
+                  </Col>
+                  <Col span={6}>
+                    <Form.Item
+                      {...field}
+                      name={[field.name, "hourlyRate"]}
+                      label="Hourly Rate"
+                    >
+                      <InputNumber min={0} step={0.1} disabled={!isEditing} />
+                    </Form.Item>
+                  </Col>
+                  <Col span={6}>
+                    <Form.Item
+                      {...field}
+                      name={[field.name, "price"]}
+                      label="SGD Price"
+                    >
+                      <InputNumber min={0} disabled />
+                    </Form.Item>
+                  </Col>
+                  <Col span={16}>
+                    <Form.Item
+                      {...field}
+                      name={[field.name, "remarks"]}
+                      label="Remarks"
+                    >
+                      <Input disabled={!isEditing} />
+                    </Form.Item>
+                  </Col>
+                  {isEditing && (
+                    <Col span={8}>
+                      <MinusCircleOutlined
+                        onClick={() =>
+                          handleRemove(remove, field.name, "pilotage")
+                        }
+                      />
+                    </Col>
+                  )}
+                </Row>
+              ))}
+              <Form.Item>
+                {isEditing && !havePilotageField && (
+                  <Button
+                    type="dashed"
+                    onClick={handleAddPilotageField}
+                    block
+                    icon={<PlusOutlined />}
+                  >
+                    Add Pilotage field
+                  </Button>
+                )}
+              </Form.Item>
+            </>
+          )}
+        </Form.List>
         <Divider />
-        <Row gutter={16} style={{ marginBottom: "0px" }}>
-          <Col span={6}>
-            <Form.Item label="Description" name="towage_description">
-              <Input disabled />
-            </Form.Item>
-          </Col>
-          <Col span={6}>
-            <Form.Item label="Tug Rate" name="towage_tugRate">
-              <InputNumber min={0} disabled={!isEditing} />
-            </Form.Item>
-          </Col>
-          <Col span={6}>
-            <Form.Item label="Tugs" name="towage_tugs">
-              <InputNumber min={0} disabled={!isEditing} />
-            </Form.Item>
-          </Col>
-          <Col span={6}>
-            <Form.Item label="Hours" name="towage_hours">
-              <InputNumber min={0} disabled={!isEditing} />
-            </Form.Item>
-          </Col>
-          <Col span={6}>
-            <Form.Item label="BAF Rate (%)" name="towage_bafRate">
-              <InputNumber min={0} step={0.1} disabled={!isEditing} />
-            </Form.Item>
-          </Col>
-          <Col span={6}>
-            <Form.Item label="SGD Price" name="towage_price">
-              <InputNumber min={0} step={0.1} disabled />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row gutter={16} style={{ marginBottom: "0px" }}>
-          <Col span={16}>
-            <Form.Item label="Remarks" name="towage_remarks">
-              <Input disabled />
-            </Form.Item>
-          </Col>
-        </Row>
+        <Form.List name="serviceLaunch">
+          {(fields, { add, remove }) => (
+            <>
+              {fields.map((field) => (
+                <Row
+                  key={field.key}
+                  gutter={16}
+                  style={{ marginBottom: "0px" }}
+                >
+                  <Col span={6}>
+                    <Form.Item
+                      {...field}
+                      name={[field.name, "description"]}
+                      label="Description"
+                    >
+                      <Input
+                        defaultValue="Service Launch"
+                        disabled={!isEditing}
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col span={6}>
+                    <Form.Item
+                      {...field}
+                      name={[field.name, "trips"]}
+                      label="Trips"
+                    >
+                      <InputNumber min={0} disabled={!isEditing} />
+                    </Form.Item>
+                  </Col>
+                  <Col span={6}>
+                    <Form.Item
+                      {...field}
+                      name={[field.name, "hourlyRate"]}
+                      label="Hourly Rate"
+                    >
+                      <InputNumber min={0} step={0.1} disabled={!isEditing} />
+                    </Form.Item>
+                  </Col>
+                  <Col span={6}>
+                    <Form.Item
+                      {...field}
+                      name={[field.name, "price"]}
+                      label="SGD Price"
+                    >
+                      <InputNumber min={0} step={0.01} disabled />
+                    </Form.Item>
+                  </Col>
+                  <Col span={16}>
+                    <Form.Item
+                      {...field}
+                      name={[field.name, "remarks"]}
+                      label="Remarks"
+                    >
+                      <Input disabled={!isEditing} />
+                    </Form.Item>
+                  </Col>
+                  {isEditing && (
+                    <Col span={8}>
+                      <MinusCircleOutlined
+                        onClick={() =>
+                          handleRemove(remove, field.name, "serviceLaunch")
+                        }
+                      />
+                    </Col>
+                  )}
+                </Row>
+              ))}
+              <Form.Item>
+                {isEditing && !haveServiceLaunchField && (
+                  <Button
+                    type="dashed"
+                    onClick={handleAddServiceLaunchField}
+                    block
+                    icon={<PlusOutlined />}
+                  >
+                    Add Service Launch field
+                  </Button>
+                )}
+              </Form.Item>
+            </>
+          )}
+        </Form.List>
         <Divider />
-        <Row gutter={16} style={{ marginBottom: "0px" }}>
-          <Col span={6}>
-            <Form.Item label="Description" name="mooring_description">
-              <Input disabled />
-            </Form.Item>
-          </Col>
-          <Col span={6}>
-            <Form.Item label="SGD Price" name="mooring_price">
-              <InputNumber min={0} disabled={!isEditing} />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row gutter={16} style={{ marginBottom: "0px" }}>
-          <Col span={16}>
-            <Form.Item label="Remarks" name="mooring_remarks">
-              <Input disabled />
-            </Form.Item>
-          </Col>
-        </Row>
+        <Form.List name="towage">
+          {(fields, { add, remove }) => (
+            <>
+              {fields.map((field) => (
+                <Row
+                  key={field.key}
+                  gutter={16}
+                  style={{ marginBottom: "0px" }}
+                >
+                  <Col span={6}>
+                    <Form.Item
+                      {...field}
+                      name={[field.name, "description"]}
+                      label="Description"
+                    >
+                      <Input defaultValue="Towage" disabled />
+                    </Form.Item>
+                  </Col>
+                  <Col span={6}>
+                    <Form.Item
+                      {...field}
+                      name={[field.name, "tugRate"]}
+                      label="Tug Rate"
+                    >
+                      <InputNumber min={0} disabled={!isEditing} />
+                    </Form.Item>
+                  </Col>
+                  <Col span={6}>
+                    <Form.Item
+                      {...field}
+                      name={[field.name, "tugs"]}
+                      label="Tugs"
+                    >
+                      <InputNumber min={0} disabled={!isEditing} />
+                    </Form.Item>
+                  </Col>
+                  <Col span={6}>
+                    <Form.Item
+                      {...field}
+                      name={[field.name, "hours"]}
+                      label="Hours"
+                    >
+                      <InputNumber min={0} disabled={!isEditing} />
+                    </Form.Item>
+                  </Col>
+                  <Col span={6}>
+                    <Form.Item
+                      {...field}
+                      name={[field.name, "bafRate"]}
+                      label="BAF Rate (%)"
+                    >
+                      <InputNumber min={0} step={0.1} disabled={!isEditing} />
+                    </Form.Item>
+                  </Col>
+                  <Col span={6}>
+                    <Form.Item
+                      {...field}
+                      name={[field.name, "price"]}
+                      label="SGD Price"
+                    >
+                      <InputNumber min={0} step={0.01} disabled />
+                    </Form.Item>
+                  </Col>
+                  <Col span={16}>
+                    <Form.Item
+                      {...field}
+                      name={[field.name, "remarks"]}
+                      label="Remarks"
+                    >
+                      <Input disabled={!isEditing} />
+                    </Form.Item>
+                  </Col>
+                  {isEditing && (
+                    <Col span={8}>
+                      <MinusCircleOutlined
+                        onClick={() =>
+                          handleRemove(remove, field.name, "towage")
+                        }
+                      />
+                    </Col>
+                  )}
+                </Row>
+              ))}
+              <Form.Item>
+                {isEditing && !haveTowageField && (
+                  <Button
+                    type="dashed"
+                    onClick={handleAddTowageField}
+                    block
+                    icon={<PlusOutlined />}
+                  >
+                    Add Towage field
+                  </Button>
+                )}
+              </Form.Item>
+            </>
+          )}
+        </Form.List>
         <Divider />
-        <Row gutter={16} style={{ marginBottom: "0px" }}>
-          <Col span={12}>
-            <Form.Item label="Description" name="agency_fee_description">
-              <Input defaultValue="Agency Fee" disabled />
-            </Form.Item>
-          </Col>
-          <Col span={6}>
-            <Form.Item label="SGD Price" name="agency_fee_price">
-              <InputNumber min={0} disabled={!isEditing} />
-            </Form.Item>
-          </Col>
-        </Row>
+        <Form.List name="mooring">
+          {(fields, { add, remove }) => (
+            <>
+              {fields.map((field) => (
+                <Row
+                  key={field.key}
+                  gutter={16}
+                  style={{ marginBottom: "0px" }}
+                >
+                  <Col span={6}>
+                    <Form.Item
+                      {...field}
+                      name={[field.name, "description"]}
+                      label="Description"
+                    >
+                      <Input defaultValue="Mooring" disabled />
+                    </Form.Item>
+                  </Col>
+                  <Col span={6}>
+                    <Form.Item
+                      {...field}
+                      name={[field.name, "price"]}
+                      label="SGD Price"
+                    >
+                      <InputNumber min={0} disabled={!isEditing} />
+                    </Form.Item>
+                  </Col>
+                  <Col span={16}>
+                    <Form.Item
+                      {...field}
+                      name={[field.name, "remarks"]}
+                      label="Remarks"
+                    >
+                      <Input disabled={!isEditing} />
+                    </Form.Item>
+                  </Col>
+                  {isEditing && (
+                    <Col span={8}>
+                      <MinusCircleOutlined
+                        onClick={() =>
+                          handleRemove(remove, field.name, "mooring")
+                        }
+                      />
+                    </Col>
+                  )}
+                </Row>
+              ))}
+              <Form.Item>
+                {isEditing && !haveMooringField && (
+                  <Button
+                    type="dashed"
+                    onClick={handleAddMooringField}
+                    block
+                    icon={<PlusOutlined />}
+                  >
+                    Add Mooring field
+                  </Button>
+                )}
+              </Form.Item>
+            </>
+          )}
+        </Form.List>
+        <Divider />
+        <Form.List name="agencyFee">
+          {(fields, { add, remove }) => (
+            <>
+              {fields.map((field) => (
+                <Row
+                  key={field.key}
+                  gutter={16}
+                  style={{ marginBottom: "0px" }}
+                >
+                  <Col span={12}>
+                    <Form.Item
+                      {...field}
+                      name={[field.name, "description"]}
+                      label="Description"
+                    >
+                      <Input defaultValue="Agency Fee" disabled />
+                    </Form.Item>
+                  </Col>
+                  <Col span={6}>
+                    <Form.Item
+                      {...field}
+                      name={[field.name, "price"]}
+                      label="SGD Price"
+                    >
+                      <InputNumber min={0} disabled={!isEditing} />
+                    </Form.Item>
+                  </Col>
+                  {isEditing && (
+                    <Col span={8}>
+                      <MinusCircleOutlined
+                        onClick={() =>
+                          handleRemove(remove, field.name, "agencyFee")
+                        }
+                      />
+                    </Col>
+                  )}
+                </Row>
+              ))}
+              <Form.Item>
+                {isEditing && !haveAgencyFeeField && (
+                  <Button
+                    type="dashed"
+                    onClick={handleAddAgencyFeeField}
+                    block
+                    icon={<PlusOutlined />}
+                  >
+                    Add Agency Fee field
+                  </Button>
+                )}
+              </Form.Item>
+            </>
+          )}
+        </Form.List>
+        <Divider />
+        <Form.List name="dynamicFields">
+          {(fields, { add, remove }) => (
+            <>
+              {fields.map(({ name, ...restField }, index) => (
+                <Row key={index} gutter={16} style={{ marginBottom: "0px" }}>
+                  <Col span={12}>
+                    <Form.Item
+                      {...restField}
+                      name={[name, "description"]}
+                      label="Description"
+                    >
+                      <Input disabled={!isEditing} />
+                    </Form.Item>
+                  </Col>
+                  <Col span={6}>
+                    <Form.Item
+                      {...restField}
+                      name={[name, "price"]}
+                      label="SGD Price"
+                    >
+                      <InputNumber min={0} step={0.1} disabled={!isEditing} />
+                    </Form.Item>
+                  </Col>
+                  <Col span={6}>
+                    {isEditing && (
+                      <MinusCircleOutlined onClick={() => remove(name)} />
+                    )}
+                  </Col>
+                </Row>
+              ))}
+              <Form.Item>
+                {isEditing && (
+                  <Button
+                    type="dashed"
+                    onClick={() => add()}
+                    block
+                    icon={<PlusOutlined />}
+                  >
+                    Add field
+                  </Button>
+                )}
+              </Form.Item>
+            </>
+          )}
+        </Form.List>
         <Divider />
         <Row gutter={16} style={{ marginBottom: "0px" }}>
           <Col span={12}>
@@ -302,42 +1003,44 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
         <Row gutter={16} style={{ marginTop: "0px" }}>
           <Col span={12}>
             <Form.Item label="Bank Name" name="bank_name">
-              <Input disabled={!isEditing} />
+              <Input disabled />
             </Form.Item>
             <Form.Item label="Swift Code" name="swift_code">
-              <Input disabled={!isEditing} />
+              <Input disabled />
             </Form.Item>
             <Form.Item label="Bank Address" name="bank_address">
-              <Input disabled={!isEditing} />
+              <Input disabled />
             </Form.Item>
             <Form.Item label="Payable To" name="payable_to">
-              <Input disabled={!isEditing} />
+              <Input disabled />
             </Form.Item>
             <Form.Item label="Bank Code" name="bank_code">
-              <Input disabled={!isEditing} />
+              <Input disabled />
             </Form.Item>
             <Form.Item label="Account Number" name="account_number">
-              <Input disabled={!isEditing} />
+              <Input disabled />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item label="Address" name="tenant_address">
-              <Input disabled={!isEditing} />
+              <Input disabled />
             </Form.Item>
             <Form.Item label="Telephone" name="tenant_telephone">
-              <Input disabled={!isEditing} />
+              <Input disabled />
             </Form.Item>
             <Form.Item label="Fax" name="tenant_fax">
-              <Input disabled={!isEditing} />
+              <Input disabled />
             </Form.Item>
             <Form.Item label="HP" name="tenant_hp">
-              <Input disabled={!isEditing} />
+              <Input disabled />
             </Form.Item>
             <Form.Item label="Email" name="tenant_email">
-              <Input disabled={!isEditing} />
+              <Input disabled />
             </Form.Item>
           </Col>
         </Row>
+
+        {/* Dynamic fields section */}
       </Form>
     </div>
   );

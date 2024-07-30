@@ -56,6 +56,7 @@ const useInvoiceData = (
 
       const invoiceData = await getInvoiceById(selectedShipment.ID);
       if (invoiceData && Object.keys(invoiceData).length > 0) {
+        console.log(invoiceData, "invoiceData");
         form.setFieldsValue(invoiceData.invoice_pricing_details);
         setHasExistingInvoice(true);
         setInvoiceData(invoiceData);
@@ -112,22 +113,47 @@ const useInvoiceData = (
         tenant_hp: invoiceFeesData.invoiceFees.invoice_bank_details.tenant_hp,
         tenant_email:
           invoiceFeesData.invoiceFees.invoice_bank_details.tenant_email,
-        agency_fee_price: invoiceFeesData.invoiceFees.agency_fee.fees,
-        mooring_price: invoiceFeesData.invoiceFees.mooring[terminalName],
-        pilotage_hourlyRate: pilotageFees,
-        pilotage_hours: pilotageDefaultHours,
-        pilotage_price: pilotageFees * pilotageDefaultHours,
-        pilotage_remarks: `Basis ${pilotageDefaultHours} Hours @ ${pilotageFees} Per Hour`,
-        service_launch_trips: serviceLaunchDefaultTrips,
-        service_launch_hourlyRate:
-          invoiceFeesData.invoiceFees.service_launch["hourlyRate"],
-        service_launch_price:
-          serviceLaunchDefaultTrips *
-          invoiceFeesData.invoiceFees.service_launch["hourlyRate"],
-        service_launch_remarks: `Estimated Basis ${serviceLaunchDefaultTrips} Trips`,
-        towage_bafRate: towageDefaultBafPercentRate,
-        towage_remarks: `Estimated Basis SGD /Tug/Hr x  Tugs x  Hrs +  % 5 BAF`,
-        mooring_remarks: `Estimated Basis Universal Terminal Tariff`,
+        agencyFee: [
+          {
+            price: invoiceFeesData.invoiceFees.agency_fee.fees,
+            description: "Agency Fee",
+          },
+        ],
+        mooring: [
+          {
+            price: invoiceFeesData.invoiceFees.mooring[terminalName],
+            description: "Mooring",
+            remarks: `Estimated Basis ${terminalName} Tariff`,
+          },
+        ],
+        pilotage: [
+          {
+            hourlyRate: pilotageFees,
+            hours: pilotageDefaultHours,
+            price: pilotageFees * pilotageDefaultHours,
+            description: "Pilotage",
+            remarks: `Basis ${pilotageDefaultHours} Hours @ ${pilotageFees} Per Hour`,
+          },
+        ],
+        serviceLaunch: [
+          {
+            trips: serviceLaunchDefaultTrips,
+            hourlyRate:
+              invoiceFeesData.invoiceFees.service_launch["hourlyRate"],
+            price:
+              serviceLaunchDefaultTrips *
+              invoiceFeesData.invoiceFees.service_launch["hourlyRate"],
+            description: "Service Launch",
+            remarks: `Estimated Basis ${serviceLaunchDefaultTrips} Trips`,
+          },
+        ],
+        towage: [
+          {
+            bafRate: towageDefaultBafPercentRate,
+            remarks: `Estimated Basis SGD /Tug/Hr x  Tugs x  Hrs +  % 5 BAF`,
+            description: "Towage",
+          },
+        ],
         contactNumber: customerData?.contact,
         email: customerData?.email,
         eta: formatDateToLocalString(selectedShipment.ETA),
@@ -148,12 +174,17 @@ const useInvoiceData = (
         const cargoPortDuesPrice =
           invoiceFeesData.invoiceFees.cargo_operations[numOfDaysShipmentStayed];
         form.setFieldsValue({
-          port_dues_units: sizeOfVessel,
-          port_dues_price: cargoPortDuesPrice * sizeOfVessel,
-          port_dues_unitPrice: cargoPortDuesPrice,
-          port_dues_remarks: `Basis ${sizeOfVessel} Units @ ${cargoPortDuesPrice?.toFixed(
-            2
-          )} Per Unit`,
+          portDues: [
+            {
+              units: sizeOfVessel,
+              price: cargoPortDuesPrice * sizeOfVessel,
+              unitPrice: cargoPortDuesPrice,
+              remarks: `Basis ${sizeOfVessel} Units @ ${cargoPortDuesPrice?.toFixed(
+                2
+              )} Per Unit`,
+              description: "Port Dues",
+            },
+          ],
         });
       }
 
@@ -164,12 +195,17 @@ const useInvoiceData = (
         const bunkeringPortDuesPrice =
           invoiceFeesData.invoiceFees.bunkering[numOfDaysShipmentStayed];
         form.setFieldsValue({
-          port_dues_units: sizeOfVessel,
-          port_dues_price: bunkeringPortDuesPrice * sizeOfVessel,
-          port_dues_unitPrice: bunkeringPortDuesPrice,
-          port_dues_remarks: `Basis ${sizeOfVessel} Units @ ${bunkeringPortDuesPrice?.toFixed(
-            2
-          )} Per Unit`,
+          portDues: [
+            {
+              units: sizeOfVessel,
+              price: bunkeringPortDuesPrice * sizeOfVessel,
+              unitPrice: bunkeringPortDuesPrice,
+              remarks: `Basis ${sizeOfVessel} Units @ ${bunkeringPortDuesPrice?.toFixed(
+                2
+              )} Per Unit`,
+              description: "Port Dues",
+            },
+          ],
         });
       }
 
@@ -180,12 +216,17 @@ const useInvoiceData = (
         const bunkeringPortDuesPrice =
           invoiceFeesData.invoiceFees.bunkering[numOfDaysShipmentStayed];
         form.setFieldsValue({
-          port_dues_units: sizeOfVessel,
-          port_dues_price: bunkeringPortDuesPrice * sizeOfVessel,
-          port_dues_unitPrice: bunkeringPortDuesPrice,
-          port_dues_remarks: `Basis ${sizeOfVessel} Units @ ${bunkeringPortDuesPrice?.toFixed(
-            2
-          )} Per Unit`,
+          portDues: [
+            {
+              units: sizeOfVessel,
+              price: bunkeringPortDuesPrice * sizeOfVessel,
+              unitPrice: bunkeringPortDuesPrice,
+              remarks: `Basis ${sizeOfVessel} Units @ ${bunkeringPortDuesPrice?.toFixed(
+                2
+              )} Per Unit`,
+              description: "Port Dues",
+            },
+          ],
         });
       }
     }

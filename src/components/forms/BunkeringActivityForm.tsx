@@ -96,6 +96,7 @@ const BunkeringActivityForm: React.FC<BunkeringActivityFormProps> = ({
                     {...restField}
                     name={[name, "docking"]}
                     label="Docking"
+                    rules={[{ required: true, message: "Please select!" }]}
                   >
                     <Radio.Group>
                       <Radio value="starboard">Starboard</Radio>
@@ -192,8 +193,8 @@ const BunkeringActivityForm: React.FC<BunkeringActivityFormProps> = ({
                     ]}
                   >
                     <DatePicker
-                      showTime={{ format: "HH:00" }}
-                      format="YYYY-MM-DD HH:00"
+                      showTime
+                      format="YYYY-MM-DD HH:mm"
                       placeholder="Enter readiness"
                     />
                   </Form.Item>
@@ -208,8 +209,8 @@ const BunkeringActivityForm: React.FC<BunkeringActivityFormProps> = ({
                     ]}
                   >
                     <DatePicker
-                      showTime={{ format: "HH:00" }}
-                      format="YYYY-MM-DD HH:00"
+                      showTime
+                      format="YYYY-MM-DD HH:mm"
                       placeholder="Enter ETB"
                     />
                   </Form.Item>
@@ -224,8 +225,8 @@ const BunkeringActivityForm: React.FC<BunkeringActivityFormProps> = ({
                     ]}
                   >
                     <DatePicker
-                      showTime={{ format: "HH:00" }}
-                      format="YYYY-MM-DD HH:00"
+                      showTime
+                      format="YYYY-MM-DD HH:mm"
                       placeholder="Enter ETD"
                     />
                   </Form.Item>

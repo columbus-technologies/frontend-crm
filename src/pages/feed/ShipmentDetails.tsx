@@ -23,7 +23,7 @@ const renderCargoOperationsActivities = (activities: any[]) => {
   return activities.map((activity, index) => (
     <Descriptions
       key={index}
-      title={`Activity ${index + 1}`}
+      title={`Cargo Operations Activity ${index + 1}`}
       bordered
       className="styled-descriptions"
       column={2} // Set the number of columns to 2

@@ -30,6 +30,7 @@ const Invoicing: React.FC<InvoicingProps> = ({ selectedShipment }) => {
     invoiceData,
     terminalName,
     fetchInvoiceData,
+    invoiceFeesData,
   } = useInvoiceData(selectedShipment, form);
 
   const handleSaveInvoice = async () => {
@@ -37,23 +38,86 @@ const Invoicing: React.FC<InvoicingProps> = ({ selectedShipment }) => {
 
     try {
       const values = await form.validateFields();
+      // converts into string
       const stringValues = Object.fromEntries(
         Object.entries(values).map(([key, value]) => [key, String(value)])
       );
+
+      // Extracting and structuring data from each Form.List
+      const portDuesArray = values.portDues.map((field: any) => ({
+        description: field.description,
+        units: field.units,
+        unitPrice: field.unitPrice,
+        price: field.price,
+        remarks: field.remarks,
+      }));
+
+      const pilotageArray = values.pilotage.map((field: any) => ({
+        description: field.description,
+        hours: field.hours,
+        hourlyRate: field.hourlyRate,
+        price: field.price,
+        remarks: field.remarks,
+      }));
+
+      const serviceLaunchArray = values.serviceLaunch.map((field: any) => ({
+        description: field.description,
+        trips: field.trips,
+        hourlyRate: field.hourlyRate,
+        price: field.price,
+        remarks: field.remarks,
+      }));
+
+      const towageArray = values.towage.map((field: any) => ({
+        description: field.description,
+        tugRate: field.tugRate,
+        tugs: field.tugs,
+        hours: field.hours,
+        bafRate: field.bafRate,
+        price: field.price,
+        remarks: field.remarks,
+      }));
+
+      const mooringArray = values.mooring.map((field: any) => ({
+        description: field.description,
+        price: field.price,
+        remarks: field.remarks,
+      }));
+
+      const agencyFeeArray = values.agencyFee.map((field: any) => ({
+        description: field.description,
+        price: field.price,
+      }));
+
+      const dynamicFieldsArray = values.dynamicFields.map((field: any) => ({
+        description: field.description,
+        price: field.price,
+      }));
+
       const payload: InvoicePricing = {
         tenant: tenantInformation || "",
         shipment_id: selectedShipment.ID,
-        invoice_pricing_details: stringValues,
+        invoice_pricing_details: {
+          ...stringValues,
+          portDues: JSON.stringify(portDuesArray),
+          pilotage: JSON.stringify(pilotageArray),
+          serviceLaunch: JSON.stringify(serviceLaunchArray),
+          towage: JSON.stringify(towageArray),
+          mooring: JSON.stringify(mooringArray),
+          agencyFee: JSON.stringify(agencyFeeArray),
+          dynamicFields: JSON.stringify(dynamicFieldsArray),
+        },
         created_at: invoiceData?.created_at || new Date().toISOString(),
       };
+
       if (hasExistingInvoice || hasCurrentInvoice) {
         await editInvoice(selectedShipment.ID, payload);
         console.log("invoice edited successfully");
       } else {
         await createInvoice(payload);
-
         console.log("invoice saved successfully");
       }
+
       setIsEditing(false);
       await fetchInvoiceData(); // Re-fetch data after saving so that user can generate PDF without refresh
       setHasCurrentInvoice(true);
@@ -71,104 +135,82 @@ const Invoicing: React.FC<InvoicingProps> = ({ selectedShipment }) => {
     const calculateUnitsWithUnitPrice = (units: number, unitPrice: number) =>
       units * unitPrice;
 
-    let newPortDues = Number(allValues.port_dues_price) || 0;
-    let newPilotage = Number(allValues.pilotage_price) || 0;
-    let newServiceLaunch = Number(allValues.service_launch_price) || 0;
-    let newTowage = Number(allValues.towage_price) || 0;
-    let mooringPrice = Number(allValues.mooring_price) || 0;
-    let agencyFeePrice = Number(allValues.agency_fee_price) || 0;
+    let newPortDues = Number(allValues.portDues[0]?.price) || 0;
+    let newPilotage = Number(allValues.pilotage[0]?.price) || 0;
+    let newServiceLaunch = Number(allValues.serviceLaunch[0]?.price) || 0;
+    let newTowage = Number(allValues.towage[0]?.price) || 0;
+    console.log(allValues, "ALL");
 
     if (
-      changedValues.port_dues_units !== undefined ||
-      changedValues.port_dues_unitPrice !== undefined
+      changedValues.portDues?.[0]?.units !== undefined ||
+      changedValues.portDues?.[0]?.unitPrice !== undefined
     ) {
       newPortDues = calculateUnitsWithUnitPrice(
-        Number(allValues.port_dues_units) || 0,
-        Number(allValues.port_dues_unitPrice) || 0
+        Number(allValues.portDues[0]?.units) || 0,
+        Number(allValues.portDues[0]?.unitPrice) || 0
       );
-      allValues.port_dues_price = parseFloat(newPortDues.toFixed(2));
-      // allValues.port_dues_price = newPortDues;
-      allValues.port_dues_remarks = `Basis ${allValues.port_dues_units} Units @ ${allValues.port_dues_unitPrice} Per Unit`;
+      allValues.portDues[0].price = parseFloat(newPortDues.toFixed(2));
+      allValues.portDues[0].remarks = `Basis ${allValues.portDues[0]?.units} Units @ ${allValues.portDues[0]?.unitPrice} Per Unit`;
     }
 
     if (
-      changedValues.pilotage_hours !== undefined ||
-      changedValues.pilotage_hourlyRate !== undefined
+      changedValues.pilotage?.[0]?.hours !== undefined ||
+      changedValues.pilotage?.[0]?.hourlyRate !== undefined
     ) {
-      console.log(allValues, "here");
       newPilotage = calculateUnitsWithUnitPrice(
-        Number(allValues.pilotage_hours) || 0,
-        Number(allValues.pilotage_hourlyRate) || 0
+        Number(allValues.pilotage[0]?.hours) || 0,
+        Number(allValues.pilotage[0]?.hourlyRate) || 0
       );
-      allValues.pilotage_price = parseFloat(newPilotage.toFixed(2));
-
-      // allValues.pilotage_price = newPilotage;
-      allValues.pilotage_remarks = `Basis ${allValues.pilotage_hours} Hours @ ${allValues.pilotage_hourlyRate} Per Hour`;
+      allValues.pilotage[0].price = parseFloat(newPilotage.toFixed(2));
+      allValues.pilotage[0].remarks = `Basis ${allValues.pilotage[0]?.hours} Hours @ ${allValues.pilotage[0]?.hourlyRate} Per Hour`;
     }
 
     if (
-      changedValues.service_launch_trips !== undefined ||
-      changedValues.service_launch_hourlyRate !== undefined
+      changedValues.serviceLaunch?.[0]?.trips !== undefined ||
+      changedValues.serviceLaunch?.[0]?.hourlyRate !== undefined
     ) {
-      console.log(allValues, "there");
       newServiceLaunch = calculateUnitsWithUnitPrice(
-        Number(allValues.service_launch_trips) || 0,
-        Number(allValues.service_launch_hourlyRate) || 0
+        Number(allValues.serviceLaunch[0]?.trips) || 0,
+        Number(allValues.serviceLaunch[0]?.hourlyRate) || 0
       );
-      allValues.service_launch_price = parseFloat(newServiceLaunch.toFixed(2));
-
-      // allValues.service_launch_price = newServiceLaunch;
-      allValues.service_launch_remarks = `Estimated Basis ${allValues.service_launch_trips} Trips`;
+      allValues.serviceLaunch[0].price = parseFloat(
+        newServiceLaunch.toFixed(2)
+      );
+      allValues.serviceLaunch[0].remarks = `Estimated Basis ${allValues.serviceLaunch[0]?.trips} Trips`;
     }
+    console.log(allValues, "all");
+    console.log(changedValues, "changed");
 
     if (
-      changedValues.towage_tugRate !== undefined ||
-      changedValues.towage_tugs !== undefined ||
-      changedValues.towage_hours !== undefined ||
-      changedValues.towage_bafRate !== undefined
+      changedValues.towage?.[0]?.tugRate !== undefined ||
+      changedValues.towage?.[0]?.tugs !== undefined ||
+      changedValues.towage?.[0]?.hours !== undefined ||
+      changedValues.towage?.[0]?.bafRate !== undefined
     ) {
       newTowage =
-        Number(allValues.towage_tugRate || 0) *
-        Number(allValues.towage_tugs || 0) *
-        Number(allValues.towage_hours || 0) *
-        Number((allValues.towage_bafRate || 0) / 100 + 1);
-      // allValues.towage_price = newTowage;
-      allValues.towage_price = parseFloat(newTowage.toFixed(2));
-
-      allValues.towage_remarks = `Estimated Basis SGD ${allValues.towage_tugRate}/Tug/Hr x ${allValues.towage_tugs} Tugs
-      x ${allValues.towage_hours} Hrs + ${allValues.towage_bafRate} % BAF`;
+        Number(allValues.towage[0]?.tugRate || 0) *
+        Number(allValues.towage[0]?.tugs || 0) *
+        Number(allValues.towage[0]?.hours || 0) *
+        Number((allValues.towage[0]?.bafRate || 0) / 100 + 1);
+      allValues.towage[0].price = parseFloat(newTowage.toFixed(2));
+      allValues.towage[0].remarks = `Estimated Basis SGD ${allValues.towage[0]?.tugRate}/Tug/Hr x ${allValues.towage[0]?.tugs} Tugs x ${allValues.towage[0]?.hours} Hrs + ${allValues.towage[0]?.bafRate} % BAF`;
     }
 
-    if (changedValues.mooring_price !== undefined) {
-      mooringPrice = Number(changedValues.mooring_price) || 0;
-      console.log(mooringPrice, "changedmoor");
-      allValues.mooring_price = mooringPrice;
-    }
-
-    if (changedValues.agency_fee_price !== undefined) {
-      agencyFeePrice = Number(changedValues.agency_fee_price) || 0;
-      allValues.agency_fee_price = agencyFeePrice;
-    }
-
-    // Calculate the estimated total and convert all values to numbers
-    const estimatedTotal =
-      (Number(allValues.port_dues_price) || 0) +
-      (Number(allValues.pilotage_price) || 0) +
-      (Number(allValues.service_launch_price) || 0) +
-      (Number(allValues.towage_price) || 0) +
-      (Number(allValues.mooring_price) || 0) +
-      (Number(allValues.agency_fee_price) || 0);
-
-    console.log(
-      Number(allValues.port_dues_price) || 0,
-      Number(allValues.pilotage_price) || 0,
-      Number(allValues.service_launch_price) || 0,
-      (Number(allValues.towage_price) || 0) +
-        (Number(allValues.mooring_price) || 0),
-      Number(allValues.agency_fee_price) || 0
+    const dynamicFieldsTotal = (allValues.dynamicFields || []).reduce(
+      (total: number, field: { price: number }) =>
+        total + Number(field.price || 0),
+      0
     );
 
-    // Set all updated values including the estimated total
+    const estimatedTotal =
+      (Number(allValues.portDues[0]?.price) || 0) +
+      (Number(allValues.pilotage[0]?.price) || 0) +
+      (Number(allValues.serviceLaunch[0]?.price) || 0) +
+      (Number(allValues.towage[0]?.price) || 0) +
+      (Number(allValues.mooring[0]?.price) || 0) +
+      (Number(allValues.agencyFee[0]?.price) || 0) +
+      dynamicFieldsTotal;
+
     form.setFieldsValue({
       ...allValues,
       estimated_total: estimatedTotal,
@@ -267,6 +309,9 @@ const Invoicing: React.FC<InvoicingProps> = ({ selectedShipment }) => {
           <BluShipping_InvoiceForm
             form={form}
             selectedShipment={selectedShipment}
+            invoiceData={invoiceData}
+            invoiceFeesData={invoiceFeesData}
+            terminalName={terminalName}
             isEditing={isEditing}
             onValuesChange={onValuesChange}
           />

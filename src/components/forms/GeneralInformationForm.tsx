@@ -68,7 +68,7 @@ const GeneralInformationForm: React.FC<GeneralInformationFormProps> = ({
         label="ETA"
         rules={[{ required: true, message: "Please input the ETA!" }]}
       >
-        <DatePicker showTime={{ format: "HH:00" }} format="YYYY-MM-DD HH:00" />
+        <DatePicker showTime format="YYYY-MM-DD HH:mm" />
       </Form.Item>
       <Form.Item
         name="voyage_number"
@@ -97,10 +97,7 @@ const GeneralInformationForm: React.FC<GeneralInformationFormProps> = ({
           name={["shipment_type", "cargo_operations", "cargo_operations"]}
           valuePropName="checked"
         >
-          <Checkbox onChange={handleCheckboxChange}>
-            {" "}
-            Cargo Operations{" "}
-          </Checkbox>
+          <Checkbox onChange={handleCheckboxChange}>Cargo Operations</Checkbox>
         </Form.Item>
         <Form.Item
           name={["shipment_type", "bunkering", "bunkering"]}

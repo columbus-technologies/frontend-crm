@@ -111,8 +111,8 @@ const CargoOperationsActivityForm: React.FC<
                     ]}
                   >
                     <DatePicker
-                      showTime={{ format: "HH:00" }}
-                      format="YYYY-MM-DD HH:00"
+                      showTime
+                      format="YYYY-MM-DD HH:mm"
                       placeholder="Readiness"
                     />
                   </Form.Item>
@@ -127,8 +127,8 @@ const CargoOperationsActivityForm: React.FC<
                     ]}
                   >
                     <DatePicker
-                      showTime={{ format: "HH:00" }}
-                      format="YYYY-MM-DD HH:00"
+                      showTime
+                      format="YYYY-MM-DD HH:mm"
                       placeholder="ETB"
                     />
                   </Form.Item>
@@ -143,8 +143,8 @@ const CargoOperationsActivityForm: React.FC<
                     ]}
                   >
                     <DatePicker
-                      showTime={{ format: "HH:00" }}
-                      format="YYYY-MM-DD HH:00"
+                      showTime
+                      format="YYYY-MM-DD HH:mm"
                       placeholder="ETD"
                     />
                   </Form.Item>
