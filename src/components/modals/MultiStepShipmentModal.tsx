@@ -139,13 +139,13 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
               mergedValues.shipment_type?.cargo_operations.cargo_operations ||
               false,
             cargo_operations_activity:
-              mergedValues.cargo_operations_activity?.map((activity) => ({
+              mergedValues.cargo_operations_activity?.map((activity: any) => ({
                 activity_type: activity.activity_type || "",
                 customer_name: activity.customer_specifications?.customer || "",
                 anchorage_location: activity.anchorage_location || "",
                 terminal_name: activity.terminal_name || "",
                 shipment_product:
-                  activity.shipment_product?.map((product) => ({
+                  activity.shipment_product?.map((product: any) => ({
                     sub_product_type: product.sub_product_type || "",
                     quantity_code: product.quantityCode || "",
                     quantity: parseInt(product.quantity, 10) || "",
@@ -203,7 +203,7 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
           bunkering: {
             bunkering: mergedValues.shipment_type?.bunkering.bunkering || false,
             bunkering_activity:
-              mergedValues.bunkering_activity?.map((activity) => ({
+              mergedValues.bunkering_activity?.map((activity: any) => ({
                 supplier: mergedValues.supplier || "",
                 customer_name: activity.customer_name || "",
                 supplier_contact: mergedValues.supplier_contact || "",
@@ -212,7 +212,7 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
                 docking: activity.docking || "",
                 supplier_vessel: activity.supplier_vessel || "",
                 bunker_intake_specifications:
-                  activity.bunker_intake_specifications?.map((spec) => ({
+                  activity.bunker_intake_specifications?.map((spec: any) => ({
                     product_type: spec.product_type || "",
                     sub_product_type: spec.sub_product_type || "",
                     maximum_quantity_intake:
