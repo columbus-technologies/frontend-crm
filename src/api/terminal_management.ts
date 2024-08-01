@@ -19,7 +19,9 @@ export const getAllTerminals = async (): Promise<TerminalResponse[]> => {
   }
 
   const data = await response.json();
-  const terminals: TerminalResponse[] = data.terminals.map((terminal: any) => ({
+  const terminalsData = Array.isArray(data.terminals) ? data.terminals : [];
+
+  const terminals: TerminalResponse[] = terminalsData.map((terminal: any) => ({
     ID: terminal.ID,
     name: terminal.terminal_specifications.name,
     address: terminal.terminal_specifications.address,

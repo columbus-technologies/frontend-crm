@@ -29,11 +29,17 @@ const ShipmentsManagement: React.FC = () => {
     try {
       const data = await getAllShipments();
       console.log("Fetched shipments:", data); // Debugging statement
-      const sortedData = data.sort(
-        (a, b) =>
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      );
-      setShipments(sortedData);
+      // Ensure data is an array
+      if (Array.isArray(data)) {
+        const sortedData = data.sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+        setShipments(sortedData);
+      } else {
+        setShipments([]); // Set an empty array if data is not an array
+      }
+
       setErrorMessage(null);
     } catch (error) {
       if (error instanceof Error) {

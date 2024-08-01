@@ -19,7 +19,9 @@ export const fetchVessels = async (): Promise<VesselResponse[]> => {
   }
 
   const data = await response.json();
-  const vessels: VesselResponse[] = data.vessels.map((vessel: any) => ({
+  const vesselsData = Array.isArray(data.vessels) ? data.vessels : [];
+
+  const vessels: VesselResponse[] = vesselsData.map((vessel: any) => ({
     ID: vessel.ID,
     imo_number: vessel.vessel_specifications.imo_number,
     vessel_name: vessel.vessel_specifications.vessel_name,
