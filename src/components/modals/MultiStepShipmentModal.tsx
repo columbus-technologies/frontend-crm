@@ -121,158 +121,148 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
     setCurrentStep(currentStep - 1);
   };
 
-  const handleOk = () => {
-    form
-      .validateFields()
-      .then((values) => {
-        const now = moment().toISOString();
-        const mergedValues = { ...formValues, ...values };
-        console.log("mergedValues", mergedValues);
-        const payload = {
-          master_email: mergedValues.master_email || "",
-          ETA: mergedValues.ETA ? mergedValues.ETA.toISOString() : now,
-          voyage_number: mergedValues.voyage_number || "",
-          current_status: mergedValues.current_status || "",
-          shipment_type: {
-            cargo_operations: {
-              cargo_operations:
-                mergedValues.shipment_type?.cargo_operations.cargo_operations ||
-                false,
-              cargo_operations_activity:
-                mergedValues.cargo_operations_activity?.map(
-                  (activity: any) => ({
-                    activity_type: activity.activity_type || "",
-                    customer_name:
-                      activity.customer_specifications?.customer || "",
-                    anchorage_location: activity.anchorage_location || "",
-                    terminal_name: activity.terminal_name || "",
-                    shipment_product:
-                      activity.shipment_product?.map((product: any) => ({
-                        sub_product_type: product.sub_product_type || "",
-                        quantity_code: product.quantityCode || "",
-                        quantity: parseInt(product.quantity, 10) || "",
-                        percentage: parseInt(product.percentage, 10) || "",
-                      })) || [],
-                    readiness: activity.readiness || null,
-                    etb: activity.etb || null,
-                    etd: activity.etd || null,
-                    arrival_departure_information: {
-                      arrival_displacement: activity
-                        .arrival_departure_information?.arrival_displacement
-                        ? parseInt(
-                            activity.arrival_departure_information
-                              .arrival_displacement,
-                            10
-                          )
-                        : -1,
-                      departure_displacement: activity
-                        .arrival_departure_information?.departure_displacement
-                        ? parseInt(
-                            activity.arrival_departure_information
-                              .departure_displacement,
-                            10
-                          )
-                        : -1,
-                      arrival_draft: activity.arrival_departure_information
-                        ?.arrival_draft
-                        ? parseFloat(
-                            activity.arrival_departure_information.arrival_draft
-                          )
-                        : -1,
-                      departure_draft: activity.arrival_departure_information
-                        ?.departure_draft
-                        ? parseFloat(
-                            activity.arrival_departure_information
-                              .departure_draft
-                          )
-                        : -1,
-                      arrival_mast_height: activity
-                        .arrival_departure_information?.arrival_mast_height
-                        ? parseFloat(
-                            activity.arrival_departure_information
-                              .arrival_mast_height
-                          )
-                        : -1,
-                      departure_mast_height: activity
-                        .arrival_departure_information?.departure_mast_height
-                        ? parseFloat(
-                            activity.arrival_departure_information
-                              .departure_mast_height
-                          )
-                        : -1,
-                    },
-                  })
-                ) || [],
-            },
-            bunkering: {
-              bunkering:
-                mergedValues.shipment_type?.bunkering.bunkering || false,
-              bunkering_activity:
-                mergedValues.bunkering_activity?.map((activity: any) => ({
-                  supplier: mergedValues.supplier || "",
-                  customer_name: activity.customer_name || "",
-                  supplier_contact: mergedValues.supplier_contact || "",
-                  supplier_email: mergedValues.supplier_email || "",
-                  appointed_surveyor: activity.appointed_surveyor || "",
-                  docking: activity.docking || "",
-                  supplier_vessel: activity.supplier_vessel || "",
-                  bunker_intake_specifications:
-                    activity.bunker_intake_specifications?.map((spec: any) => ({
-                      product_type: spec.product_type || "",
-                      sub_product_type: spec.sub_product_type || "",
-                      maximum_quantity_intake:
-                        parseInt(spec.maximum_quantity_intake, 10) || -1,
-                      maximum_hose_size:
-                        parseInt(spec.maximum_hose_size, 10) || -1,
-                    })) || [],
-                  freeboard: parseInt(activity.freeboard, 10) || -1,
-                  readiness: activity.readiness || null,
-                  etb: activity.etb || null,
-                  etd: activity.etd || null,
-                })) || [],
-            },
-            owner_matters: {
-              owner_matters: false,
-              activity: [],
-            },
-          },
-          vessel_specifications: {
-            imo_number: parseInt(mergedValues?.imo_number, 10) || 0,
-            vessel_name: mergedValues?.vessel_name || "",
-            call_sign: mergedValues?.call_sign || "",
-            sdwt: parseInt(mergedValues?.sdwt, 10) || 0,
-            nrt: parseInt(mergedValues?.nrt, 10) || 0,
-            flag: mergedValues?.flag || "",
-            grt: parseInt(mergedValues?.grt, 10) || 0,
-            loa: parseFloat(mergedValues?.loa) || 0,
-          },
-          shipment_details: {
-            agent_details: {
-              name: mergedValues?.name || "",
-              email: mergedValues?.email || "",
-              contact:
-                mergedValues?.phoneCode + " " + mergedValues?.contact || "",
-            },
-          },
-        };
+  const handleOk = async () => {
+    try {
+      const values = await form.validateFields();
+      const now = moment().toISOString();
+      const mergedValues = { ...formValues, ...values };
+      console.log("mergedValues", mergedValues);
 
-        createShipment(payload)
-          .then(() => {
-            onCreate();
-            form.resetFields();
-            setCurrentStep(0);
-            setFormValues({});
-          })
-          .catch((err) => {
-            console.error("Failed to create shipment:", err);
-          });
-      })
-      .catch((errorInfo) => {
-        message.error("Please fill in all required fields.");
-        form.scrollToField(errorInfo.errorFields[0].name, {
-          behavior: "smooth",
-        });
-      });
+      const payload = {
+        master_email: mergedValues.master_email || "",
+        ETA: mergedValues.ETA ? mergedValues.ETA.toISOString() : now,
+        voyage_number: mergedValues.voyage_number || "",
+        current_status: mergedValues.current_status || "",
+        shipment_type: {
+          cargo_operations: {
+            cargo_operations:
+              mergedValues.shipment_type?.cargo_operations.cargo_operations ||
+              false,
+            cargo_operations_activity:
+              mergedValues.cargo_operations_activity?.map((activity) => ({
+                activity_type: activity.activity_type || "",
+                customer_name: activity.customer_specifications?.customer || "",
+                anchorage_location: activity.anchorage_location || "",
+                terminal_name: activity.terminal_name || "",
+                shipment_product:
+                  activity.shipment_product?.map((product) => ({
+                    sub_product_type: product.sub_product_type || "",
+                    quantity_code: product.quantityCode || "",
+                    quantity: parseInt(product.quantity, 10) || "",
+                    percentage: parseInt(product.percentage, 10) || "",
+                  })) || [],
+                readiness: activity.readiness || null,
+                etb: activity.etb || null,
+                etd: activity.etd || null,
+                arrival_departure_information: {
+                  arrival_displacement: activity.arrival_departure_information
+                    ?.arrival_displacement
+                    ? parseInt(
+                        activity.arrival_departure_information
+                          .arrival_displacement,
+                        10
+                      )
+                    : -1,
+                  departure_displacement: activity.arrival_departure_information
+                    ?.departure_displacement
+                    ? parseInt(
+                        activity.arrival_departure_information
+                          .departure_displacement,
+                        10
+                      )
+                    : -1,
+                  arrival_draft: activity.arrival_departure_information
+                    ?.arrival_draft
+                    ? parseFloat(
+                        activity.arrival_departure_information.arrival_draft
+                      )
+                    : -1,
+                  departure_draft: activity.arrival_departure_information
+                    ?.departure_draft
+                    ? parseFloat(
+                        activity.arrival_departure_information.departure_draft
+                      )
+                    : -1,
+                  arrival_mast_height: activity.arrival_departure_information
+                    ?.arrival_mast_height
+                    ? parseFloat(
+                        activity.arrival_departure_information
+                          .arrival_mast_height
+                      )
+                    : -1,
+                  departure_mast_height: activity.arrival_departure_information
+                    ?.departure_mast_height
+                    ? parseFloat(
+                        activity.arrival_departure_information
+                          .departure_mast_height
+                      )
+                    : -1,
+                },
+              })) || [],
+          },
+          bunkering: {
+            bunkering: mergedValues.shipment_type?.bunkering.bunkering || false,
+            bunkering_activity:
+              mergedValues.bunkering_activity?.map((activity) => ({
+                supplier: mergedValues.supplier || "",
+                customer_name: activity.customer_name || "",
+                supplier_contact: mergedValues.supplier_contact || "",
+                supplier_email: mergedValues.supplier_email || "",
+                appointed_surveyor: activity.appointed_surveyor || "",
+                docking: activity.docking || "",
+                supplier_vessel: activity.supplier_vessel || "",
+                bunker_intake_specifications:
+                  activity.bunker_intake_specifications?.map((spec) => ({
+                    product_type: spec.product_type || "",
+                    sub_product_type: spec.sub_product_type || "",
+                    maximum_quantity_intake:
+                      parseInt(spec.maximum_quantity_intake, 10) || -1,
+                    maximum_hose_size:
+                      parseInt(spec.maximum_hose_size, 10) || -1,
+                  })) || [],
+                freeboard: parseInt(activity.freeboard, 10) || -1,
+                readiness: activity.readiness || null,
+                etb: activity.etb || null,
+                etd: activity.etd || null,
+              })) || [],
+          },
+          owner_matters: {
+            owner_matters: false,
+            activity: [],
+          },
+        },
+        vessel_specifications: {
+          imo_number: parseInt(mergedValues?.imo_number, 10) || 0,
+          vessel_name: mergedValues?.vessel_name || "",
+          call_sign: mergedValues?.call_sign || "",
+          sdwt: parseInt(mergedValues?.sdwt, 10) || 0,
+          nrt: parseInt(mergedValues?.nrt, 10) || 0,
+          flag: mergedValues?.flag || "",
+          grt: parseInt(mergedValues?.grt, 10) || 0,
+          loa: parseFloat(mergedValues?.loa) || 0,
+        },
+        shipment_details: {
+          agent_details: {
+            name: mergedValues?.name || "",
+            email: mergedValues?.email || "",
+            contact:
+              mergedValues?.phoneCode + " " + mergedValues?.contact || "",
+          },
+        },
+      };
+
+      await createShipment(payload);
+      onCreate();
+      form.resetFields();
+      setCurrentStep(0);
+      setFormValues({});
+      message.success("Shipment created successfully!");
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error("Failed to create shipment:", error.message);
+        message.error("Failed to create shipment. Please try again.");
+      }
+    }
   };
 
   // const handleSubProductTypeChange = (
