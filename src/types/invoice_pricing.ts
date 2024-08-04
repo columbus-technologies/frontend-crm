@@ -47,3 +47,7 @@ export interface GetInvoiceFeesFromPortAuthorityResponse {
   invoiceFees: InvoiceFees;
   tenant: string;
 }
+
+export interface GetInvoiceTenantResponse {
+  tenant: string;
+}

@@ -6,10 +6,12 @@ const { Title } = Typography;
 const { TabPane } = Tabs;
 
 import { CustomerResponse, ShipmentResponse } from "../types";
-import { getShipmentById } from "../api"; // Remove getAllShipments import
+import { getInvoiceTenant, getShipmentById } from "../api"; // Remove getAllShipments import
 import UnauthorizedModal from "../components/modals/UnauthorizedModal";
 import { renderShipmentDetails } from "./feed/ShipmentDetails";
-import Invoicing from "./feed/invoices/BluShipping_Invoicing";
+import BluShippingInvoicing from "./feed/invoices/BluShipping_Invoicing";
+import TestDemoInvoicing from "./feed/invoices/TestDemo_Invoicing";
+
 import { renderVesselDetails } from "./feed/VesselDetails";
 import fetchCustomerDataByShipment from "../utils/customer";
 import renderCustomerDetails from "./feed/CustomerDetails";
@@ -24,6 +26,7 @@ const Feed: React.FC = () => {
   const [isUnauthorizedModalVisible, setIsUnauthorizedModalVisible] =
     useState(false);
   const { id } = useParams<{ id: string }>(); // Get the ID from the URL
+  const [invoiceTenant, setInvoiceTenant] = useState<string | null>(null);
 
   const fetchData = async (id: string) => {
     try {
@@ -33,6 +36,10 @@ const Feed: React.FC = () => {
 
       const fetchedShipment = await fetchCustomerDataByShipment(data);
       setCustomerData(fetchedShipment);
+
+      const fetchedTenant = await getInvoiceTenant();
+      setInvoiceTenant(fetchedTenant.tenant);
+
       setErrorMessage(null);
     } catch (error) {
       if (error instanceof Error) {
@@ -89,8 +96,14 @@ const Feed: React.FC = () => {
               {renderContent("Documents content...")}
             </TabPane>
             <TabPane tab="Invoicing" key="7">
-              {selectedShipment && (
-                <Invoicing selectedShipment={selectedShipment} />
+              {invoiceTenant === "BluShipping" && selectedShipment && (
+                <BluShippingInvoicing selectedShipment={selectedShipment} />
+              )}
+              {invoiceTenant === "columbusTest" && selectedShipment && (
+                <TestDemoInvoicing selectedShipment={selectedShipment} />
+              )}
+              {invoiceTenant === "customerA" && selectedShipment && (
+                <TestDemoInvoicing selectedShipment={selectedShipment} />
               )}
             </TabPane>
           </Tabs>

@@ -488,66 +488,66 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
           {(fields, { remove }) => (
             <>
               {fields.map((field) => (
-                <Row
+                <div
                   key={field.key}
-                  gutter={16}
-                  style={{ marginBottom: "0px" }}
+                  style={{ display: "flex", alignItems: "center" }}
                 >
-                  <Col span={8}>
-                    <Form.Item
-                      {...field}
-                      name={[field.name, "description"]}
-                      label="Description"
-                    >
-                      <Input defaultValue="Port Dues" disabled={!isEditing} />
-                    </Form.Item>
-                  </Col>
-                  <Col span={8}>
-                    <Form.Item
-                      {...field}
-                      name={[field.name, "units"]}
-                      label="Units (Per 100GT)"
-                    >
-                      <InputNumber min={0} disabled={!isEditing} />
-                    </Form.Item>
-                  </Col>
-                  <Col span={8}>
-                    <Form.Item
-                      {...field}
-                      name={[field.name, "unitPrice"]}
-                      label="Unit Price"
-                    >
-                      <InputNumber min={0} step={0.1} disabled={!isEditing} />
-                    </Form.Item>
-                  </Col>
-                  <Col span={8}>
-                    <Form.Item
-                      {...field}
-                      name={[field.name, "price"]}
-                      label="SGD Price"
-                    >
-                      <InputNumber min={0} disabled />
-                    </Form.Item>
-                  </Col>
-                  <Col span={16}>
-                    <Form.Item
-                      {...field}
-                      name={[field.name, "remarks"]}
-                      label="Remarks"
-                    >
-                      <Input disabled={!isEditing} />
-                    </Form.Item>
-                  </Col>
-                  {isEditing && (
+                  <Row gutter={16} style={{ flex: 1 }}>
                     <Col span={8}>
-                      <MinusCircleOutlined
-                        onClick={() =>
-                          handleRemove(remove, field.name, "portDues")
-                        }
-                      />
+                      <Form.Item
+                        {...field}
+                        name={[field.name, "description"]}
+                        label="Description"
+                      >
+                        <Input defaultValue="Port Dues" disabled={!isEditing} />
+                      </Form.Item>
                     </Col>
+                    <Col span={8}>
+                      <Form.Item
+                        {...field}
+                        name={[field.name, "units"]}
+                        label="Units (Per 100GT)"
+                      >
+                        <InputNumber min={0} disabled={!isEditing} />
+                      </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                      <Form.Item
+                        {...field}
+                        name={[field.name, "unitPrice"]}
+                        label="Unit Price"
+                      >
+                        <InputNumber min={0} step={0.1} disabled={!isEditing} />
+                      </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                      <Form.Item
+                        {...field}
+                        name={[field.name, "price"]}
+                        label="SGD Price"
+                      >
+                        <InputNumber min={0} disabled />
+                      </Form.Item>
+                    </Col>
+                    <Col span={16}>
+                      <Form.Item
+                        {...field}
+                        name={[field.name, "remarks"]}
+                        label="Remarks"
+                      >
+                        <Input disabled={!isEditing} />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                  {isEditing && (
+                    <MinusCircleOutlined
+                      style={{ marginLeft: "auto" }}
+                      onClick={() =>
+                        handleRemove(remove, field.name, "portDues")
+                      }
+                    />
                   )}
-                </Row>
+                </div>
               ))}
               <Form.Item>
                 {isEditing && !havePortDuesField && (
@@ -569,66 +569,66 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
           {(fields, { remove }) => (
             <>
               {fields.map((field) => (
-                <Row
+                <div
                   key={field.key}
-                  gutter={16}
-                  style={{ marginBottom: "0px" }}
+                  style={{ display: "flex", alignItems: "center" }}
                 >
-                  <Col span={6}>
-                    <Form.Item
-                      {...field}
-                      name={[field.name, "description"]}
-                      label="Description"
-                    >
-                      <Input defaultValue="Pilotage" disabled={!isEditing} />
-                    </Form.Item>
-                  </Col>
-                  <Col span={6}>
-                    <Form.Item
-                      {...field}
-                      name={[field.name, "hours"]}
-                      label="Hours"
-                    >
-                      <InputNumber min={0} disabled={!isEditing} />
-                    </Form.Item>
-                  </Col>
-                  <Col span={6}>
-                    <Form.Item
-                      {...field}
-                      name={[field.name, "hourlyRate"]}
-                      label="Hourly Rate"
-                    >
-                      <InputNumber min={0} step={0.1} disabled={!isEditing} />
-                    </Form.Item>
-                  </Col>
-                  <Col span={6}>
-                    <Form.Item
-                      {...field}
-                      name={[field.name, "price"]}
-                      label="SGD Price"
-                    >
-                      <InputNumber min={0} disabled />
-                    </Form.Item>
-                  </Col>
-                  <Col span={16}>
-                    <Form.Item
-                      {...field}
-                      name={[field.name, "remarks"]}
-                      label="Remarks"
-                    >
-                      <Input disabled={!isEditing} />
-                    </Form.Item>
-                  </Col>
-                  {isEditing && (
-                    <Col span={8}>
-                      <MinusCircleOutlined
-                        onClick={() =>
-                          handleRemove(remove, field.name, "pilotage")
-                        }
-                      />
+                  <Row gutter={16} style={{ flex: 1, marginBottom: "0px" }}>
+                    <Col span={6}>
+                      <Form.Item
+                        {...field}
+                        name={[field.name, "description"]}
+                        label="Description"
+                      >
+                        <Input defaultValue="Pilotage" disabled={!isEditing} />
+                      </Form.Item>
                     </Col>
+                    <Col span={6}>
+                      <Form.Item
+                        {...field}
+                        name={[field.name, "hours"]}
+                        label="Hours"
+                      >
+                        <InputNumber min={0} disabled={!isEditing} />
+                      </Form.Item>
+                    </Col>
+                    <Col span={6}>
+                      <Form.Item
+                        {...field}
+                        name={[field.name, "hourlyRate"]}
+                        label="Hourly Rate"
+                      >
+                        <InputNumber min={0} step={0.1} disabled={!isEditing} />
+                      </Form.Item>
+                    </Col>
+                    <Col span={6}>
+                      <Form.Item
+                        {...field}
+                        name={[field.name, "price"]}
+                        label="SGD Price"
+                      >
+                        <InputNumber min={0} disabled />
+                      </Form.Item>
+                    </Col>
+                    <Col span={16}>
+                      <Form.Item
+                        {...field}
+                        name={[field.name, "remarks"]}
+                        label="Remarks"
+                      >
+                        <Input disabled={!isEditing} />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                  {isEditing && (
+                    <MinusCircleOutlined
+                      style={{ marginLeft: "auto" }}
+                      onClick={() =>
+                        handleRemove(remove, field.name, "pilotage")
+                      }
+                    />
                   )}
-                </Row>
+                </div>
               ))}
               <Form.Item>
                 {isEditing && !havePilotageField && (
@@ -650,69 +650,69 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
           {(fields, { remove }) => (
             <>
               {fields.map((field) => (
-                <Row
+                <div
                   key={field.key}
-                  gutter={16}
-                  style={{ marginBottom: "0px" }}
+                  style={{ display: "flex", alignItems: "center" }}
                 >
-                  <Col span={6}>
-                    <Form.Item
-                      {...field}
-                      name={[field.name, "description"]}
-                      label="Description"
-                    >
-                      <Input
-                        defaultValue="Service Launch"
-                        disabled={!isEditing}
-                      />
-                    </Form.Item>
-                  </Col>
-                  <Col span={6}>
-                    <Form.Item
-                      {...field}
-                      name={[field.name, "trips"]}
-                      label="Trips"
-                    >
-                      <InputNumber min={0} disabled={!isEditing} />
-                    </Form.Item>
-                  </Col>
-                  <Col span={6}>
-                    <Form.Item
-                      {...field}
-                      name={[field.name, "hourlyRate"]}
-                      label="Hourly Rate"
-                    >
-                      <InputNumber min={0} step={0.1} disabled={!isEditing} />
-                    </Form.Item>
-                  </Col>
-                  <Col span={6}>
-                    <Form.Item
-                      {...field}
-                      name={[field.name, "price"]}
-                      label="SGD Price"
-                    >
-                      <InputNumber min={0} step={0.01} disabled />
-                    </Form.Item>
-                  </Col>
-                  <Col span={16}>
-                    <Form.Item
-                      {...field}
-                      name={[field.name, "remarks"]}
-                      label="Remarks"
-                    >
-                      <Input disabled={!isEditing} />
-                    </Form.Item>
-                  </Col>
-                  {isEditing && (
-                    <Col span={8}>
-                      <MinusCircleOutlined
-                        onClick={() =>
-                          handleRemove(remove, field.name, "serviceLaunch")
-                        }
-                      />
+                  <Row gutter={16} style={{ flex: 1, marginBottom: "0px" }}>
+                    <Col span={6}>
+                      <Form.Item
+                        {...field}
+                        name={[field.name, "description"]}
+                        label="Description"
+                      >
+                        <Input
+                          defaultValue="Service Launch"
+                          disabled={!isEditing}
+                        />
+                      </Form.Item>
                     </Col>
+                    <Col span={6}>
+                      <Form.Item
+                        {...field}
+                        name={[field.name, "trips"]}
+                        label="Trips"
+                      >
+                        <InputNumber min={0} disabled={!isEditing} />
+                      </Form.Item>
+                    </Col>
+                    <Col span={6}>
+                      <Form.Item
+                        {...field}
+                        name={[field.name, "hourlyRate"]}
+                        label="Hourly Rate"
+                      >
+                        <InputNumber min={0} step={0.1} disabled={!isEditing} />
+                      </Form.Item>
+                    </Col>
+                    <Col span={6}>
+                      <Form.Item
+                        {...field}
+                        name={[field.name, "price"]}
+                        label="SGD Price"
+                      >
+                        <InputNumber min={0} step={0.01} disabled />
+                      </Form.Item>
+                    </Col>
+                    <Col span={16}>
+                      <Form.Item
+                        {...field}
+                        name={[field.name, "remarks"]}
+                        label="Remarks"
+                      >
+                        <Input disabled={!isEditing} />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                  {isEditing && (
+                    <MinusCircleOutlined
+                      style={{ marginLeft: "auto" }}
+                      onClick={() =>
+                        handleRemove(remove, field.name, "serviceLaunch")
+                      }
+                    />
                   )}
-                </Row>
+                </div>
               ))}
               <Form.Item>
                 {isEditing && !haveServiceLaunchField && (
@@ -734,84 +734,82 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
           {(fields, { remove }) => (
             <>
               {fields.map((field) => (
-                <Row
+                <div
                   key={field.key}
-                  gutter={16}
-                  style={{ marginBottom: "0px" }}
+                  style={{ display: "flex", alignItems: "center" }}
                 >
-                  <Col span={6}>
-                    <Form.Item
-                      {...field}
-                      name={[field.name, "description"]}
-                      label="Description"
-                    >
-                      <Input defaultValue="Towage" disabled />
-                    </Form.Item>
-                  </Col>
-                  <Col span={6}>
-                    <Form.Item
-                      {...field}
-                      name={[field.name, "tugRate"]}
-                      label="Tug Rate"
-                    >
-                      <InputNumber min={0} disabled={!isEditing} />
-                    </Form.Item>
-                  </Col>
-                  <Col span={6}>
-                    <Form.Item
-                      {...field}
-                      name={[field.name, "tugs"]}
-                      label="Tugs"
-                    >
-                      <InputNumber min={0} disabled={!isEditing} />
-                    </Form.Item>
-                  </Col>
-                  <Col span={6}>
-                    <Form.Item
-                      {...field}
-                      name={[field.name, "hours"]}
-                      label="Hours"
-                    >
-                      <InputNumber min={0} disabled={!isEditing} />
-                    </Form.Item>
-                  </Col>
-                  <Col span={6}>
-                    <Form.Item
-                      {...field}
-                      name={[field.name, "bafRate"]}
-                      label="BAF Rate (%)"
-                    >
-                      <InputNumber min={0} step={0.1} disabled={!isEditing} />
-                    </Form.Item>
-                  </Col>
-                  <Col span={6}>
-                    <Form.Item
-                      {...field}
-                      name={[field.name, "price"]}
-                      label="SGD Price"
-                    >
-                      <InputNumber min={0} step={0.01} disabled />
-                    </Form.Item>
-                  </Col>
-                  <Col span={16}>
-                    <Form.Item
-                      {...field}
-                      name={[field.name, "remarks"]}
-                      label="Remarks"
-                    >
-                      <Input disabled={!isEditing} />
-                    </Form.Item>
-                  </Col>
-                  {isEditing && (
-                    <Col span={8}>
-                      <MinusCircleOutlined
-                        onClick={() =>
-                          handleRemove(remove, field.name, "towage")
-                        }
-                      />
+                  <Row gutter={16} style={{ flex: 1, marginBottom: "0px" }}>
+                    <Col span={6}>
+                      <Form.Item
+                        {...field}
+                        name={[field.name, "description"]}
+                        label="Description"
+                      >
+                        <Input defaultValue="Towage" disabled />
+                      </Form.Item>
                     </Col>
+                    <Col span={6}>
+                      <Form.Item
+                        {...field}
+                        name={[field.name, "tugRate"]}
+                        label="Tug Rate"
+                      >
+                        <InputNumber min={0} disabled={!isEditing} />
+                      </Form.Item>
+                    </Col>
+                    <Col span={6}>
+                      <Form.Item
+                        {...field}
+                        name={[field.name, "tugs"]}
+                        label="Tugs"
+                      >
+                        <InputNumber min={0} disabled={!isEditing} />
+                      </Form.Item>
+                    </Col>
+                    <Col span={6}>
+                      <Form.Item
+                        {...field}
+                        name={[field.name, "hours"]}
+                        label="Hours"
+                      >
+                        <InputNumber min={0} disabled={!isEditing} />
+                      </Form.Item>
+                    </Col>
+                    <Col span={6}>
+                      <Form.Item
+                        {...field}
+                        name={[field.name, "bafRate"]}
+                        label="BAF Rate (%)"
+                      >
+                        <InputNumber min={0} step={0.1} disabled={!isEditing} />
+                      </Form.Item>
+                    </Col>
+                    <Col span={6}>
+                      <Form.Item
+                        {...field}
+                        name={[field.name, "price"]}
+                        label="SGD Price"
+                      >
+                        <InputNumber min={0} step={0.01} disabled />
+                      </Form.Item>
+                    </Col>
+                    <Col span={16}>
+                      <Form.Item
+                        {...field}
+                        name={[field.name, "remarks"]}
+                        label="Remarks"
+                      >
+                        <Input disabled={!isEditing} />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                  {isEditing && (
+                    <MinusCircleOutlined
+                      style={{ marginLeft: "auto" }}
+                      onClick={() => handleRemove(remove, field.name, "towage")}
+                    />
                   )}
-                </Row>
+                </div>
               ))}
               <Form.Item>
                 {isEditing && !haveTowageField && (
@@ -833,48 +831,48 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
           {(fields, { remove }) => (
             <>
               {fields.map((field) => (
-                <Row
+                <div
                   key={field.key}
-                  gutter={16}
-                  style={{ marginBottom: "0px" }}
+                  style={{ display: "flex", alignItems: "center" }}
                 >
-                  <Col span={6}>
-                    <Form.Item
-                      {...field}
-                      name={[field.name, "description"]}
-                      label="Description"
-                    >
-                      <Input defaultValue="Mooring" disabled />
-                    </Form.Item>
-                  </Col>
-                  <Col span={6}>
-                    <Form.Item
-                      {...field}
-                      name={[field.name, "price"]}
-                      label="SGD Price"
-                    >
-                      <InputNumber min={0} disabled={!isEditing} />
-                    </Form.Item>
-                  </Col>
-                  <Col span={16}>
-                    <Form.Item
-                      {...field}
-                      name={[field.name, "remarks"]}
-                      label="Remarks"
-                    >
-                      <Input disabled={!isEditing} />
-                    </Form.Item>
-                  </Col>
-                  {isEditing && (
-                    <Col span={8}>
-                      <MinusCircleOutlined
-                        onClick={() =>
-                          handleRemove(remove, field.name, "mooring")
-                        }
-                      />
+                  <Row gutter={16} style={{ flex: 1, marginBottom: "0px" }}>
+                    <Col span={6}>
+                      <Form.Item
+                        {...field}
+                        name={[field.name, "description"]}
+                        label="Description"
+                      >
+                        <Input defaultValue="Mooring" disabled />
+                      </Form.Item>
                     </Col>
+                    <Col span={6}>
+                      <Form.Item
+                        {...field}
+                        name={[field.name, "price"]}
+                        label="SGD Price"
+                      >
+                        <InputNumber min={0} disabled={!isEditing} />
+                      </Form.Item>
+                    </Col>
+                    <Col span={16}>
+                      <Form.Item
+                        {...field}
+                        name={[field.name, "remarks"]}
+                        label="Remarks"
+                      >
+                        <Input disabled={!isEditing} />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                  {isEditing && (
+                    <MinusCircleOutlined
+                      style={{ marginLeft: "auto" }}
+                      onClick={() =>
+                        handleRemove(remove, field.name, "mooring")
+                      }
+                    />
                   )}
-                </Row>
+                </div>
               ))}
               <Form.Item>
                 {isEditing && !haveMooringField && (
@@ -896,39 +894,39 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
           {(fields, { remove }) => (
             <>
               {fields.map((field) => (
-                <Row
+                <div
                   key={field.key}
-                  gutter={16}
-                  style={{ marginBottom: "0px" }}
+                  style={{ display: "flex", alignItems: "center" }}
                 >
-                  <Col span={12}>
-                    <Form.Item
-                      {...field}
-                      name={[field.name, "description"]}
-                      label="Description"
-                    >
-                      <Input defaultValue="Agency Fee" disabled />
-                    </Form.Item>
-                  </Col>
-                  <Col span={6}>
-                    <Form.Item
-                      {...field}
-                      name={[field.name, "price"]}
-                      label="SGD Price"
-                    >
-                      <InputNumber min={0} disabled={!isEditing} />
-                    </Form.Item>
-                  </Col>
-                  {isEditing && (
-                    <Col span={8}>
-                      <MinusCircleOutlined
-                        onClick={() =>
-                          handleRemove(remove, field.name, "agencyFee")
-                        }
-                      />
+                  <Row gutter={16} style={{ flex: 1, marginBottom: "0px" }}>
+                    <Col span={12}>
+                      <Form.Item
+                        {...field}
+                        name={[field.name, "description"]}
+                        label="Description"
+                      >
+                        <Input defaultValue="Agency Fee" disabled />
+                      </Form.Item>
                     </Col>
+                    <Col span={6}>
+                      <Form.Item
+                        {...field}
+                        name={[field.name, "price"]}
+                        label="SGD Price"
+                      >
+                        <InputNumber min={0} disabled={!isEditing} />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                  {isEditing && (
+                    <MinusCircleOutlined
+                      style={{ marginLeft: "auto" }}
+                      onClick={() =>
+                        handleRemove(remove, field.name, "agencyFee")
+                      }
+                    />
                   )}
-                </Row>
+                </div>
               ))}
               <Form.Item>
                 {isEditing && !haveAgencyFeeField && (
@@ -950,31 +948,37 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
           {(fields, { add, remove }) => (
             <>
               {fields.map(({ name, ...restField }, index) => (
-                <Row key={index} gutter={16} style={{ marginBottom: "0px" }}>
-                  <Col span={12}>
-                    <Form.Item
-                      {...restField}
-                      name={[name, "description"]}
-                      label="Description"
-                    >
-                      <Input disabled={!isEditing} />
-                    </Form.Item>
-                  </Col>
-                  <Col span={6}>
-                    <Form.Item
-                      {...restField}
-                      name={[name, "price"]}
-                      label="SGD Price"
-                    >
-                      <InputNumber min={0} step={0.1} disabled={!isEditing} />
-                    </Form.Item>
-                  </Col>
-                  <Col span={6}>
-                    {isEditing && (
-                      <MinusCircleOutlined onClick={() => remove(name)} />
-                    )}
-                  </Col>
-                </Row>
+                <div
+                  key={index}
+                  style={{ display: "flex", alignItems: "center" }}
+                >
+                  <Row gutter={16} style={{ flex: 1, marginBottom: "0px" }}>
+                    <Col span={12}>
+                      <Form.Item
+                        {...restField}
+                        name={[name, "description"]}
+                        label="Description"
+                      >
+                        <Input disabled={!isEditing} />
+                      </Form.Item>
+                    </Col>
+                    <Col span={6}>
+                      <Form.Item
+                        {...restField}
+                        name={[name, "price"]}
+                        label="SGD Price"
+                      >
+                        <InputNumber min={0} step={0.1} disabled={!isEditing} />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                  {isEditing && (
+                    <MinusCircleOutlined
+                      style={{ marginLeft: "auto" }}
+                      onClick={() => remove(name)}
+                    />
+                  )}
+                </div>
               ))}
               <Form.Item>
                 {isEditing && (

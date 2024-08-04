@@ -13,11 +13,13 @@ import useInvoiceData from "../../../hooks/invoice/BluShipping_useInvoiceData";
 
 const { Title } = Typography;
 
-interface InvoicingProps {
+interface BluShippingInvoicingProps {
   selectedShipment: ShipmentResponse;
 }
 
-const Invoicing: React.FC<InvoicingProps> = ({ selectedShipment }) => {
+const BluShippingInvoicing: React.FC<BluShippingInvoicingProps> = ({
+  selectedShipment,
+}) => {
   const [isEditing, setIsEditing] = useState(false);
   const [hasCurrentInvoice, setHasCurrentInvoice] = useState(false);
   const [displayPDF, setDisplayPDF] = useState(false);
@@ -321,4 +323,4 @@ const Invoicing: React.FC<InvoicingProps> = ({ selectedShipment }) => {
   );
 };
 
-export default Invoicing;
+export default BluShippingInvoicing;

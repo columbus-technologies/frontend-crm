@@ -1,5 +1,6 @@
 import {
   GetInvoiceFeesFromPortAuthorityResponse,
+  GetInvoiceTenantResponse,
   InvoicePricing,
   InvoicePricingResponse,
 } from "../types";
@@ -75,3 +76,18 @@ export const getInvoiceFeesFromPortAuthority =
     console.log(data, "data?");
     return data;
   };
+
+// Get tenant information from invoice
+export const getInvoiceTenant = async (): Promise<GetInvoiceTenantResponse> => {
+  const response = await fetch(`${INVOICE_URL}/tenant`, {
+    method: "GET",
+    headers: prepareAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Error: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return data;
+};
