@@ -290,6 +290,11 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
 
   const handleAddMooringField = () => {
     let newMooringFields = [];
+    // Determine the price based on terminalName
+    const mooringPrice =
+      terminalName in invoiceFeesData.invoiceFees.mooring
+        ? invoiceFeesData.invoiceFees.mooring[terminalName]
+        : invoiceFeesData.invoiceFees.mooring["default"];
     if (
       !invoiceData ||
       !invoiceData.invoice_pricing_details.mooring ||
@@ -297,7 +302,7 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
     ) {
       newMooringFields = [
         {
-          price: invoiceFeesData.invoiceFees.mooring[terminalName],
+          price: mooringPrice,
           description: "Mooring",
           remarks: `Estimated Basis ${terminalName} Tariff`,
         },
