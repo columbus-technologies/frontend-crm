@@ -121,7 +121,9 @@ const useInvoiceData = (
         ],
         mooring: [
           {
-            price: invoiceFeesData.invoiceFees.mooring[terminalName],
+            price:
+              invoiceFeesData.invoiceFees.mooring[terminalName] ||
+              invoiceFeesData.invoiceFees.mooring["default"],
             description: "Mooring",
             remarks: `Estimated Basis ${terminalName} Tariff`,
           },
