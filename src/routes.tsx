@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import AppLayout from "./components/AppLayout";
 import LoginLayout from "./components/LoginLayout";
 import Dashboard from "./pages/Dashboard";
@@ -30,6 +30,8 @@ const AppRoutes: React.FC = () => {
         element={
           <AppLayout>
             <Routes>
+              <Route path="/" element={<Navigate to="/dashboard" />} />
+
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/feed/:id" element={<Feed />} />
               <Route path="/shipments" element={<Shipments />} />
