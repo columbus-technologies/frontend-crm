@@ -6,11 +6,14 @@ const { Title } = Typography;
 const { TabPane } = Tabs;
 
 import { CustomerResponse, ShipmentResponse } from "../types";
+import { FeedEmailResponse } from "../types/feed"
 import { getInvoiceTenant, getShipmentById } from "../api"; // Remove getAllShipments import
+import { getFeedEmailsByShipmentID } from "../api/feed_emails"
 import UnauthorizedModal from "../components/modals/UnauthorizedModal";
 import { renderShipmentDetails } from "./feed/ShipmentDetails";
 import BluShippingInvoicing from "./feed/invoices/BluShipping_Invoicing";
 import TestDemoInvoicing from "./feed/invoices/TestDemo_Invoicing";
+import FeedDetails from "./feed/FeedDetails"
 
 import { renderVesselDetails } from "./feed/VesselDetails";
 import fetchCustomerDataByShipment from "../utils/customer";
@@ -20,6 +23,8 @@ const Feed: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [selectedShipment, setSelectedShipment] =
     useState<ShipmentResponse | null>(null);
+  const [selectedFeedEmails, setSelectedFeedEmails] =
+    useState<FeedEmailResponse | null>(null);
   const [customerData, setCustomerData] = useState<CustomerResponse | null>(
     null
   );
@@ -33,6 +38,10 @@ const Feed: React.FC = () => {
       const data = await getShipmentById(id);
       console.log("Fetched shipment:", data); // Debugging statement
       setSelectedShipment(data);
+
+      const emails = await getFeedEmailsByShipmentID(id);
+      console.log("Fetched feed emails:", emails); // Debugging statement
+      setSelectedFeedEmails(emails);
 
       const fetchedShipment = await fetchCustomerDataByShipment(data);
       setCustomerData(fetchedShipment);
@@ -78,7 +87,7 @@ const Feed: React.FC = () => {
         ) : (
           <Tabs defaultActiveKey="1">
             <TabPane tab="Feed" key="1">
-              {renderContent("Feed content...")}
+              <FeedDetails selectedFeedEmails={selectedFeedEmails} />
             </TabPane>
             <TabPane tab="Shipment Details" key="2">
               {renderShipmentDetails(selectedShipment)}
