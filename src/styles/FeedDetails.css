@@ -1,0 +1,54 @@
+.email-container {
+  display: flex;
+  align-items: flex-start;
+  padding: 10px;
+  border-bottom: 1px solid #ddd; /* Line separator */
+}
+
+.email-icon-container {
+  background-color: #ffa500; /* Orange background */
+  border-radius: 50%; /* Perfect circle */
+  width: 40px; /* Equal width and height */
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px; /* Space between icon and text */
+}
+
+.email-icon .icon-envelope {
+  width: 25px; /* Set the width */
+  height: 25px; /* Set the height */
+  color: #ffffff; /* Set the color */
+}
+
+.email-details {
+  flex: 1;
+}
+
+.email-header,
+.email-subject,
+.email-body,
+.email-received {
+  margin-bottom: 8px;
+}
+
+.email-body {
+  white-space: pre-wrap; /* Preserve line breaks */
+}
+
+.email-toggle {
+  cursor: pointer;
+  color: blue;
+  text-decoration: underline;
+  display: block; /* Ensure it takes full width for margin to work */
+  margin-bottom: 16px; /* Add space below "See more" link */
+}
+
+.email-received {
+  color: #555; /* Gray color for text */
+  font-size: 0.875rem; /* Slightly smaller font size */
+  font-style: italic; /* Italicize the text to distinguish it */
+  margin-top: 8px; /* Add some space above the received time */
+  padding-top: 8px; /* Add padding to create space between the border and text */
+}
