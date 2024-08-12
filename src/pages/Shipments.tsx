@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Card, Typography, Table, Button, Tag, Input, Select } from "antd";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 import { ShipmentResponse } from "../types";
 import { getAllShipments } from "../api";
-import "../styles/index.css"; // Ensure the CSS file is imported
+import "../styles/index.css";
 import MultiStepShipmentModal from "../components/modals/MultiStepShipmentModal";
 import UnauthorizedModal from "../components/modals/UnauthorizedModal";
-import { useStatusColours } from "../context/StatusColoursContext"; // Import the context
+import { useStatusColours } from "../context/StatusColoursContext";
 import { formatDateToLocalString } from "../utils/dateTimeUtils";
 
 const { Title } = Typography;
@@ -21,15 +21,15 @@ const ShipmentsManagement: React.FC = () => {
     useState(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [filter, setFilter] = useState<string>("All");
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   const statusColours = useStatusColours();
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
   const fetchData = async () => {
     try {
       const data = await getAllShipments();
-      console.log("Fetched shipments:", data); // Debugging statement
-      // Ensure data is an array
+      console.log("Fetched shipments:", data);
       if (Array.isArray(data)) {
         const sortedData = data.sort(
           (a, b) =>
@@ -37,9 +37,8 @@ const ShipmentsManagement: React.FC = () => {
         );
         setShipments(sortedData);
       } else {
-        setShipments([]); // Set an empty array if data is not an array
+        setShipments([]);
       }
-
       setErrorMessage(null);
     } catch (error) {
       if (error instanceof Error) {
@@ -56,10 +55,44 @@ const ShipmentsManagement: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchData(); // Initial fetch
-  }, []); // Empty dependency array means this effect runs once on mount
+    // Check if there's a saved scroll position
+    // const savedScrollPosition = sessionStorage.getItem("scrollPosition");
+    // console.log(savedScrollPosition);
+    // if (savedScrollPosition) {
+    //   // Scroll to the saved position
+    //   window.scrollTo(0, parseInt(savedScrollPosition, 10));
+
+    //   // Clear the saved position from sessionStorage
+    //   sessionStorage.removeItem("scrollPosition");
+    // }
+    const savedPage = sessionStorage.getItem("currentPage");
+    if (savedPage) {
+      setCurrentPage(parseInt(savedPage, 10));
+    }
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (shipments.length > 0) {
+      const savedScrollPosition = sessionStorage.getItem("scrollPosition");
+      if (savedScrollPosition) {
+        window.scrollTo(0, parseInt(savedScrollPosition, 10));
+        sessionStorage.removeItem("scrollPosition");
+      }
+    }
+  }, [shipments]); // This runs after the shipments data has been set
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    sessionStorage.setItem("currentPage", page.toString());
+  };
 
   const handleView = (id: string) => {
+    // Save the current scroll position
+    sessionStorage.setItem("scrollPosition", window.scrollY.toString());
+    sessionStorage.setItem("currentPage", currentPage.toString());
+
+    // Navigate to the feed page
     navigate(`/feed/${id}`);
   };
 
@@ -185,7 +218,6 @@ const ShipmentsManagement: React.FC = () => {
       render: (agent_details: any) => (
         <div>
           <div>{agent_details.name}</div>
-          {/* <div>{agent_details.contact}</div> */}
         </div>
       ),
     },
@@ -212,7 +244,7 @@ const ShipmentsManagement: React.FC = () => {
           placeholder="Search by Vessel Name"
           onSearch={handleSearch}
           onChange={(e) => handleSearch(e.target.value)}
-          className="search-bar" // Apply the class to set width
+          className="search-bar"
         />
         <div>
           <Select
@@ -237,7 +269,12 @@ const ShipmentsManagement: React.FC = () => {
         {errorMessage ? (
           <p>{errorMessage}</p>
         ) : (
-          <Table dataSource={filteredShipments} columns={columns} rowKey="ID" />
+          <Table
+            dataSource={filteredShipments}
+            columns={columns}
+            rowKey="ID"
+            pagination={{ current: currentPage, onChange: handlePageChange }}
+          />
         )}
       </Card>
       <MultiStepShipmentModal
