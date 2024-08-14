@@ -1,0 +1,18 @@
+.horizontal-scroll-container {
+  display: flex;
+  flex-wrap: nowrap; /* Prevent wrapping to keep the cards in a single line */
+  overflow-x: auto; /* Enable horizontal scrolling */
+  overflow-y: hidden; /* Hide vertical scrollbar if there's any */
+  width: 100%; /* Make sure it takes the full width of its container */
+  padding-bottom: 16px; /* Add some padding for aesthetics */
+  margin-bottom: 16px; /* Space from the bottom */
+}
+
+.shipment-card-wrapper {
+  flex: 0 0 auto; /* Prevent shrinking and keep the card's original size */
+  margin-right: 16px; /* Add space between cards */
+}
+
+.shipment-card-wrapper:last-child {
+  margin-right: 0; /* Remove the right margin for the last card */
+}

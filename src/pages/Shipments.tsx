@@ -55,16 +55,7 @@ const ShipmentsManagement: React.FC = () => {
   };
 
   useEffect(() => {
-    // Check if there's a saved scroll position
-    // const savedScrollPosition = sessionStorage.getItem("scrollPosition");
-    // console.log(savedScrollPosition);
-    // if (savedScrollPosition) {
-    //   // Scroll to the saved position
-    //   window.scrollTo(0, parseInt(savedScrollPosition, 10));
-
-    //   // Clear the saved position from sessionStorage
-    //   sessionStorage.removeItem("scrollPosition");
-    // }
+    // Check if there's a saved page position
     const savedPage = sessionStorage.getItem("currentPage");
     if (savedPage) {
       setCurrentPage(parseInt(savedPage, 10));
@@ -78,13 +69,14 @@ const ShipmentsManagement: React.FC = () => {
       if (savedScrollPosition) {
         window.scrollTo(0, parseInt(savedScrollPosition, 10));
         sessionStorage.removeItem("scrollPosition");
+        sessionStorage.removeItem("currentPage");
       }
     }
   }, [shipments]); // This runs after the shipments data has been set
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    sessionStorage.setItem("currentPage", page.toString());
+    // sessionStorage.setItem("currentPage", page.toString());
   };
 
   const handleView = (id: string) => {

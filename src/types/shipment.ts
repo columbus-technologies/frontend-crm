@@ -32,7 +32,7 @@ export interface CargoOperationsActivity {
 export interface ShipmentProduct {
   sub_product_type: string;
   quantity: number;
-  dimensions: string;
+  quantity_code: string;
   percentage: number;
 }
 

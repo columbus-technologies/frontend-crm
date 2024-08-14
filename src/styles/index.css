@@ -74,6 +74,7 @@ button:focus-visible {
 
 .settings-management-container {
   padding: 20px;
+  max-width: 100%; /* Ensure the container doesn't exceed the screen width */
 }
 
 .settings-management-title {

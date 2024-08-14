@@ -30,13 +30,7 @@ interface SubProductTypesProps {
 const SubProductTypes: React.FC<SubProductTypesProps> = ({
   subProductType,
 }) => {
-  return (
-    <div>
-      <p>
-        <strong>Product:</strong> {subProductType}
-      </p>
-    </div>
-  );
+  return subProductType;
 };
 
 export default SubProductTypes;

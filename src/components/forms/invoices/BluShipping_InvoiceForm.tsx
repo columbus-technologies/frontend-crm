@@ -400,7 +400,7 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
           vesselName: selectedShipment.vessel_specifications.vessel_name,
           callSign: selectedShipment.vessel_specifications.call_sign,
           grt: selectedShipment.vessel_specifications.grt,
-          nrt: selectedShipment.vessel_specifications.nrt + " metres",
+          nrt: selectedShipment.vessel_specifications.nrt,
           dwt: selectedShipment.vessel_specifications.sdwt,
           loa: selectedShipment.vessel_specifications.loa + " metres",
           eta: formatDateToLocalString(selectedShipment.ETA),

@@ -6,14 +6,14 @@ const { Title } = Typography;
 const { TabPane } = Tabs;
 
 import { CustomerResponse, ShipmentResponse } from "../types";
-import { FeedEmailResponse } from "../types/feed"
+import { FeedEmailResponse } from "../types/feed";
 import { getInvoiceTenant, getShipmentById } from "../api"; // Remove getAllShipments import
-import { getFeedEmailsByShipmentID } from "../api/feed_emails"
+import { getFeedEmailsByShipmentID } from "../api/feed_emails";
 import UnauthorizedModal from "../components/modals/UnauthorizedModal";
 import { renderShipmentDetails } from "./feed/ShipmentDetails";
 import BluShippingInvoicing from "./feed/invoices/BluShipping_Invoicing";
 import TestDemoInvoicing from "./feed/invoices/TestDemo_Invoicing";
-import FeedDetails from "./feed/FeedDetails"
+import FeedDetails from "./feed/FeedDetails";
 
 import { renderVesselDetails } from "./feed/VesselDetails";
 import fetchCustomerDataByShipment from "../utils/customer";
@@ -80,7 +80,7 @@ const Feed: React.FC = () => {
 
   return (
     <div className="settings-management-container">
-      <Title level={2}>Feed</Title>
+      <Title level={2}>Shipment Overview</Title>
       <Card>
         {errorMessage ? (
           <p>{errorMessage}</p>

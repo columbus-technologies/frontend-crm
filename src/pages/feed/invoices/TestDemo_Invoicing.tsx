@@ -4,12 +4,12 @@ import { FilePdfOutlined, EditOutlined } from "@ant-design/icons";
 import { createInvoice, editInvoice } from "../../../api";
 import { InvoicePricing, ShipmentResponse } from "../../../types";
 import BluShipping_InvoiceForm from "../../../components/forms/invoices/BluShipping_InvoiceForm";
-import BluShipping_InvoicePDF from "../../../components/pdf/BluShipping_InvoicePDF";
 import InvoiceImage from "../../../assets/ship.png";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 
 import "../../../styles/InvoicingPage.css";
 import useInvoiceData from "../../../hooks/invoice/BluShipping_useInvoiceData";
+import TestDemo_InvoicePDF from "../../../components/pdf/TestDemo_Invoicing";
 
 const { Title } = Typography;
 
@@ -250,7 +250,7 @@ const TestDemoInvoicing: React.FC<TestDemoInvoicingProps> = ({
             {(invoiceData || displayPDF) && (
               <PDFDownloadLink
                 document={
-                  <BluShipping_InvoicePDF
+                  <TestDemo_InvoicePDF
                     selectedShipment={selectedShipment}
                     invoicePricing={invoiceData!}
                     invoiceType="PDA"
@@ -276,7 +276,7 @@ const TestDemoInvoicing: React.FC<TestDemoInvoicingProps> = ({
             {(invoiceData || displayPDF) && (
               <PDFDownloadLink
                 document={
-                  <BluShipping_InvoicePDF
+                  <TestDemo_InvoicePDF
                     selectedShipment={selectedShipment}
                     invoicePricing={invoiceData!}
                     invoiceType="FDA"

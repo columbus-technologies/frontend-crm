@@ -1,0 +1,27 @@
+.quicklinks-row {
+  margin-top: 0px;
+}
+
+.quicklink-card {
+  border-radius: 12px; /* Rounded corners */
+  overflow: hidden;
+  position: relative;
+  height: 150px; /* Adjust height as needed */
+}
+
+.quicklink-image {
+  background-size: cover;
+  background-position: center;
+  height: 100%;
+  width: 100%;
+}
+
+.quicklink-text {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
