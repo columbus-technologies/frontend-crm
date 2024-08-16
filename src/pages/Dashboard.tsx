@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Typography, Row, Col, Card, Image, Select } from "antd";
+import { Typography, Row, Col, Card, Image, Select, Spin } from "antd";
 import "../styles/index.css"; // Ensure the CSS file is imported
 import "../styles/DashboardHorizontalScroll.css";
 import "../styles/Quicklinks.css";
@@ -24,11 +24,13 @@ const Dashboard: React.FC = () => {
   >([]);
   const [shipmentStatuses, setShipmentStatuses] = useState<string[]>([]);
   const [selectedStatus, setSelectedStatus] = useState<string>("All");
+  const [loading, setLoading] = useState<boolean>(true);
   const [isUnauthorizedModalVisible, setIsUnauthorizedModalVisible] =
     useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true); // Start loading
       try {
         const data = await getAllShipments();
         console.log(data);
@@ -49,6 +51,8 @@ const Dashboard: React.FC = () => {
           setErrorMessage(String(error));
         }
         console.error("There was an error!", error);
+      } finally {
+        setLoading(false); // End loading
       }
     };
 
@@ -121,7 +125,11 @@ const Dashboard: React.FC = () => {
           </Select>
         </div>
       </div>
-      {filteredShipments && filteredShipments.length > 0 ? (
+      {loading ? (
+        <div style={{ textAlign: "center", marginTop: "20px" }}>
+          <Spin size="large" />
+        </div>
+      ) : filteredShipments && filteredShipments.length > 0 ? (
         <>
           <div className="horizontal-scroll-container">
             {filteredShipments.map((shipment) => {

@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Layout, Menu } from "antd";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   DashboardOutlined,
   SettingOutlined,
@@ -15,6 +15,43 @@ const Sidebar: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedKey, setSelectedKey] = useState("0"); // Default selected key
   const navigate = useNavigate();
+  const location = useLocation(); // Get the current path
+
+  useEffect(() => {
+    // Set selectedKey based on the current path
+    switch (location.pathname) {
+      case "/dashboard":
+        setSelectedKey("1");
+        break;
+      case "/shipments":
+        setSelectedKey("2");
+        break;
+      case "/customer-management-settings":
+        setSelectedKey("3");
+        break;
+      case "/vessel-management-settings":
+        setSelectedKey("4");
+        break;
+      case "/agent-management-settings":
+        setSelectedKey("5");
+        break;
+      case "/terminal-management-settings":
+        setSelectedKey("6");
+        break;
+      case "/supplier-management-settings":
+        setSelectedKey("7");
+        break;
+      case "/activity-types":
+        setSelectedKey("8");
+        break;
+      case "/product-types":
+        setSelectedKey("9");
+        break;
+      default:
+        setSelectedKey("0");
+        break;
+    }
+  }, [location.pathname]); // Update selectedKey whenever the path changes
 
   const handleCreateShipment = () => {
     setIsModalVisible(true); // Show the modal
