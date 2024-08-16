@@ -46,6 +46,8 @@ const Sidebar: React.FC = () => {
               borderColor: "#64748B",
               color: "#FFFFFF",
               width: "100%", // Expand the button horizontally
+              textAlign: "left", // Align the text to the left
+              paddingLeft: "16px", // Add padding to the left
             }}
             onClick={handleCreateShipment}
           >

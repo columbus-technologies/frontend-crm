@@ -6,6 +6,7 @@ import {
   ClockCircleOutlined,
   UserAddOutlined,
 } from "@ant-design/icons";
+import { GiCargoShip } from "react-icons/gi";
 import moment from "moment";
 import {
   ShipmentResponse,
@@ -17,48 +18,37 @@ import StatusTag from "../common/StatusTag";
 import { useStatusColours } from "../../context/StatusColoursContext";
 import SubProductTypes from "../common/SubProductTypes";
 import { useNavigate } from "react-router-dom";
+import "../../styles/ShipmentCard.css";
 
 interface ShipmentCardProps {
   shipment: ShipmentResponse;
 }
 
-const contentStyle: React.CSSProperties = {
-  margin: 0,
-  marginBottom: "10px",
-  color: "#000", // Change font color to black
-  lineHeight: "15px",
-  textAlign: "center",
-  background: "#F6F7FB", // Light grayish blue background color
-  overflow: "auto",
-  padding: "15px",
-  border: "2px solid #1777FF", // Adding a thin black border
-  borderRadius: "20px", // Optional: Adding slight rounding to the corners
-};
-
-const onChange = (currentSlide: number) => {
-  console.log(currentSlide, "slide");
-};
+type ShipmentActivity = CargoOperationsActivity | BunkeringActivity;
 
 const ShipmentCard: React.FC<ShipmentCardProps> = ({ shipment }) => {
   const statusColours = useStatusColours();
   const statusColour = statusColours[shipment.current_status] || "default";
   const navigate = useNavigate();
 
-  let activities: CargoOperationsActivity[] | BunkeringActivity[] = [];
+  let activities: ShipmentActivity[] = [];
 
-  if (shipment.shipment_type.cargo_operations.cargo_operations) {
-    activities =
-      shipment.shipment_type.cargo_operations.cargo_operations_activity;
-  } else if (shipment.shipment_type.bunkering.bunkering) {
-    activities = shipment.shipment_type.bunkering.bunkering_activity;
-  }
+  activities = [
+    ...(shipment.shipment_type.cargo_operations.cargo_operations_activity ||
+      []),
+    ...(shipment.shipment_type.bunkering.bunkering_activity || []),
+  ];
 
   const viewShipment = () => {
     navigate("/feed/" + shipment.ID);
   };
 
+  const onChange = (currentSlide: number) => {
+    console.log(currentSlide, "slide");
+  };
+
   const isCargoOperations = (
-    activity: any
+    activity: CargoOperationsActivity | BunkeringActivity
   ): activity is CargoOperationsActivity => {
     return "activity_type" in activity;
   };
@@ -67,13 +57,7 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({ shipment }) => {
     <Card
       title={
         <>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              marginTop: "15px", // Adjust this to control spacing
-            }}
-          >
+          <div className="titleStyle">
             <div>
               <Tag color={statusColour}> {shipment.current_status} </Tag>
               {shipment.shipment_type.cargo_operations.cargo_operations && (
@@ -84,17 +68,13 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({ shipment }) => {
               )}
             </div>
           </div>
-          <div style={{ marginTop: "10px", marginBottom: "10px" }}>
-            <ClockCircleOutlined /> {shipment.vessel_specifications.imo_number},{" "}
+          <div className="infoStyle">
+            <GiCargoShip /> {shipment.vessel_specifications.imo_number},{" "}
             {shipment.vessel_specifications.vessel_name}
           </div>
         </>
       }
-      style={{
-        marginBottom: "20px",
-        boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2)", // Adding shadow to the card
-        borderRadius: "8px", // Adding some border radius for better look
-      }}
+      className="cardStyle"
     >
       <div style={{ marginTop: "-10px" }}>
         <ClockCircleOutlined />
@@ -102,24 +82,27 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({ shipment }) => {
         {moment(shipment.ETA).format("DD-MMM-YYYY, dddd, HH:mm")} HRS
       </div>
       {shipment.shipment_details?.agent_details && (
-        <>
-          <div style={{ marginBottom: "10px" }}>
-            <UserAddOutlined />
-            {" Agent: "}
-            {shipment.shipment_details.agent_details.name}{" "}
-            {shipment.shipment_details.agent_details.contact}
-          </div>
-        </>
+        <div className="agentStyle">
+          <UserAddOutlined />
+          {" Agent: "}
+          {shipment.shipment_details.agent_details.name}{" "}
+          {shipment.shipment_details.agent_details.contact}
+        </div>
       )}
-      <Carousel afterChange={onChange} dots={{ className: "custom-dots" }}>
+
+      <Carousel
+        afterChange={onChange}
+        dots={activities.length > 1} // only display dots if activities length > 1
+        className="custom-dots"
+      >
         {activities.length > 0 ? (
           activities.map((activity, index) => (
             <div key={index}>
-              <h5 style={contentStyle}>
+              <h5 className="contentStyle">
                 <StatusTag activity={activity} />
                 {isCargoOperations(activity) ? (
                   <>
-                    <h2>Activity</h2>
+                    <h2>Cargo Ops Activity</h2>
                     {activity.shipment_product.map((product, idx) => (
                       <div key={idx}>
                         <p>
@@ -137,9 +120,8 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({ shipment }) => {
                   </>
                 ) : (
                   <>
-                    <p>Supplier: {activity.supplier} </p>
-                    <p>Supplier Contact: {activity.supplier_contact} </p>
-                    <p>Appointed Surveyor: {activity.appointed_surveyor} </p>
+                    <h2>Bunkering Activity</h2>
+
                     {"bunker_intake_specifications" in activity && (
                       <div>
                         {(
@@ -147,16 +129,15 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({ shipment }) => {
                         ).bunker_intake_specifications?.map(
                           (spec: BunkerIntakeSpecifications, idx: number) => (
                             <p key={idx}>
-                              <strong>Bunker Intake {idx + 1}:</strong>
-                              <br />
-                              Product Type: {spec.sub_product_type}
-                              <br />
-                              Sub Product Type: {spec.sub_product_type}
+                              Loading {spec.sub_product_type}{" "}
+                              {/* {spec.maximum_quantity_intake} */}
                             </p>
                           )
                         )}
                       </div>
                     )}
+                    <p>Supplier: {activity.supplier} </p>
+                    <p>Barge Vessel: {activity.supplier_vessel} </p>
                   </>
                 )}
                 <p>
@@ -168,27 +149,15 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({ shipment }) => {
           ))
         ) : (
           <div>
-            <h5 style={contentStyle}>
+            <h5 className="contentStyle">
               <p>Pending Activities</p>
             </h5>
           </div>
         )}
       </Carousel>
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          // marginTop: "10px",
-        }}
-      >
-        <div
-          style={{
-            textAlign: "right",
-            marginBottom: "10px", // Adjust this to control spacing
-          }}
-        >
+      <div className="actionsStyle">
+        <div className="buttonContainerStyle">
           <Button
             type="primary"
             icon={<EyeOutlined />}
@@ -202,12 +171,7 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({ shipment }) => {
           </Button>
         </div>
       </div>
-      <span
-        style={{
-          fontSize: "12px",
-          color: "#888",
-        }}
-      >
+      <span className="updatedTextStyle">
         Updated:{" "}
         {moment(shipment.updated_at).format("DD-MMM-YYYY, dddd, HH:mm")} HRS
       </span>

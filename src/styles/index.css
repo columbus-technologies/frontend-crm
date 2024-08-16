@@ -173,15 +173,15 @@ button:focus-visible {
   width: 7px;
   height: 7px;
   border-radius: 100%;
-  background: #fff; /* Customize the color as needed */
+  background: #5976cf; /* Customize the color as needed */
 }
 
 .ant-carousel .slick-dots li.slick-active button {
-  background: #f6f7f8; /* Customize the color as needed */
+  background: #5976cf; /* Customize the color as needed */
 }
 
 .ant-carousel .slick-dots {
-  padding-bottom: 8px; /* Adjust the padding as needed */
+  padding-bottom: 13px; /* Adjust the padding as needed */
 }
 
 .login-container {

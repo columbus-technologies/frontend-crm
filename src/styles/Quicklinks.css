@@ -1,12 +1,23 @@
 .quicklinks-row {
-  margin-top: 0px;
+  margin-bottom: 0px;
 }
 
 .quicklink-card {
   border-radius: 12px; /* Rounded corners */
+  /* margin-bottom: 20px; */
   overflow: hidden;
   position: relative;
   height: 150px; /* Adjust height as needed */
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* Adding shadow to the card */
+}
+
+.cardStyle {
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* Adding shadow to the card */
+  border-radius: 8px; /* Adding some border radius for better look */
+  height: 480px; /* Fixed height for all cards */
+  display: flex;
+  flex-direction: column;
 }
 
 .quicklink-image {

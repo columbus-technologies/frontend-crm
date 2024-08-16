@@ -1,0 +1,53 @@
+/* ShipmentCard.css */
+
+.cardStyle {
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* Adding shadow to the card */
+  border-radius: 8px; /* Adding some border radius for better look */
+  height: 480px; /* Fixed height for all cards */
+  display: flex;
+  flex-direction: column;
+}
+
+.contentStyle {
+  margin: 0;
+  margin-bottom: 40px;
+  color: #000; /* Change font color to black */
+  line-height: 15px;
+  text-align: center;
+  background: #f6f7fb; /* Light grayish blue background color */
+  padding: 15px;
+  border: 2px solid #1777ff; /* Adding a thin black border */
+  border-radius: 20px; /* Optional: Adding slight rounding to the corners */
+}
+
+.titleStyle {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px; /* Adjust this to control spacing */
+}
+
+.infoStyle {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.agentStyle {
+  margin-bottom: 10px;
+}
+
+.actionsStyle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.buttonContainerStyle {
+  text-align: right;
+  margin-bottom: 10px; /* Adjust this to control spacing */
+}
+
+.updatedTextStyle {
+  font-size: 12px;
+  color: #888;
+}

@@ -103,7 +103,8 @@ const styles = StyleSheet.create({
   tableCellPrice: {
     flex: 1,
     textAlign: "right",
-    paddingRight: 0,
+    paddingRight: 20, // Decrease padding to move it slightly to the left
+    paddingLeft: 20, // Add a bit of padding to the left if needed
   },
   tableCellRight: {
     flex: 3,
@@ -180,43 +181,43 @@ const BluShipping_InvoicePDF: React.FC<InvoicePDFProps> = ({
     ...portDues.map((field: any) => ({
       label: `Port Dues`,
       description: field.description,
-      price: field.price,
+      price: field.price ? field.price.toFixed(2) : 0,
       remarks: field.remarks,
     })),
     ...pilotage.map((field: any) => ({
       label: `Pilotage`,
       description: field.description,
-      price: field.price,
+      price: field.price ? field.price.toFixed(2) : 0,
       remarks: field.remarks,
     })),
     ...serviceLaunch.map((field: any) => ({
       label: `Service Launch`,
       description: field.description,
-      price: field.price,
+      price: field.price ? field.price.toFixed(2) : 0,
       remarks: field.remarks,
     })),
     ...towage.map((field: any) => ({
       label: `Towage`,
       description: field.description,
-      price: field.price,
+      price: field.price ? field.price.toFixed(2) : 0,
       remarks: field.remarks,
     })),
     ...mooring.map((field: any) => ({
       label: `Mooring`,
       description: field.description,
-      price: field.price,
+      price: field.price ? field.price.toFixed(2) : 0,
       remarks: field.remarks,
     })),
     ...agencyFee.map((field: any) => ({
       label: `Agency Fee`,
       description: field.description,
-      price: field.price,
+      price: field.price ? field.price.toFixed(2) : 0,
       remarks: field.remarks,
     })),
     ...dynamicFields.map((field: any, index: number) => ({
       label: `Dynamic ${index + 1}`,
       description: field.description,
-      price: field.price,
+      price: field.price ? field.price.toFixed(2) : 0,
       remarks: field.remarks,
     })),
   ];
