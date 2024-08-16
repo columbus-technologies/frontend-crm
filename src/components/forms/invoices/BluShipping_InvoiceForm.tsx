@@ -81,7 +81,9 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
       !invoiceData.invoice_pricing_details.portDues ||
       invoiceData.invoice_pricing_details.portDues === "[]"
     ) {
-      const etaDate = new Date(selectedShipment.ETA);
+      // const etaDate = new Date(selectedShipment.ETA);
+      const etaDate = new Date(selectedShipment.current_ETA);
+
       const numOfDaysShipmentStayed = Math.ceil(
         (latestETD.getTime() - etaDate.getTime()) / (1000 * 60 * 60 * 24)
       );
@@ -403,7 +405,7 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
           nrt: selectedShipment.vessel_specifications.nrt,
           dwt: selectedShipment.vessel_specifications.sdwt,
           loa: selectedShipment.vessel_specifications.loa + " metres",
-          eta: formatDateToLocalString(selectedShipment.ETA),
+          eta: formatDateToLocalString(selectedShipment.current_ETA),
           etd: formatDateToLocalString(
             getLatestETD(selectedShipment).toISOString()
           ),

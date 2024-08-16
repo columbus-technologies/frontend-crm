@@ -101,7 +101,9 @@ export interface ShipmentDetails {
 
 export interface Shipment {
   master_email: string;
-  ETA: string;
+  // ETA: string;
+  initial_ETA: string;
+  current_ETA: string;
   voyage_number: string;
   current_status: string;
   shipment_type: ShipmentType;
@@ -112,7 +114,9 @@ export interface Shipment {
 export interface ShipmentResponse {
   ID: string;
   master_email: string;
-  ETA: string;
+  // ETA: string;
+  initial_ETA: string;
+  current_ETA: string;
   voyage_number: string;
   current_status: string;
   shipment_type: ShipmentType;

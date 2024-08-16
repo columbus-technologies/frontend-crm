@@ -53,6 +53,14 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({ shipment }) => {
     return "activity_type" in activity;
   };
 
+  const initialETA = moment(shipment.initial_ETA).format(
+    "DD-MMM-YYYY, dddd, HH:mm"
+  );
+  const updatedETA = moment(shipment.current_ETA).format(
+    "DD-MMM-YYYY, dddd, HH:mm"
+  );
+  const sameETA = initialETA === updatedETA;
+
   return (
     <Card
       title={
@@ -77,9 +85,45 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({ shipment }) => {
       className="cardStyle"
     >
       <div style={{ marginTop: "-10px" }}>
-        <ClockCircleOutlined />
-        {" ETA: "}
-        {moment(shipment.ETA).format("DD-MMM-YYYY, dddd, HH:mm")} HRS
+        {sameETA ? (
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <ClockCircleOutlined
+              style={{ marginRight: "5px", color: "#1890ff" }}
+            />
+            <span>
+              <strong>ETA: </strong>
+              {updatedETA} HRS
+            </span>
+          </div>
+        ) : (
+          <div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginBottom: "5px",
+                color: "#888", // Grey color for Initial ETA
+              }}
+            >
+              <ClockCircleOutlined
+                style={{ marginRight: "5px", color: "#888" }} // Grey color for Initial ETA
+              />
+              <span>
+                <strong>Initial ETA: </strong>
+                {initialETA} HRS
+              </span>
+            </div>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <ClockCircleOutlined
+                style={{ marginRight: "5px", color: "#f5222d" }} // Red color for Updated ETA
+              />
+              <span>
+                <strong>Updated ETA: </strong>
+                {updatedETA} HRS
+              </span>
+            </div>
+          </div>
+        )}
       </div>
       {shipment.shipment_details?.agent_details && (
         <div className="agentStyle">

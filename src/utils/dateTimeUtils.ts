@@ -13,7 +13,9 @@ export const formatDateToLocalString = (dateString: string): string => {
 };
 
 const getLatestETD = (selectedShipment: ShipmentResponse): Date => {
-  const { shipment_type, ETA } = selectedShipment;
+  // const { shipment_type, ETA } = selectedShipment;
+  const { shipment_type, current_ETA } = selectedShipment;
+
   const getLatestDate = (date1: Date, date2: Date): Date => {
     return new Date(Math.max(date1.getTime(), date2.getTime()));
   };
@@ -27,7 +29,8 @@ const getLatestETD = (selectedShipment: ShipmentResponse): Date => {
         return new Date(lastActivity.etd);
       }
     }
-    return new Date(ETA);
+    return new Date(current_ETA);
+    // return new Date(ETA);
   };
 
   if (shipment_type.cargo_operations?.cargo_operations) {
@@ -53,7 +56,8 @@ const getLatestETD = (selectedShipment: ShipmentResponse): Date => {
         shipment_type.bunkering.bunkering_activity
       );
     } else {
-      latestShipmentOverallETD = new Date(ETA);
+      // latestShipmentOverallETD = new Date(ETA);
+      latestShipmentOverallETD = new Date(current_ETA);
       latestShipmentOverallETD.setDate(latestShipmentOverallETD.getDate() + 1);
     }
   }

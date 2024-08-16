@@ -158,11 +158,13 @@ const useInvoiceData = (
         ],
         contactNumber: customerData?.contact,
         email: customerData?.email,
-        eta: formatDateToLocalString(selectedShipment.ETA),
+        // eta: formatDateToLocalString(selectedShipment.ETA),
+        eta: formatDateToLocalString(selectedShipment.current_ETA),
         etd: formatDateToLocalString(latestETD.toISOString()),
       });
 
-      const etaDate = new Date(selectedShipment.ETA);
+      const etaDate = new Date(selectedShipment.current_ETA);
+      // const etaDate = new Date(selectedShipment.ETA);
       const numOfDaysShipmentStayed = Math.ceil(
         (latestETD.getTime() - etaDate.getTime()) / (1000 * 60 * 60 * 24)
       );

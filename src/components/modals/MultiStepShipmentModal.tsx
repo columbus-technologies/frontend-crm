@@ -130,7 +130,10 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
 
       const payload = {
         master_email: mergedValues.master_email || "",
-        ETA: mergedValues.ETA ? mergedValues.ETA.toISOString() : now,
+        // ETA: mergedValues.ETA ? mergedValues.ETA.toISOString() : now,
+        initial_ETA: mergedValues.ETA ? mergedValues.ETA.toISOString() : now,
+        current_ETA: mergedValues.ETA ? mergedValues.ETA.toISOString() : now,
+
         voyage_number: mergedValues.voyage_number || "",
         current_status: mergedValues.current_status || "",
         shipment_type: {
