@@ -1,15 +1,51 @@
 /* ShipmentCard.css */
 
+/* General card styling */
 .cardStyle {
   margin-bottom: 20px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* Adding shadow to the card */
   border-radius: 8px; /* Adding some border radius for better look */
   height: 520px; /* Fixed height for all cards */
-  /* width: 420px; */
   display: flex;
   flex-direction: column;
+  max-width: 400px; /* Set a max-width to prevent the card from stretching too much */
+  flex: 1 1 300px; /* Flex-grow, Flex-shrink, Flex-basis */
 }
 
+@media (max-width: 1329px) {
+  .buttonContainerStyle button {
+    padding: 4px 12px; /* Adjust the padding to make the buttons smaller */
+    font-size: 14px; /* Adjust the font size to make the text smaller */
+  }
+
+  .buttonContainerStyle .ant-btn {
+    min-width: 80px; /* Set a minimum width for the buttons */
+  }
+}
+
+@media (max-width: 1293px) {
+  .buttonContainerStyle button {
+    padding: 4px 12px; /* Adjust the padding to make the buttons smaller */
+    font-size: 13px; /* Adjust the font size to make the text smaller */
+  }
+
+  .buttonContainerStyle .ant-btn {
+    min-width: 70px; /* Set a minimum width for the buttons */
+  }
+}
+
+@media (max-width: 1252px) {
+  .buttonContainerStyle button {
+    padding: 3px 11px; /* Adjust the padding to make the buttons smaller */
+    font-size: 13px; /* Adjust the font size to make the text smaller */
+  }
+
+  .buttonContainerStyle .ant-btn {
+    min-width: 60px; /* Set a minimum width for the buttons */
+  }
+}
+
+/* Keeping other styles as they are */
 .contentStyle {
   margin: 0;
   margin-bottom: 40px;

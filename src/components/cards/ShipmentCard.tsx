@@ -32,7 +32,9 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({ shipment }) => {
   const navigate = useNavigate();
 
   let activities: ShipmentActivity[] = [];
-
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  console.log("width:", w, "height:", h);
   activities = [
     ...(shipment.shipment_type.cargo_operations.cargo_operations_activity ||
       []),

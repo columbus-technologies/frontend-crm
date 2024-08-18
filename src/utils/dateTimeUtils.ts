@@ -1,5 +1,9 @@
 // src/utils/dateTimeUtils.ts
-import { ShipmentResponse } from "../types";
+import {
+  BunkeringActivity,
+  CargoOperationsActivity,
+  ShipmentResponse,
+} from "../types";
 
 export const formatDateToLocalString = (dateString: string): string => {
   return new Date(dateString).toLocaleString(undefined, {
@@ -22,7 +26,9 @@ const getLatestETD = (selectedShipment: ShipmentResponse): Date => {
 
   let latestShipmentOverallETD: Date;
 
-  const getLastActivityETD = (activities: any[]): Date => {
+  const getLastActivityETD = (
+    activities: CargoOperationsActivity[] | BunkeringActivity[]
+  ): Date => {
     if (activities && activities.length > 0) {
       const lastActivity = activities[activities.length - 1];
       if (lastActivity.etd) {
