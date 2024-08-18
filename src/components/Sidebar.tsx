@@ -14,6 +14,7 @@ const { SubMenu } = Menu;
 const Sidebar: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedKey, setSelectedKey] = useState("0"); // Default selected key
+  const [collapsed, setCollapsed] = useState(false); // State to track sidebar collapse
   const navigate = useNavigate();
   const location = useLocation(); // Get the current path
 
@@ -65,7 +66,11 @@ const Sidebar: React.FC = () => {
 
   return (
     <>
-      <Sider collapsible>
+      <Sider
+        collapsible
+        collapsed={collapsed}
+        onCollapse={(value) => setCollapsed(value)}
+      >
         <div
           style={{
             display: "flex",
@@ -88,7 +93,8 @@ const Sidebar: React.FC = () => {
             }}
             onClick={handleCreateShipment}
           >
-            <b> New Shipment </b>
+            {!collapsed && <b> New Shipment </b>}{" "}
+            {/* Show text only when not collapsed */}
           </Button>
         </div>
         <Menu
