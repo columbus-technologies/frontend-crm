@@ -93,7 +93,7 @@ const renderBunkerIntakeSpecifications = (specifications: any[]) => {
             <div>
               {specification.maximum_quantity_intake === -1
                 ? `Maximum Quantity Intake: ${missingInformation}`
-                : `Maximum Quantity Intake: ${specification.maximum_quantity_intake} m³`}
+                : `Maximum Quantity Intake: ${specification.maximum_quantity_intake} m³/hr`}
             </div>
             <div>
               {specification.maximum_hose_size === -1

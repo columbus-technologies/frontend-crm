@@ -149,7 +149,7 @@ const BunkeringActivityForm: React.FC<BunkeringActivityFormProps> = ({
                             rules={[{ validator: validateFloat }]}
                           >
                             <InputWithUnit
-                              unit="m³"
+                              unit="m³/hr"
                               placeholder="Enter quantity intake"
                             />
                           </Form.Item>
