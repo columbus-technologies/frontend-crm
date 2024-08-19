@@ -8,7 +8,10 @@ export const validateInteger = (_: any, value: any) => {
 };
 
 export const validateFloat = (_: any, value: any) => {
-  if (isNaN(value) || !Number(value)) {
+  if (value === undefined || value === null || value === "") {
+    return Promise.resolve();
+  }
+  if (isNaN(value) || Number(value) === 0) {
     return Promise.reject(new Error("Value must be a float"));
   }
   return Promise.resolve();

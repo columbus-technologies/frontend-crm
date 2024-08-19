@@ -5,8 +5,8 @@ import { validateInteger, validateFloat } from "../../utils/validationUtils";
 const { Option } = Select;
 
 const quantityCodes = [
-  { code: "KB", unit: "Kilo Barrels" },
   { code: "MT", unit: "Metric Tonnes" },
+  { code: "KB", unit: "Kilo Barrels" },
 ];
 
 interface QuantityInputProps {
@@ -32,6 +32,12 @@ const QuantityInput: React.FC<QuantityInputProps> = ({
                 {...productField}
                 name={[productField.name, "sub_product_type"]}
                 label="Product"
+                rules={[
+                  {
+                    required: true,
+                    message: "Required",
+                  },
+                ]}
                 style={{ flex: 1, marginRight: 8 }}
               >
                 <AutoComplete

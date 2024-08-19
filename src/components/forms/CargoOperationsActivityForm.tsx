@@ -46,6 +46,12 @@ const CargoOperationsActivityForm: React.FC<
                 {...restField}
                 name={[name, "activity_type"]}
                 label="Activity Type"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input the Activity Type!",
+                  },
+                ]}
               >
                 <AutoComplete
                   options={activityTypes.map((activity) => ({
@@ -64,6 +70,12 @@ const CargoOperationsActivityForm: React.FC<
                 {...restField}
                 name={[name, "customer_specifications", "customer"]}
                 label="Customer"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input the Customer!",
+                  },
+                ]}
               >
                 <AutoComplete
                   options={customerNames.map((customer) => ({
@@ -82,6 +94,12 @@ const CargoOperationsActivityForm: React.FC<
                 {...restField}
                 name={[name, "terminal_name"]}
                 label="Terminal Name"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input the Terminal!",
+                  },
+                ]}
               >
                 <AutoComplete
                   options={terminalLocations.map((location) => ({

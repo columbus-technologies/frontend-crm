@@ -19,6 +19,8 @@ const renderShipmentProducts = (products: any[]) => {
   );
 };
 
+const missingInformation = "Please Indicate the Information";
+
 const renderCargoOperationsActivities = (activities: any[]) => {
   return activities.map((activity, index) => (
     <Descriptions
@@ -39,22 +41,34 @@ const renderCargoOperationsActivities = (activities: any[]) => {
       </Descriptions.Item>
       {renderShipmentProducts(activity.shipment_product)}
       <Descriptions.Item label="Arrival Displacement">
-        {activity.arrival_departure_information.arrival_displacement} tonnes
+        {activity.arrival_departure_information.arrival_displacement === -1
+          ? missingInformation
+          : `${activity.arrival_departure_information.arrival_displacement} tonnes`}
       </Descriptions.Item>
       <Descriptions.Item label="Departure Displacement">
-        {activity.arrival_departure_information.departure_displacement} tonnes
+        {activity.arrival_departure_information.departure_displacement === -1
+          ? missingInformation
+          : `${activity.arrival_departure_information.departure_displacement} tonnes`}
       </Descriptions.Item>
       <Descriptions.Item label="Arrival Draft">
-        {activity.arrival_departure_information.arrival_draft} metres
+        {activity.arrival_departure_information.arrival_draft === -1
+          ? missingInformation
+          : `${activity.arrival_departure_information.arrival_draft} metres`}
       </Descriptions.Item>
       <Descriptions.Item label="Departure Draft">
-        {activity.arrival_departure_information.departure_draft} metres
+        {activity.arrival_departure_information.departure_draft === -1
+          ? missingInformation
+          : `${activity.arrival_departure_information.departure_draft} metres`}
       </Descriptions.Item>
       <Descriptions.Item label="Arrival Mast Height">
-        {activity.arrival_departure_information.arrival_mast_height} metres
+        {activity.arrival_departure_information.arrival_mast_height === -1
+          ? missingInformation
+          : `${activity.arrival_departure_information.arrival_mast_height} metres`}
       </Descriptions.Item>
       <Descriptions.Item label="Departure Mast Height">
-        {activity.arrival_departure_information.departure_mast_height} metres
+        {activity.arrival_departure_information.departure_mast_height === -1
+          ? missingInformation
+          : `${activity.arrival_departure_information.departure_mast_height} metres`}
       </Descriptions.Item>
       <Descriptions.Item label="Readiness">
         {formatDateToLocalString(activity.readiness)}
@@ -77,11 +91,14 @@ const renderBunkerIntakeSpecifications = (specifications: any[]) => {
           <div className="bunker-intake-specification" key={index}>
             <div>Sub-Product: {specification.sub_product_type}</div>
             <div>
-              Maximum Quantity Intake: {specification.maximum_quantity_intake}{" "}
-              m^3
+              {specification.maximum_quantity_intake === -1
+                ? `Maximum Quantity Intake: ${missingInformation}`
+                : `Maximum Quantity Intake: ${specification.maximum_quantity_intake} m³`}
             </div>
             <div>
-              Maximum Hose Size: {specification.maximum_hose_size} inches
+              {specification.maximum_hose_size === -1
+                ? `Maximum Hose Size: ${missingInformation} `
+                : `Maximum Hose Size: ${specification.maximum_hose_size} inches `}
             </div>
           </div>
         ))}

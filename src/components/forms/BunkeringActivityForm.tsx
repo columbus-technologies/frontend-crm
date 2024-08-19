@@ -58,6 +58,9 @@ const BunkeringActivityForm: React.FC<BunkeringActivityFormProps> = ({
                     {...restField}
                     name={[name, "appointed_surveyor"]}
                     label="Appointed Surveyor"
+                    rules={[
+                      { required: true, message: "Please input surveyor!" },
+                    ]}
                   >
                     <Input placeholder="Appointed Surveyor" />
                   </Form.Item>
@@ -67,6 +70,7 @@ const BunkeringActivityForm: React.FC<BunkeringActivityFormProps> = ({
                     {...restField}
                     name={[name, "supplier_vessel"]}
                     label="Supplier Vessel"
+                    rules={[{ required: true, message: "Please input barge!" }]}
                   >
                     <Input placeholder="Supplier Vessel" />
                   </Form.Item>
@@ -76,6 +80,9 @@ const BunkeringActivityForm: React.FC<BunkeringActivityFormProps> = ({
                     {...restField}
                     name={[name, "customer_name"]}
                     label="Customer"
+                    rules={[
+                      { required: true, message: "Please input customer!" },
+                    ]}
                   >
                     <AutoComplete
                       options={customerNames.map((customer) => ({
@@ -116,6 +123,9 @@ const BunkeringActivityForm: React.FC<BunkeringActivityFormProps> = ({
                             {...specField}
                             name={[specField.name, "sub_product_type"]}
                             label="Bunker Intake Sub-Product"
+                            rules={[
+                              { required: true, message: "Please select!" },
+                            ]}
                           >
                             <AutoComplete
                               options={subProductTypes.map((spt) => ({
@@ -139,7 +149,7 @@ const BunkeringActivityForm: React.FC<BunkeringActivityFormProps> = ({
                             rules={[{ validator: validateFloat }]}
                           >
                             <InputWithUnit
-                              unit="m^3"
+                              unit="m³"
                               placeholder="Enter quantity intake"
                             />
                           </Form.Item>

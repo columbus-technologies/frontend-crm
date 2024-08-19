@@ -5,7 +5,7 @@ import { FaEnvelope } from "react-icons/fa"; // Import the email icon
 import "../../styles/FeedDetails.css";
 
 // Define the constant for the number of lines to collapse
-const COLLAPSE_LINES = 5;
+// const COLLAPSE_LINES = 5;
 
 const EmailIcon = () => (
   <div className="email-icon">
@@ -43,15 +43,12 @@ const FeedDetails = ({
 
     return sortedEmails.map((email, index) => {
       const username = email.master_email.split("@")[0];
-      const bodyLines = email.body_content.split("\n\n");
-      const isLong = bodyLines.length > COLLAPSE_LINES;
       const isExpanded = expandedStates[index];
 
       // Create body content with line breaks
       const bodyContent = isExpanded
         ? email.body_content.replace(/\n\n/g, "<br />")
-        : bodyLines.slice(0, COLLAPSE_LINES).join("<br />") +
-          (isLong ? "..." : "");
+        : ""; // Hide content by default
 
       return (
         <div className="email-container" key={index}>
@@ -73,15 +70,15 @@ const FeedDetails = ({
             <div className="email-subject">
               <strong>{email.subject}</strong>
             </div>
-            <div
-              className="email-body"
-              dangerouslySetInnerHTML={{ __html: bodyContent }}
-            />
-            {isLong && (
-              <a onClick={() => toggleExpand(index)} className="email-toggle">
-                {isExpanded ? "See less" : "See more"}
-              </a>
+            {isExpanded && (
+              <div
+                className="email-body"
+                dangerouslySetInnerHTML={{ __html: bodyContent }}
+              />
             )}
+            <a onClick={() => toggleExpand(index)} className="email-toggle">
+              {isExpanded ? "See less" : "See more"}
+            </a>
             <div className="email-received">
               {formatDistanceToNow(new Date(email.received_date_time), {
                 addSuffix: true,

@@ -99,6 +99,15 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({ shipment }) => {
           </div>
         ) : (
           <div>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <ClockCircleOutlined
+                style={{ marginRight: "5px", color: "#f5222d" }} // Red color for Updated ETA
+              />
+              <span>
+                <strong>Updated ETA: </strong>
+                {updatedETA} HRS
+              </span>
+            </div>
             <div
               style={{
                 display: "flex",
@@ -113,15 +122,6 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({ shipment }) => {
               <span>
                 <strong>Initial ETA: </strong>
                 {initialETA} HRS
-              </span>
-            </div>
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <ClockCircleOutlined
-                style={{ marginRight: "5px", color: "#f5222d" }} // Red color for Updated ETA
-              />
-              <span>
-                <strong>Updated ETA: </strong>
-                {updatedETA} HRS
               </span>
             </div>
           </div>
