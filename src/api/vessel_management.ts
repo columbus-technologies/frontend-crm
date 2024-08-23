@@ -1,5 +1,4 @@
 import { Vessel, VesselResponse } from "../types";
-import { prepareAuthHeaders } from "../utils/auth";
 
 import { BACKEND_URL } from "../config";
 
@@ -8,7 +7,7 @@ const VESSEL_SETTINGS_URL = `${BACKEND_URL}vessel_management`;
 export const fetchVessels = async (): Promise<VesselResponse[]> => {
   const response = await fetch(VESSEL_SETTINGS_URL, {
     method: "GET",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
   });
 
   if (!response.ok) {
@@ -40,7 +39,7 @@ export const fetchVessels = async (): Promise<VesselResponse[]> => {
 export const createVessel = async (payload: Vessel): Promise<void> => {
   const response = await fetch(VESSEL_SETTINGS_URL, {
     method: "POST",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
     body: JSON.stringify(payload),
   });
 
@@ -57,7 +56,7 @@ export const createVessel = async (payload: Vessel): Promise<void> => {
 export const deleteVessel = async (id: string): Promise<void> => {
   const response = await fetch(`${VESSEL_SETTINGS_URL}/${id}`, {
     method: "DELETE",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
   });
 
   if (!response.ok) {
@@ -69,7 +68,7 @@ export const deleteVessel = async (id: string): Promise<void> => {
 export const getVesselById = async (id: string): Promise<VesselResponse> => {
   const response = await fetch(`${VESSEL_SETTINGS_URL}/${id}`, {
     method: "GET",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
   });
   if (!response.ok) {
     throw new Error(`Error: ${response.statusText}`);

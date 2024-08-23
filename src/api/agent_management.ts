@@ -1,5 +1,4 @@
 import { Agent, AgentResponse } from "../types";
-import { prepareAuthHeaders } from "../utils/auth";
 import { BACKEND_URL } from "../config";
 
 const AGENT_SETTINGS_URL = `${BACKEND_URL}agent_management`;
@@ -8,7 +7,7 @@ const AGENT_SETTINGS_URL = `${BACKEND_URL}agent_management`;
 export const getAllAgents = async (): Promise<AgentResponse[]> => {
   const response = await fetch(AGENT_SETTINGS_URL, {
     method: "GET",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
   });
 
   if (!response.ok) {
@@ -26,7 +25,7 @@ export const getAllAgents = async (): Promise<AgentResponse[]> => {
 export const createAgent = async (payload: Agent): Promise<void> => {
   const response = await fetch(AGENT_SETTINGS_URL, {
     method: "POST",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
     body: JSON.stringify(payload),
   });
 
@@ -44,7 +43,7 @@ export const createAgent = async (payload: Agent): Promise<void> => {
 export const deleteAgent = async (id: string): Promise<void> => {
   const response = await fetch(`${AGENT_SETTINGS_URL}/${id}`, {
     method: "DELETE",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
   });
 
   if (!response.ok) {
@@ -57,7 +56,7 @@ export const deleteAgent = async (id: string): Promise<void> => {
 export const getAgentById = async (id: string): Promise<AgentResponse> => {
   const response = await fetch(`${AGENT_SETTINGS_URL}/${id}`, {
     method: "GET",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
   });
   if (!response.ok) {
     throw new Error(`Error: ${response.statusText}`);

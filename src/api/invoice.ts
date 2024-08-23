@@ -4,7 +4,6 @@ import {
   InvoicePricing,
   InvoicePricingResponse,
 } from "../types";
-import { prepareAuthHeaders } from "../utils/auth";
 import { BACKEND_URL } from "../config";
 
 const INVOICE_URL = `${BACKEND_URL}invoice`;
@@ -13,7 +12,7 @@ const INVOICE_URL = `${BACKEND_URL}invoice`;
 export const createInvoice = async (payload: InvoicePricing): Promise<void> => {
   const response = await fetch(`${INVOICE_URL}/pda`, {
     method: "POST",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
     body: JSON.stringify(payload),
   });
 
@@ -35,7 +34,7 @@ export const editInvoice = async (
   console.log(payload, "pp");
   const response = await fetch(`${INVOICE_URL}/pda/${id}`, {
     method: "PUT",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
     body: JSON.stringify(payload),
   });
 
@@ -50,7 +49,7 @@ export const getInvoiceById = async (
 ): Promise<InvoicePricingResponse> => {
   const response = await fetch(`${INVOICE_URL}/pda/${id}`, {
     method: "GET",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
   });
   if (!response.ok) {
     throw new Error(`Error: ${response.statusText}`);
@@ -65,7 +64,7 @@ export const getInvoiceFeesFromPortAuthority =
   async (): Promise<GetInvoiceFeesFromPortAuthorityResponse> => {
     const response = await fetch(`${INVOICE_URL}/fees`, {
       method: "GET",
-      headers: prepareAuthHeaders(),
+      credentials: "include",
     });
 
     if (!response.ok) {
@@ -81,7 +80,7 @@ export const getInvoiceFeesFromPortAuthority =
 export const getInvoiceTenant = async (): Promise<GetInvoiceTenantResponse> => {
   const response = await fetch(`${INVOICE_URL}/tenant`, {
     method: "GET",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
   });
 
   if (!response.ok) {

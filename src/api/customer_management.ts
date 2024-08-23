@@ -1,5 +1,4 @@
 import { Customer, CustomerResponse } from "../types";
-import { prepareAuthHeaders } from "../utils/auth";
 
 import { BACKEND_URL } from "../config";
 const CUSTOMER_MANAGEMENT_SETTINGS_URL = `${BACKEND_URL}customer_management`;
@@ -7,7 +6,7 @@ const CUSTOMER_MANAGEMENT_SETTINGS_URL = `${BACKEND_URL}customer_management`;
 export const getAllCustomers = async (): Promise<CustomerResponse[]> => {
   const response = await fetch(CUSTOMER_MANAGEMENT_SETTINGS_URL, {
     method: "GET",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
   });
 
   if (!response.ok) {
@@ -23,7 +22,7 @@ export const getAllCustomers = async (): Promise<CustomerResponse[]> => {
 export const createCustomer = async (customer: Customer): Promise<void> => {
   const response = await fetch(CUSTOMER_MANAGEMENT_SETTINGS_URL, {
     method: "POST",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
     body: JSON.stringify(customer),
   });
 
@@ -41,7 +40,7 @@ export const updateCustomer = async (
 ): Promise<void> => {
   const response = await fetch(`${CUSTOMER_MANAGEMENT_SETTINGS_URL}/${id}`, {
     method: "PUT",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
     body: JSON.stringify(customer),
   });
 
@@ -53,7 +52,7 @@ export const updateCustomer = async (
 export const deleteCustomer = async (id: string): Promise<void> => {
   const response = await fetch(`${CUSTOMER_MANAGEMENT_SETTINGS_URL}/${id}`, {
     method: "DELETE",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
   });
 
   if (!response.ok) {
@@ -66,7 +65,7 @@ export const getCustomerById = async (
 ): Promise<CustomerResponse> => {
   const response = await fetch(`${CUSTOMER_MANAGEMENT_SETTINGS_URL}/${id}`, {
     method: "GET",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
   });
   if (!response.ok) {
     throw new Error(`Error: ${response.statusText}`);
@@ -80,7 +79,7 @@ export const getCustomerByName = async (
 ): Promise<CustomerResponse> => {
   const response = await fetch(`${CUSTOMER_MANAGEMENT_SETTINGS_URL}/${name}`, {
     method: "GET",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
   });
   if (!response.ok) {
     throw new Error(`Error: ${response.statusText}`);

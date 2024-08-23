@@ -1,5 +1,4 @@
 import { Terminal, TerminalResponse } from "../types";
-import { prepareAuthHeaders } from "../utils/auth";
 
 import { BACKEND_URL } from "../config";
 const TERMINAL_SETTINGS_URL = `${BACKEND_URL}terminal_management`;
@@ -8,7 +7,7 @@ const TERMINAL_SETTINGS_URL = `${BACKEND_URL}terminal_management`;
 export const getAllTerminals = async (): Promise<TerminalResponse[]> => {
   const response = await fetch(TERMINAL_SETTINGS_URL, {
     method: "GET",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
   });
 
   if (!response.ok) {
@@ -37,7 +36,7 @@ export const createTerminal = async (payload: Terminal): Promise<void> => {
   console.log(payload);
   const response = await fetch(TERMINAL_SETTINGS_URL, {
     method: "POST",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
     body: JSON.stringify(payload),
   });
 
@@ -58,7 +57,7 @@ export const updateTerminal = async (
 ): Promise<void> => {
   const response = await fetch(`${TERMINAL_SETTINGS_URL}/${id}`, {
     method: "PUT",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
     body: JSON.stringify(terminal),
   });
 
@@ -71,7 +70,7 @@ export const updateTerminal = async (
 export const deleteTerminal = async (id: string): Promise<void> => {
   const response = await fetch(`${TERMINAL_SETTINGS_URL}/${id}`, {
     method: "DELETE",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
   });
 
   if (!response.ok) {
@@ -86,7 +85,7 @@ export const getTerminalById = async (
 ): Promise<TerminalResponse> => {
   const response = await fetch(`${TERMINAL_SETTINGS_URL}/${id}`, {
     method: "GET",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
   });
 
   if (!response.ok) {

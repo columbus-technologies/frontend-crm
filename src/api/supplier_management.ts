@@ -1,5 +1,4 @@
 import { Supplier, SupplierResponse } from "../types";
-import { prepareAuthHeaders } from "../utils/auth";
 
 import { BACKEND_URL } from "../config";
 
@@ -8,7 +7,7 @@ const SUPPLIER_SETTINGS_URL = `${BACKEND_URL}supplier_management`;
 export const fetchSuppliers = async (): Promise<SupplierResponse[]> => {
   const response = await fetch(SUPPLIER_SETTINGS_URL, {
     method: "GET",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
   });
 
   if (!response.ok) {
@@ -33,7 +32,7 @@ export const fetchSuppliers = async (): Promise<SupplierResponse[]> => {
 export const createSupplier = async (payload: Supplier): Promise<void> => {
   const response = await fetch(SUPPLIER_SETTINGS_URL, {
     method: "POST",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
     body: JSON.stringify(payload),
   });
 
@@ -54,7 +53,7 @@ export const updateSupplier = async (
 ): Promise<void> => {
   const response = await fetch(`${SUPPLIER_SETTINGS_URL}/${id}`, {
     method: "PUT",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
     body: JSON.stringify(supplier),
   });
 
@@ -66,7 +65,7 @@ export const updateSupplier = async (
 export const deleteSupplier = async (id: string): Promise<void> => {
   const response = await fetch(`${SUPPLIER_SETTINGS_URL}/${id}`, {
     method: "DELETE",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
   });
 
   if (!response.ok) {
@@ -80,7 +79,7 @@ export const getSupplierById = async (
 ): Promise<SupplierResponse> => {
   const response = await fetch(`${SUPPLIER_SETTINGS_URL}/${id}`, {
     method: "GET",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
   });
   if (!response.ok) {
     throw new Error(`Error: ${response.statusText}`);

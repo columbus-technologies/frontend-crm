@@ -1,5 +1,4 @@
 import { ActivityType, ActivityTypeResponse } from "../types";
-import { prepareAuthHeaders } from "../utils/auth";
 import { BACKEND_URL } from "../config";
 const CATEGORY_MANAGEMENT_ACTIVITY_TYPE_URL = `${BACKEND_URL}category_management/activity_type`;
 
@@ -9,7 +8,7 @@ export const getAllActivityTypes = async (): Promise<
 > => {
   const response = await fetch(CATEGORY_MANAGEMENT_ACTIVITY_TYPE_URL, {
     method: "GET",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
   });
 
   if (!response.ok) {
@@ -29,7 +28,7 @@ export const createActivityType = async (
 ): Promise<void> => {
   const response = await fetch(CATEGORY_MANAGEMENT_ACTIVITY_TYPE_URL, {
     method: "POST",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
     body: JSON.stringify(payload),
   });
 
@@ -49,7 +48,7 @@ export const deleteActivityType = async (id: string): Promise<void> => {
     `${CATEGORY_MANAGEMENT_ACTIVITY_TYPE_URL}/${id}`,
     {
       method: "DELETE",
-      headers: prepareAuthHeaders(),
+      credentials: "include",
     }
   );
 
@@ -67,7 +66,7 @@ export const getActivityTypeById = async (
     `${CATEGORY_MANAGEMENT_ACTIVITY_TYPE_URL}/${id}`,
     {
       method: "GET",
-      headers: prepareAuthHeaders(),
+      credentials: "include",
     }
   );
   if (!response.ok) {

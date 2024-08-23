@@ -1,5 +1,4 @@
 import { FeedEmailResponse } from "../types/feed";
-import { prepareAuthHeaders } from "../utils/auth";
 
 import { BACKEND_URL } from "../config";
 
@@ -11,7 +10,7 @@ export const getFeedEmailsByShipmentID = async (
 ): Promise<FeedEmailResponse> => {
   const response = await fetch(`${FEED_URL}/${id}`, {
     method: "GET",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
   });
 
   if (!response.ok) {

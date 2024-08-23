@@ -1,5 +1,4 @@
 import { Shipment, ShipmentResponse } from "../types";
-import { prepareAuthHeaders } from "../utils/auth";
 
 import { BACKEND_URL } from "../config";
 
@@ -10,7 +9,7 @@ const SHIPMENT_STATUSES_WITH_COLOURS_URL = `${BACKEND_URL}shipments/statuses_wit
 export const getShipmentStatuses = async (): Promise<string[]> => {
   const response = await fetch(SHIPMENT_STATUSES_URL, {
     method: "GET",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
   });
 
   if (!response.ok) {
@@ -26,7 +25,7 @@ export const getShipmentStatusesWithColours = async (): Promise<
 > => {
   const response = await fetch(SHIPMENT_STATUSES_WITH_COLOURS_URL, {
     method: "GET",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
   });
 
   if (!response.ok) {
@@ -40,7 +39,7 @@ export const getShipmentStatusesWithColours = async (): Promise<
 export const getAllShipments = async (): Promise<ShipmentResponse[]> => {
   const response = await fetch(SHIPMENTS_URL, {
     method: "GET",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
   });
 
   if (!response.ok) {
@@ -57,7 +56,7 @@ export const getAllShipments = async (): Promise<ShipmentResponse[]> => {
 export const createShipment = async (shipment: Shipment): Promise<void> => {
   const response = await fetch(SHIPMENTS_URL, {
     method: "POST",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
     body: JSON.stringify(shipment),
   });
   if (!response.ok) {
@@ -71,7 +70,7 @@ export const createShipment = async (shipment: Shipment): Promise<void> => {
 export const deleteShipment = async (id: string): Promise<void> => {
   const response = await fetch(`${SHIPMENTS_URL}/${id}`, {
     method: "DELETE",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
   });
 
   if (!response.ok) {
@@ -86,7 +85,7 @@ export const updateShipment = async (
 ): Promise<void> => {
   const response = await fetch(`${SHIPMENTS_URL}/${id}`, {
     method: "PUT",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
     body: JSON.stringify(shipment),
   });
 
@@ -105,7 +104,7 @@ export const getShipmentById = async (
 ): Promise<ShipmentResponse> => {
   const response = await fetch(`${SHIPMENTS_URL}/${id}`, {
     method: "GET",
-    headers: prepareAuthHeaders(),
+    credentials: "include",
   });
 
   if (!response.ok) {

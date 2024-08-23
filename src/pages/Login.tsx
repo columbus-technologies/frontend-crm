@@ -24,19 +24,20 @@ const Login: React.FC = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(values),
+        credentials: "include",
       });
-      console.log("end");
       if (!response.ok) {
         throw new Error("Login failed");
       }
 
       const data = await response.json();
       console.log(data, "data");
-      sessionStorage.setItem("jwtToken", data.token);
+
       message.success("Login successful");
       // Redirect to the dashboard after successful login
       navigate("/dashboard");
     } catch (error) {
+      console.log(error);
       message.error(
         "Login failed. Please check your credentials and try again."
       );
