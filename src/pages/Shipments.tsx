@@ -1,8 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { Card, Typography, Table, Button, Tag, Input, Select } from "antd";
+import {
+  Card,
+  Typography,
+  Table,
+  Button,
+  Tag,
+  Input,
+  Select,
+  message,
+  Modal,
+} from "antd";
 import { useNavigate } from "react-router-dom";
 import { ShipmentResponse } from "../types";
-import { getAllShipments } from "../api";
+import { getAllShipments, deleteShipment } from "../api";
 import "../styles/index.css";
 import MultiStepShipmentModal from "../components/modals/MultiStepShipmentModal";
 import UnauthorizedModal from "../components/modals/UnauthorizedModal";
@@ -22,6 +32,8 @@ const ShipmentsManagement: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [filter, setFilter] = useState<string>("All");
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [shipmentToDelete, setShipmentToDelete] = useState<string | null>(null);
 
   const statusColours = useStatusColours();
   const navigate = useNavigate();
@@ -77,6 +89,29 @@ const ShipmentsManagement: React.FC = () => {
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     // sessionStorage.setItem("currentPage", page.toString());
+  };
+
+  const confirmDelete = (id: string) => {
+    setShipmentToDelete(id);
+    setDeleteModalVisible(true);
+  };
+
+  const handleDelete = async () => {
+    if (shipmentToDelete) {
+      try {
+        await deleteShipment(shipmentToDelete);
+        fetchData();
+        message.success("Shipment deleted successfully!");
+      } catch (error) {
+        if (error instanceof Error) {
+          console.error("Failed to delete shipment:", error.message);
+          message.error("Failed to delete shipment. Please try again.");
+        }
+      } finally {
+        setDeleteModalVisible(false);
+        setShipmentToDelete(null);
+      }
+    }
   };
 
   const handleView = (id: string) => {
@@ -218,9 +253,33 @@ const ShipmentsManagement: React.FC = () => {
       key: "action",
       render: (record: ShipmentResponse) => {
         return (
-          <Button type="primary" onClick={() => handleView(record.ID)}>
-            View
-          </Button>
+          <>
+            <Button
+              type="primary"
+              onClick={() => handleView(record.ID)}
+              style={{
+                borderColor: "#1890ff",
+                fontSize: "12px",
+                padding: "2px 12px",
+                marginBottom:
+                  "1em" /* adds 2 units of spacing after each div */,
+              }}
+            >
+              View
+            </Button>
+            <Button
+              type="primary"
+              danger
+              onClick={() => confirmDelete(record.ID)}
+              style={{
+                borderColor: "#ff4d4f",
+                fontSize: "12px",
+                padding: "2px 8px",
+              }}
+            >
+              Delete
+            </Button>
+          </>
         );
       },
     },
@@ -278,6 +337,16 @@ const ShipmentsManagement: React.FC = () => {
         visible={isUnauthorizedModalVisible}
         onClose={() => setIsUnauthorizedModalVisible(false)}
       />
+      <Modal
+        title="Confirm Deletion"
+        visible={deleteModalVisible}
+        onOk={handleDelete}
+        onCancel={() => setDeleteModalVisible(false)}
+        okText="Delete"
+        okType="danger"
+      >
+        <p>Are you sure you want to delete this shipment?</p>
+      </Modal>
     </div>
   );
 };

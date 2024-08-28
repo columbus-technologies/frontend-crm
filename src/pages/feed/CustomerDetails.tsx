@@ -1,12 +1,16 @@
 import { Descriptions } from "antd";
 import { CustomerResponse } from "../../types";
 
-const renderCustomerDetails = (customerData: CustomerResponse | null) => {
-  if (!customerData) return <p>No customer selected.</p>;
-  return (
+const renderCustomerDetails = (customerDataList: CustomerResponse[] | null) => {
+  if (!customerDataList || customerDataList.length === 0) {
+    return <p>No customers selected.</p>;
+  }
+
+  return customerDataList.map((customerData, index) => (
     <Descriptions
+      key={index}
       bordered
-      title="Customer Details"
+      title={`Customer Details ${index + 1}`}
       className="styled-descriptions"
       column={2} // Set the number of columns to 2
     >
@@ -23,7 +27,7 @@ const renderCustomerDetails = (customerData: CustomerResponse | null) => {
         {customerData.contact}
       </Descriptions.Item>
     </Descriptions>
-  );
+  ));
 };
 
 export default renderCustomerDetails;

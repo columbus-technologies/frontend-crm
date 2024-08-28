@@ -94,7 +94,7 @@ export const updateShipment = async (
     if (response.status === 409) {
       throw new Error("Duplicate key error");
     }
-    const error = errorData.message || response.statusText;
+    const error = errorData.status || response.statusText;
     throw new Error(error);
   }
 };

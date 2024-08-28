@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { message } from "antd";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import "../styles/index.css"; // Ensure the CSS file is imported
-import loginImage from "../assets/columbus2.png"; // Import the image
+import loginImage from "../assets/sailor.png"; // Import the image
 import LoginForm from "../components/forms/LoginForm"; // Import the LoginForm component
 import { BACKEND_URL } from "../config";
 
@@ -52,6 +52,7 @@ const Login: React.FC = () => {
         <img src={loginImage} alt="Login Background" />
       </div>
       <div className="login-form">
+        <h1 className="login-title">Sign in to Columbus</h1>
         <LoginForm onFinish={onFinish} loading={loading} />
       </div>
     </div>

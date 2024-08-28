@@ -188,20 +188,27 @@ button:focus-visible {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+  width: 100vw; /* Full width */
+  min-height: 100vh; /* Full height */
   background-color: #f0f2f5;
 }
 
 .login-image {
-  flex: 1;
   display: flex;
   justify-content: center;
-
+  width: 30vw; /* Full width */
   align-items: center;
 }
 
+.login-title {
+  font-size: 24px;
+  font-weight: lighter;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
 .login-image img {
-  max-width: 70%; /* Adjust this value to make the image smaller */
+  max-width: 65%; /* Adjust this value to make the image smaller */
   height: auto;
 }
 
@@ -209,7 +216,7 @@ button:focus-visible {
   flex: 1;
   max-width: 300px;
   padding: 20px;
-  padding-right: 4px; /* Add right padding */
+  padding-right: 20px; /* Add right padding */
 
   background: #fff;
   border-radius: 8px;

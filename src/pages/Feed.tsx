@@ -10,12 +10,12 @@ import { FeedEmailResponse } from "../types/feed";
 import { getInvoiceTenant, getShipmentById } from "../api"; // Remove getAllShipments import
 import { getFeedEmailsByShipmentID } from "../api/feed_emails";
 import UnauthorizedModal from "../components/modals/UnauthorizedModal";
-import { renderShipmentDetails } from "./feed/ShipmentDetails";
+import RenderShipmentDetails from "./feed/ShipmentDetails";
 import BluShippingInvoicing from "./feed/invoices/BluShipping_Invoicing";
 import TestDemoInvoicing from "./feed/invoices/TestDemo_Invoicing";
 import FeedDetails from "./feed/FeedDetails";
 
-import { renderVesselDetails } from "./feed/VesselDetails";
+import RenderVesselDetails from "./feed/VesselDetails";
 import fetchCustomerDataByShipment from "../utils/customer";
 import renderCustomerDetails from "./feed/CustomerDetails";
 
@@ -25,7 +25,7 @@ const Feed: React.FC = () => {
     useState<ShipmentResponse | null>(null);
   const [selectedFeedEmails, setSelectedFeedEmails] =
     useState<FeedEmailResponse | null>(null);
-  const [customerData, setCustomerData] = useState<CustomerResponse | null>(
+  const [customerData, setCustomerData] = useState<CustomerResponse[] | null>(
     null
   );
   const [isUnauthorizedModalVisible, setIsUnauthorizedModalVisible] =
@@ -90,10 +90,10 @@ const Feed: React.FC = () => {
               <FeedDetails selectedFeedEmails={selectedFeedEmails} />
             </TabPane>
             <TabPane tab="Shipment Details" key="2">
-              {renderShipmentDetails(selectedShipment)}
+              <RenderShipmentDetails selectedShipment={selectedShipment} />
             </TabPane>
             <TabPane tab="Vessel" key="3">
-              {renderVesselDetails(selectedShipment)}
+              <RenderVesselDetails selectedShipment={selectedShipment} />
             </TabPane>
             <TabPane tab="Customer" key="4">
               {renderCustomerDetails(customerData)}
