@@ -49,6 +49,7 @@ export interface BunkeringActivity {
   docking: string;
   supplier_vessel: string;
   bunker_intake_specifications: BunkerIntakeSpecifications[];
+  shipment_product: ShipmentProduct[];
   freeboard: number;
   readiness: string;
   etb: string;

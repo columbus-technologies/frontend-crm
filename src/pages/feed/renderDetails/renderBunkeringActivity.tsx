@@ -9,6 +9,7 @@ import {
 } from "../../../types";
 import { renderBunkerIntakeSpecifications } from "./renderBunkerIntakeSpecifications";
 import { formatDateToLocalString } from "../../../utils/dateTimeUtils";
+import { renderShipmentProducts } from "./renderShipmentProducts";
 
 const missingInformation = "Please Indicate the Information";
 
@@ -104,6 +105,14 @@ const RenderBunkeringActivity: React.FC<{
             index,
             handleChange,
             isEditing
+          )}
+          {renderShipmentProducts(
+            "bunkering",
+            activity.shipment_product,
+            index,
+            handleChange,
+            isEditing,
+            "shipment_product"
           )}
           <Descriptions.Item label="Freeboard">
             {isEditing ? (

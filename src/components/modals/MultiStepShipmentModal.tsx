@@ -223,6 +223,13 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
                     maximum_hose_size:
                       parseInt(spec.maximum_hose_size, 10) || -1,
                   })) || [],
+                shipment_product:
+                  activity.shipment_product?.map((product: any) => ({
+                    sub_product_type: product.sub_product_type || "",
+                    quantity_code: product.quantityCode || "",
+                    quantity: parseInt(product.quantity, 10) || "",
+                    percentage: parseInt(product.percentage, 10) || "",
+                  })) || [],
                 freeboard: parseInt(activity.freeboard, 10) || -1,
                 readiness: activity.readiness || null,
                 etb: activity.etb || null,

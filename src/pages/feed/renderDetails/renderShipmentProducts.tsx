@@ -8,6 +8,7 @@ import {
 } from "../../../types";
 
 export const renderShipmentProducts = (
+  activityType: "cargo_operations" | "bunkering",
   products: ShipmentProduct[],
   index: number,
   handleChange: (
@@ -20,9 +21,11 @@ export const renderShipmentProducts = (
       | keyof ShipmentProduct,
     value: string,
     index?: number,
-    specIndex?: number
+    specIndex?: number,
+    type?: "shipment_product" | "bunker_intake"
   ) => void,
-  isEditing: boolean
+  isEditing: boolean,
+  type?: "shipment_product" | "bunker_intake" // Add the 'type' variable declaration
 ) => {
   return (
     <Descriptions.Item label="Product Quantity">
@@ -36,11 +39,12 @@ export const renderShipmentProducts = (
                   value={product.sub_product_type}
                   onChange={(e) =>
                     handleChange(
-                      "cargo_operations",
+                      activityType,
                       "sub_product_type",
                       e.target.value,
                       index,
-                      specIndex
+                      specIndex,
+                      type
                     )
                   }
                 />
@@ -57,11 +61,12 @@ export const renderShipmentProducts = (
                     value={product.quantity}
                     onChange={(e) =>
                       handleChange(
-                        "cargo_operations",
+                        activityType,
                         "quantity",
                         e.target.value,
                         index,
-                        specIndex
+                        specIndex,
+                        type
                       )
                     }
                   />

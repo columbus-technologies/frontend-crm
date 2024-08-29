@@ -76,6 +76,7 @@ const RenderCargoOperationsActivities: React.FC<{
             )}
           </Descriptions.Item>
           {renderShipmentProducts(
+            "cargo_operations",
             activity.shipment_product,
             index,
             handleChange,

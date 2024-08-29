@@ -58,7 +58,8 @@ const RenderShipmentDetails: React.FC<{
       | keyof ShipmentProduct,
     value: string,
     index?: number,
-    specIndex?: number // Additional index for nested bunker intake specifications
+    specIndex?: number, // Additional index for nested bunker intake specifications
+    type?: "shipment_product" | "intake_specifications"
   ) => {
     // all values that come in are strings, but we need to convert
     // them to the proper types . For etc string or integer
@@ -73,6 +74,7 @@ const RenderShipmentDetails: React.FC<{
           ? Number(value)
           : value;
       console.log(convertedValue, "s");
+      console.log(section);
     } else {
       // If the last character is a decimal point, keep the value as a string
       convertedValue = value;
@@ -106,16 +108,24 @@ const RenderShipmentDetails: React.FC<{
 
       if (section === "bunkering" && index !== undefined) {
         if (specIndex !== undefined && typeof key === "string") {
-          console.log(specIndex, "specIndex");
+          if (type === "shipment_product") {
+            (updatedShipment.shipment_type.bunkering.bunkering_activity[index]
+              .shipment_product[specIndex][key as keyof ShipmentProduct] as
+              | string
+              | number) = convertedValue;
+          } else {
+            // Handle nested bunker intake specifications
+            (updatedShipment.shipment_type.bunkering.bunkering_activity[index]
+              .bunker_intake_specifications[specIndex][
+              key as keyof BunkerIntakeSpecifications
+            ] as string | number) = convertedValue;
 
-          console.log(convertedValue, "Value");
-          console.log(index, "Index");
-          console.log(key, "Key");
-          // Handle nested bunker intake specifications
-          (updatedShipment.shipment_type.bunkering.bunkering_activity[index]
-            .bunker_intake_specifications[specIndex][
-            key as keyof BunkerIntakeSpecifications
-          ] as string | number) = convertedValue;
+            console.log(specIndex, "specIndex");
+
+            console.log(convertedValue, "Value");
+            console.log(index, "Index");
+            console.log(key, "Key");
+          }
         } else {
           // Ensure convertedValue is correctly typed as string or number
           (updatedShipment.shipment_type.bunkering.bunkering_activity[index][

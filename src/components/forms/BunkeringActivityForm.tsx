@@ -13,6 +13,7 @@ import {
 import InputWithUnit from "../common/InputWithUnit";
 import { validateFloat } from "../../utils/validationUtils";
 import SupplierFormAutoComplete from "../forms/SupplierSettingsFormAutoComplete";
+import QuantityInput from "../common/QuantityInput";
 
 interface BunkeringActivityFormProps {
   form: any;
@@ -113,6 +114,11 @@ const BunkeringActivityForm: React.FC<BunkeringActivityFormProps> = ({
                 </Col>
               </Row>
               <Divider />
+              <QuantityInput
+                form={form}
+                name={name}
+                subProductTypes={subProductTypes}
+              />
               <Form.List name={[name, "bunker_intake_specifications"]}>
                 {(specFields, { add: addSpec, remove: removeSpec }) => (
                   <>
