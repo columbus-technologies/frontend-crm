@@ -30,7 +30,7 @@ export const renderShipmentProducts = (
   return (
     <Descriptions.Item label="Product Quantity">
       <div className="shipment-products">
-        {products.map((product, specIndex) => (
+        {products?.map((product, specIndex) => (
           <div className="shipment-product" key={specIndex}>
             <div>
               Sub-Product{" "}
