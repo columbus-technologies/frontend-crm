@@ -115,7 +115,7 @@ const Feed: React.FC = () => {
                 <RenderShipmentDetails selectedShipment={selectedShipment} />
               </TabPane>
               <TabPane tab="Vessel" key="3">
-                <RenderVesselDetails selectedShipment={selectedShipment} />
+                <RenderVesselDetails selectedShipment={selectedShipment!} />
               </TabPane>
               <TabPane tab="Customer" key="4">
                 {renderCustomerDetails(customerData)}
@@ -126,7 +126,7 @@ const Feed: React.FC = () => {
               <TabPane tab="Checklist" key="6">
                 {/* {renderContent("Checklist content...")} */}
                 <RenderChecklistDetails
-                  selectedShipment={selectedShipment}
+                  selectedShipment={selectedShipment!}
                   selectedChecklist={selectedChecklist}
                   // selectedInvoice={invoiceData}
                 />

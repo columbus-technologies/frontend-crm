@@ -3,6 +3,7 @@ import {
   ChecklistResponse,
   ShipmentResponse,
   ChecklistInformation,
+  Repairs,
 } from "../../types";
 import { Table, Button, Modal, message, Input, Select } from "antd";
 import { getChecklistById, updateChecklist } from "../../api";
@@ -221,7 +222,7 @@ const RenderChecklistDetails: React.FC<{
 
       if (!updatedChecklist!.extras[key]) {
         updatedChecklist!.extras[key] = {
-          name: "n/A",
+          name: "N/A",
           service_provided: false,
           supplier: "N/A",
         };
@@ -232,31 +233,51 @@ const RenderChecklistDetails: React.FC<{
         value = value === "Yes" ? true : false; // Convert Yes/No to boolean
         updatedChecklist!.extras[key][field] = value;
       } else {
-        updatedChecklist!.extras[key][field] = value;
-        console.log("f");
+        updatedChecklist!.extras[key] = {
+          ...updatedChecklist!.extras[key],
+          [field]: value,
+        };
       }
+      console.log("f");
     } else {
       // Handle pre-existing rows or repairs
       if (["lift_repair", "uw_clean", "deslopping"].includes(key)) {
+        const repairKey = key as keyof Repairs; // Cast key as keyof Repairs
+
         if (field === "service_provided") {
           value = value === "Yes" ? true : false; // Convert Yes/No to boolean
-          updatedChecklist!.repairs[key][field] = value;
+          if (
+            updatedChecklist!.repairs &&
+            updatedChecklist!.repairs[repairKey]
+          ) {
+            updatedChecklist!.repairs[repairKey][field] = value;
+          }
         } else {
-          updatedChecklist!.repairs[key][field] = value;
+          if (field === "supplier") {
+            if (
+              updatedChecklist!.repairs &&
+              updatedChecklist!.repairs[repairKey]
+            ) {
+              updatedChecklist!.repairs[repairKey][field] = value;
+            }
+          }
         }
       } else {
+        const checklistKey = key as keyof ChecklistResponse; // Cast key to keyof ChecklistResponse
         if (field === "service_provided") {
           value = value === "Yes" ? true : false;
-          updatedChecklist![key][field] = value;
+          (updatedChecklist![checklistKey] as ChecklistInformation)[field] =
+            value;
         }
 
         if (field === "supplier") {
-          updatedChecklist![key][field] = value;
+          (updatedChecklist![checklistKey] as ChecklistInformation)[field] =
+            value;
         }
       }
     }
 
-    setEditedChecklist(updatedChecklist); // Update the checklist state
+    setEditedChecklist(updatedChecklist as ChecklistResponse | null); // Update the checklist state
     console.log(editedChecklist, "editedChecklist");
   };
 
