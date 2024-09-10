@@ -5,9 +5,13 @@ import { useParams } from "react-router-dom"; // Import useParams
 const { Title } = Typography;
 const { TabPane } = Tabs;
 
-import { CustomerResponse, ShipmentResponse } from "../types";
+import {
+  CustomerResponse,
+  ChecklistResponse,
+  ShipmentResponse,
+} from "../types";
 import { FeedEmailResponse } from "../types/feed";
-import { getInvoiceTenant, getShipmentById } from "../api"; // Remove getAllShipments import
+import { getChecklistById, getInvoiceTenant, getShipmentById } from "../api"; // Remove getAllShipments import
 import { getFeedEmailsByShipmentID } from "../api/feed_emails";
 import UnauthorizedModal from "../components/modals/UnauthorizedModal";
 import CompleteShipmentModal from "../components/modals/CompleteShipmentModal";
@@ -20,11 +24,14 @@ import RenderVesselDetails from "./feed/VesselDetails";
 import fetchCustomerDataByShipment from "../utils/customer";
 import renderCustomerDetails from "./feed/CustomerDetails";
 import Enum from "../utils/enum";
+import RenderChecklistDetails from "./feed/ChecklistDetails";
 
 const Feed: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [selectedShipment, setSelectedShipment] =
     useState<ShipmentResponse | null>(null);
+  const [selectedChecklist, setSelectedChecklist] =
+    useState<ChecklistResponse | null>(null);
   const [selectedFeedEmails, setSelectedFeedEmails] =
     useState<FeedEmailResponse | null>(null);
   const [customerData, setCustomerData] = useState<CustomerResponse[] | null>(
@@ -48,6 +55,9 @@ const Feed: React.FC = () => {
 
       const fetchedShipment = await fetchCustomerDataByShipment(data);
       setCustomerData(fetchedShipment);
+
+      const checklistData = await getChecklistById(id);
+      setSelectedChecklist(checklistData);
 
       const fetchedTenant = await getInvoiceTenant();
       setInvoiceTenant(fetchedTenant.tenant);
@@ -113,8 +123,13 @@ const Feed: React.FC = () => {
               <TabPane tab="Audit" key="5">
                 {renderContent("Audit content...")}
               </TabPane>
-              <TabPane tab="Documents" key="6">
-                {renderContent("Documents content...")}
+              <TabPane tab="Checklist" key="6">
+                {/* {renderContent("Checklist content...")} */}
+                <RenderChecklistDetails
+                  selectedShipment={selectedShipment}
+                  selectedChecklist={selectedChecklist}
+                  // selectedInvoice={invoiceData}
+                />
               </TabPane>
               <TabPane tab="Invoicing" key="7">
                 {invoiceTenant === "BluShipping" && selectedShipment && (

@@ -7,3 +7,4 @@ export * from "./supplier_management";
 export * from "./category_management_activity_type";
 export * from "./category_management_product_type";
 export * from "./invoice";
+export * from "./checklist";

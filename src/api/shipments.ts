@@ -53,7 +53,7 @@ export const getAllShipments = async (): Promise<ShipmentResponse[]> => {
   return data.shipments;
 };
 
-export const createShipment = async (shipment: Shipment): Promise<void> => {
+export const createShipment = async (shipment: Shipment): Promise<any> => {
   const response = await fetch(SHIPMENTS_URL, {
     method: "POST",
     credentials: "include",
@@ -65,6 +65,9 @@ export const createShipment = async (shipment: Shipment): Promise<void> => {
     }
     throw new Error(`Error: ${response.statusText}`);
   }
+  const data = await response.json();
+
+  return data.data;
 };
 
 export const deleteShipment = async (id: string): Promise<void> => {

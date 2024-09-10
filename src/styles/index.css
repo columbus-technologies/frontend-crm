@@ -109,6 +109,14 @@ button:focus-visible {
   border-radius: 8px 8px 0 0; /* Rounded corners for the title */
 }
 
+.styled-descriptions .ant-table-title {
+  background-color: #9ebad7; /* Dark blue background */
+  color: white; /* White text color */
+  padding: 8px 16px; /* Padding for the title */
+  border-radius: 8px 8px 0 0; /* Rounded corners for the title */
+  font-weight: bold; /* Make the title bold */
+}
+
 .shipment-products {
   display: flex;
   flex-direction: column;

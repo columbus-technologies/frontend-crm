@@ -8,6 +8,7 @@ import {
   getAllCustomers,
   getAllActivityTypes,
   getAllOnlySubProductTypes,
+  createEmptyDefaultChecklistUponInitialize,
 } from "../../api";
 import VesselFormAutoComplete from "../forms/VesselSettingsFormAutoComplete";
 import AgentFormAutoComplete from "../forms/AgentSettingsFormAutoComplete";
@@ -261,12 +262,85 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
         },
       };
 
-      await createShipment(payload);
+      const shipmentID = await createShipment(payload);
       onCreate();
       form.resetFields();
       setCurrentStep(0);
       setFormValues({});
       message.success("Shipment created successfully!");
+
+      // create default empty payload for checklist
+      const checklistEmptyPayload = {
+        shipment_id: shipmentID,
+        port_dues: {
+          supplier: "",
+          service_provided: false,
+        },
+        pilotage: {
+          supplier: "",
+          service_provided: false,
+        },
+        service_launch: {
+          supplier: "",
+          service_provided: false,
+        },
+        logistics: {
+          supplier: "",
+          service_provided: false,
+        },
+        hotel_charges: {
+          supplier: "",
+          service_provided: false,
+        },
+        air_tickets: {
+          supplier: "",
+          service_provided: false,
+        },
+        transport_charges: {
+          supplier: "",
+          service_provided: false,
+        },
+        medicine_supplies: {
+          supplier: "",
+          service_provided: false,
+        },
+        fresh_water_supply: {
+          supplier: "",
+          service_provided: false,
+        },
+        marine_advisory: {
+          supplier: "",
+          service_provided: false,
+        },
+        courier_services: {
+          supplier: "",
+          service_provided: false,
+        },
+        cross_harbour_fees: {
+          supplier: "",
+          service_provided: false,
+        },
+        supply_boat: {
+          supplier: "",
+          service_provided: false,
+        },
+        repairs: {
+          deslopping: {
+            supplier: "",
+            service_provided: false,
+          },
+          lift_repair: {
+            supplier: "",
+            service_provided: false,
+          },
+          uw_clean: {
+            supplier: "",
+            service_provided: false,
+          },
+        },
+        extras: {}, // Assuming extra services are handled as an array
+      };
+      await createEmptyDefaultChecklistUponInitialize(checklistEmptyPayload);
     } catch (error) {
       if (error instanceof Error) {
         console.error("Failed to create shipment:", error.message);
