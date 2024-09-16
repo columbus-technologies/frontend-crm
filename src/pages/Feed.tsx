@@ -11,7 +11,7 @@ import {
   ShipmentResponse,
 } from "../types";
 import { FeedEmailResponse } from "../types/feed";
-import { getChecklistById, getInvoiceTenant, getShipmentById } from "../api"; // Remove getAllShipments import
+import { getChecklistById, getInvoiceTenant, getShipmentById, getShipmentStatuses } from "../api"; // Remove getAllShipments import
 import { getFeedEmailsByShipmentID } from "../api/feed_emails";
 import UnauthorizedModal from "../components/modals/UnauthorizedModal";
 import CompleteShipmentModal from "../components/modals/CompleteShipmentModal";
@@ -27,18 +27,7 @@ import Enum from "../utils/enum";
 import RenderChecklistDetails from "./feed/ChecklistDetails";
 
 const { Step } = Steps;
-const shipmentStatuses = [
-  { title: Enum.NOT_STARTED_STATUS },
-  { title: Enum.EN_ROUTE_STATUS },
-  { title: Enum.EOSP_STATUS },
-  { title: Enum.ANCHORAGE_STATUS },
-  { title: Enum.NOR_TENDERED_STATUS },
-  { title: Enum.NOR_RE_TENDERED_STATUS },
-  { title: Enum.BERTHED_STATUS },
-  { title: Enum.ACTIVITY_COMMENCED_STATUS },
-  { title: Enum.ACTIVITY_COMPLETED_STATUS },
-  { title: Enum.COMPLETED_STATUS },
-];
+const shipmentStatuses = await getShipmentStatuses();
 
 const Feed: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -113,7 +102,7 @@ const Feed: React.FC = () => {
   };
 
   const currentStatus = selectedShipment?.current_status || "Not Started";
-  const currentIndex = shipmentStatuses.findIndex(status => status.title === currentStatus);
+  const currentIndex = shipmentStatuses.findIndex(status => status === currentStatus);
 
   return (
     <div className="settings-management-container">
@@ -170,7 +159,7 @@ const Feed: React.FC = () => {
               <Button type="primary" onClick={handleCompleteShipmentClick}>
                 Complete Shipment
               </Button>
-              
+
               {/* Vertical steps with dots for the shipment status timeline */}
               <Steps
                 direction="vertical"
@@ -187,7 +176,7 @@ const Feed: React.FC = () => {
                 {shipmentStatuses.map((status, index) => (
                   <Step
                     key={index}
-                    title={status.title}
+                    title={status}
                     status={index < currentIndex ? 'finish' : index === currentIndex ? 'process' : 'wait'}
                   />
                 ))}
