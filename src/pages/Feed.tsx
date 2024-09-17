@@ -31,7 +31,6 @@ import renderCustomerDetails from "./feed/CustomerDetails";
 import RenderChecklistDetails from "./feed/ChecklistDetails";
 
 const { Step } = Steps;
-const shipmentStatuses = await getShipmentStatuses();
 
 const Feed: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -44,6 +43,9 @@ const Feed: React.FC = () => {
   const [customerData, setCustomerData] = useState<CustomerResponse[] | null>(
     null
   );
+  const [shipmentStatuses, setShipmentStatuses] = useState<string[] | null>(
+    null
+  );
   const [isUnauthorizedModalVisible, setIsUnauthorizedModalVisible] =
     useState(false);
   const { id } = useParams<{ id: string }>(); // Get the ID from the URL
@@ -52,6 +54,9 @@ const Feed: React.FC = () => {
 
   const fetchData = async (id: string) => {
     try {
+      const shipmentStatuses = await getShipmentStatuses();
+      setShipmentStatuses(shipmentStatuses);
+
       const data = await getShipmentById(id);
       console.log("Fetched shipment:", data); // Debugging statement
       setSelectedShipment(data);
@@ -103,7 +108,7 @@ const Feed: React.FC = () => {
   };
 
   const currentStatus = selectedShipment?.current_status || "Not Started";
-  const currentIndex = shipmentStatuses.findIndex(
+  const currentIndex = shipmentStatuses?.findIndex(
     (status) => status === currentStatus
   );
 
@@ -170,10 +175,12 @@ const Feed: React.FC = () => {
                 progressDot={(dot, { index }) => (
                   <span
                     className={
-                      index < currentIndex
-                        ? "dot-finished"
-                        : index === currentIndex
-                        ? "dot-active"
+                      currentIndex !== undefined
+                        ? index < currentIndex
+                          ? "dot-finished"
+                          : index === currentIndex
+                          ? "dot-active"
+                          : "dot-wait"
                         : "dot-wait"
                     }
                   >
@@ -182,15 +189,17 @@ const Feed: React.FC = () => {
                 )}
                 style={{ marginTop: "20px" }}
               >
-                {shipmentStatuses.map((status, index) => (
+                {shipmentStatuses?.map((status, index) => (
                   <Step
                     key={index}
                     title={status}
                     status={
-                      index < currentIndex
-                        ? "finish"
-                        : index === currentIndex
-                        ? "process"
+                      currentIndex !== undefined
+                        ? index < currentIndex
+                          ? "finish"
+                          : index === currentIndex
+                          ? "process"
+                          : "wait"
                         : "wait"
                     }
                   />
