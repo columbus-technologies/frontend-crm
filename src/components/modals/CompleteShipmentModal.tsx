@@ -2,6 +2,7 @@ import React from "react";
 import { message, Modal } from "antd";
 import { updateShipment } from "../../api"; // Adjust the import path based on your project structure
 import { ShipmentResponse } from "../../types";
+import Enum from "../../utils/enum";
 
 interface CompleteShipmentModalProps {
   shipmentId: string;
@@ -18,6 +19,10 @@ const CompleteShipmentModal: React.FC<CompleteShipmentModalProps> = ({
 }) => {
   const handleCompleteShipment = async () => {
     try {
+      if (selectedShipment) {
+        selectedShipment.current_status = Enum.COMPLETED_STATUS;
+      }
+
       console.log(selectedShipment, "selssectedShipment");
       await updateShipment(shipmentId, selectedShipment);
       message.success("Shipment completed successfully!");

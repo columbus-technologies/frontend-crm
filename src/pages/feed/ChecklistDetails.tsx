@@ -5,7 +5,7 @@ import {
   ChecklistInformation,
   Repairs,
 } from "../../types";
-import { Table, Button, Modal, message, Input, Select } from "antd";
+import { Table, Button, Modal, message, Input, Select, Popconfirm } from "antd";
 import { getChecklistById, updateChecklist } from "../../api";
 
 const { Option } = Select;
@@ -14,7 +14,8 @@ const { Option } = Select;
 const getTableColumns = (
   isEditing: boolean,
   onChange: (key: string, field: string, value: any) => void,
-  isEditable: (key: string) => boolean
+  isEditable: (key: string) => boolean,
+  onDelete: (key: string) => void
 ) => [
   {
     title: "Service",
@@ -63,7 +64,108 @@ const getTableColumns = (
         "No"
       ),
   },
+  {
+    title: "Actions",
+    key: "actions",
+    render: (text: string, record: any) =>
+      isEditing && isEditable(record.key) ? (
+        <Popconfirm
+          title="Are you sure you want to delete this row?"
+          onConfirm={() => onDelete(record.key)}
+          okText="Yes"
+          cancelText="No"
+        >
+          <Button danger>Delete</Button>
+        </Popconfirm>
+      ) : null,
+  },
 ];
+
+const getCrewChangeTableColumns = (
+  isEditing: boolean,
+  onChange: (key: number, field: string, value: any) => void,
+  isEditable: (key: number) => boolean,
+  onDelete: (key: number) => void
+) => [
+  {
+    title: "Sign On",
+    dataIndex: "sign_on",
+    key: "sign_on",
+    render: (text: string, record: any) =>
+      isEditing && isEditable(record.key) ? (
+        <Input
+          value={text}
+          onChange={(e) => onChange(record.key, "sign_on", e.target.value)}
+        />
+      ) : (
+        text // Display as text for non-editable rows
+      ),
+  },
+  {
+    title: "Sign Off",
+    dataIndex: "sign_off",
+    key: "sign_off",
+    render: (text: string, record: any) =>
+      isEditing ? (
+        <Input
+          value={text}
+          onChange={(e) => onChange(record.key, "sign_off", e.target.value)}
+        />
+      ) : (
+        text
+      ),
+  },
+  {
+    title: "Actions",
+    key: "actions",
+    render: (text: string, record: any) =>
+      isEditing ? (
+        <Popconfirm
+          title="Are you sure you want to delete this crew change?"
+          onConfirm={() => onDelete(record.key)}
+          okText="Yes"
+          cancelText="No"
+        >
+          <Button danger>Delete</Button>
+        </Popconfirm>
+      ) : null,
+  },
+];
+
+// const dataSource = [
+//   {
+//     key: '1',
+//     name: 'Mike',
+//     age: 32,
+//     address: '10 Downing Street',
+//   },
+//   {
+//     key: '2',
+//     name: 'John',
+//     age: 42,
+//     address: '10 Downing Street',
+//   },
+// ];
+
+const getCrewChangeData = (checklist: ChecklistResponse | null) => {
+  if (!checklist) return [];
+
+  const signOn = checklist.crew_change.sign_on || [];
+  const signOff = checklist.crew_change.sign_off || [];
+
+  const maxLength = Math.max(signOn.length, signOff.length);
+  const crewChanges = [];
+
+  for (let i = 0; i < maxLength; i++) {
+    crewChanges.push({
+      key: i,
+      sign_on: signOn[i] || null, // Use null if the index is out of range
+      sign_off: signOff[i] || null, // Use null if the index is out of range
+    });
+  }
+
+  return crewChanges;
+};
 
 // Helper function to generate the data source for the table
 const getChecklistData = (checklist: ChecklistResponse | null) => {
@@ -206,6 +308,20 @@ const RenderChecklistDetails: React.FC<{
     });
   };
 
+  const handleAddCrewChange = () => {
+    if (!editedChecklist) return;
+
+    const updatedChecklist = { ...editedChecklist };
+    if (!updatedChecklist.crew_change) {
+      updatedChecklist.crew_change = { sign_on: [], sign_off: [] };
+    }
+
+    updatedChecklist.crew_change.sign_on.push("");
+    updatedChecklist.crew_change.sign_off.push("");
+
+    setEditedChecklist(updatedChecklist);
+  };
+
   // Function to handle input changes in the table
   const handleInputChange = (key: string, field: string, value: any) => {
     console.log(
@@ -281,8 +397,51 @@ const RenderChecklistDetails: React.FC<{
     console.log(editedChecklist, "editedChecklist");
   };
 
+  const handleInputChangeCrewChange = (
+    key: number,
+    field: string,
+    value: any
+  ) => {
+    if (!editedChecklist) return;
+
+    const updatedChecklist = { ...editedChecklist };
+    if (updatedChecklist.crew_change) {
+      if (field === "sign_on") {
+        updatedChecklist.crew_change.sign_on[key] = value;
+      } else if (field === "sign_off") {
+        updatedChecklist.crew_change.sign_off[key] = value;
+      }
+    }
+    setEditedChecklist(updatedChecklist);
+  };
+
   // Function to check if a row is editable (only dynamic rows are editable)
   const isEditable = (key: string) => key.includes("extra");
+
+  const isEditableCrewChange = (key: number) => true;
+
+  const handleDeleteRow = (key: string) => {
+    if (!editedChecklist) return;
+
+    const updatedChecklist = { ...editedChecklist };
+    if (updatedChecklist.extras && updatedChecklist.extras[key]) {
+      delete updatedChecklist.extras[key];
+      setEditedChecklist(updatedChecklist);
+      message.success("Row deleted successfully!");
+    }
+  };
+
+  const handleDeleteCrewChange = (key: number) => {
+    if (!editedChecklist) return;
+
+    const updatedChecklist = { ...editedChecklist };
+    if (updatedChecklist.crew_change) {
+      updatedChecklist.crew_change.sign_on.splice(key, 1);
+      updatedChecklist.crew_change.sign_off.splice(key, 1);
+      setEditedChecklist(updatedChecklist);
+      message.success("Crew change deleted successfully!");
+    }
+  };
 
   return (
     <>
@@ -301,21 +460,49 @@ const RenderChecklistDetails: React.FC<{
           {isEditing ? "Save" : "Edit"}
         </Button>
         {isEditing && (
-          <Button
-            type="default"
-            onClick={handleAddRow}
-            style={{ marginBottom: 16, marginLeft: 10 }}
-          >
-            Add Row
-          </Button>
+          <>
+            <Button
+              type="default"
+              onClick={handleAddRow}
+              style={{ marginBottom: 16, marginLeft: 10 }}
+            >
+              Add Row
+            </Button>
+            <Button
+              type="default"
+              onClick={handleAddCrewChange}
+              style={{ marginBottom: 16, marginLeft: 10 }}
+            >
+              Add Crew Change
+            </Button>
+          </>
         )}
       </div>
 
       <div>
         {/* Render Checklist Information as Table */}
+
         <Table
           className="styled-descriptions"
-          columns={getTableColumns(isEditing, handleInputChange, isEditable)} // Pass isEditable function to the table columns
+          columns={getCrewChangeTableColumns(
+            isEditing,
+            handleInputChangeCrewChange,
+            isEditableCrewChange,
+            handleDeleteCrewChange
+          )}
+          bordered
+          pagination={false}
+          dataSource={getCrewChangeData(editedChecklist)}
+          title={() => "Crew Change Details"}
+        />
+        <Table
+          className="styled-descriptions"
+          columns={getTableColumns(
+            isEditing,
+            handleInputChange,
+            isEditable,
+            handleDeleteRow
+          )} // Pass isEditable function to the table columns
           dataSource={getChecklistData(editedChecklist)} // Use editedChecklist as the data source
           bordered
           pagination={false}

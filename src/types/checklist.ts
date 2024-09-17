@@ -14,6 +14,7 @@ export interface Checklist {
   cross_harbour_fees: ChecklistInformation;
   supply_boat: ChecklistInformation;
   repairs: Repairs;
+  crew_change: CrewChange;
   extras: { [key: string]: ExtrasInformation };
 }
 
@@ -34,6 +35,7 @@ export interface ChecklistResponse {
   cross_harbour_fees: ChecklistInformation;
   supply_boat: ChecklistInformation;
   repairs: Repairs;
+  crew_change: CrewChange;
   extras: { [key: string]: ExtrasInformation };
   shipment_id: string;
   created_at: string;
@@ -57,7 +59,7 @@ export interface Repairs {
   uw_clean: ChecklistInformation;
 }
 
-// export interface Extras {
-//   name: string;
-//   checklist: ChecklistInformation;
-// }
+export interface CrewChange {
+  sign_on: string[];
+  sign_off: string[];
+}

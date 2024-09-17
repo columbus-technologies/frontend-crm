@@ -11,7 +11,12 @@ import {
   ShipmentResponse,
 } from "../types";
 import { FeedEmailResponse } from "../types/feed";
-import { getChecklistById, getInvoiceTenant, getShipmentById, getShipmentStatuses } from "../api"; // Remove getAllShipments import
+import {
+  getChecklistById,
+  getInvoiceTenant,
+  getShipmentById,
+  getShipmentStatuses,
+} from "../api"; // Remove getAllShipments import
 import { getFeedEmailsByShipmentID } from "../api/feed_emails";
 import UnauthorizedModal from "../components/modals/UnauthorizedModal";
 import CompleteShipmentModal from "../components/modals/CompleteShipmentModal";
@@ -23,7 +28,6 @@ import FeedDetails from "./feed/FeedDetails";
 import RenderVesselDetails from "./feed/VesselDetails";
 import fetchCustomerDataByShipment from "../utils/customer";
 import renderCustomerDetails from "./feed/CustomerDetails";
-import Enum from "../utils/enum";
 import RenderChecklistDetails from "./feed/ChecklistDetails";
 
 const { Step } = Steps;
@@ -95,14 +99,13 @@ const Feed: React.FC = () => {
   );
 
   const handleCompleteShipmentClick = () => {
-    if (selectedShipment) {
-      selectedShipment.current_status = Enum.COMPLETED_STATUS;
-    }
     setIsModalVisible(true);
   };
 
   const currentStatus = selectedShipment?.current_status || "Not Started";
-  const currentIndex = shipmentStatuses.findIndex(status => status === currentStatus);
+  const currentIndex = shipmentStatuses.findIndex(
+    (status) => status === currentStatus
+  );
 
   return (
     <div className="settings-management-container">
@@ -166,7 +169,13 @@ const Feed: React.FC = () => {
                 current={currentIndex} // Highlight the current step
                 progressDot={(dot, { index }) => (
                   <span
-                    className={index < currentIndex ? 'dot-finished' : index === currentIndex ? 'dot-active' : 'dot-wait'}
+                    className={
+                      index < currentIndex
+                        ? "dot-finished"
+                        : index === currentIndex
+                        ? "dot-active"
+                        : "dot-wait"
+                    }
                   >
                     {dot}
                   </span>
@@ -177,7 +186,13 @@ const Feed: React.FC = () => {
                   <Step
                     key={index}
                     title={status}
-                    status={index < currentIndex ? 'finish' : index === currentIndex ? 'process' : 'wait'}
+                    status={
+                      index < currentIndex
+                        ? "finish"
+                        : index === currentIndex
+                        ? "process"
+                        : "wait"
+                    }
                   />
                 ))}
               </Steps>
