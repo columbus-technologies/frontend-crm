@@ -338,6 +338,10 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
             service_provided: false,
           },
         },
+        crew_change: {
+          sign_on: [],
+          sign_off: [],
+        },
         extras: {}, // Assuming extra services are handled as an array
       };
       await createEmptyDefaultChecklistUponInitialize(checklistEmptyPayload);

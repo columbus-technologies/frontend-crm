@@ -67,7 +67,7 @@ const getTableColumns = (
   {
     title: "Actions",
     key: "actions",
-    render: (text: string, record: any) =>
+    render: (record: any) =>
       isEditing && isEditable(record.key) ? (
         <Popconfirm
           title="Are you sure you want to delete this row?"
@@ -84,7 +84,6 @@ const getTableColumns = (
 const getCrewChangeTableColumns = (
   isEditing: boolean,
   onChange: (key: number, field: string, value: any) => void,
-  isEditable: (key: number) => boolean,
   onDelete: (key: number) => void
 ) => [
   {
@@ -92,7 +91,7 @@ const getCrewChangeTableColumns = (
     dataIndex: "sign_on",
     key: "sign_on",
     render: (text: string, record: any) =>
-      isEditing && isEditable(record.key) ? (
+      isEditing ? (
         <Input
           value={text}
           onChange={(e) => onChange(record.key, "sign_on", e.target.value)}
@@ -118,7 +117,7 @@ const getCrewChangeTableColumns = (
   {
     title: "Actions",
     key: "actions",
-    render: (text: string, record: any) =>
+    render: (record: any) =>
       isEditing ? (
         <Popconfirm
           title="Are you sure you want to delete this crew change?"
@@ -418,8 +417,6 @@ const RenderChecklistDetails: React.FC<{
   // Function to check if a row is editable (only dynamic rows are editable)
   const isEditable = (key: string) => key.includes("extra");
 
-  const isEditableCrewChange = (key: number) => true;
-
   const handleDeleteRow = (key: string) => {
     if (!editedChecklist) return;
 
@@ -487,7 +484,6 @@ const RenderChecklistDetails: React.FC<{
           columns={getCrewChangeTableColumns(
             isEditing,
             handleInputChangeCrewChange,
-            isEditableCrewChange,
             handleDeleteCrewChange
           )}
           bordered
