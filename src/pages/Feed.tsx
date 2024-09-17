@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Typography, Tabs, Button } from "antd";
+import { Card, Typography, Tabs, Button, Steps } from "antd";
 import { useParams } from "react-router-dom"; // Import useParams
 
 const { Title } = Typography;
@@ -11,7 +11,7 @@ import {
   ShipmentResponse,
 } from "../types";
 import { FeedEmailResponse } from "../types/feed";
-import { getChecklistById, getInvoiceTenant, getShipmentById } from "../api"; // Remove getAllShipments import
+import { getChecklistById, getInvoiceTenant, getShipmentById, getShipmentStatuses } from "../api"; // Remove getAllShipments import
 import { getFeedEmailsByShipmentID } from "../api/feed_emails";
 import UnauthorizedModal from "../components/modals/UnauthorizedModal";
 import CompleteShipmentModal from "../components/modals/CompleteShipmentModal";
@@ -25,6 +25,9 @@ import fetchCustomerDataByShipment from "../utils/customer";
 import renderCustomerDetails from "./feed/CustomerDetails";
 import Enum from "../utils/enum";
 import RenderChecklistDetails from "./feed/ChecklistDetails";
+
+const { Step } = Steps;
+const shipmentStatuses = await getShipmentStatuses();
 
 const Feed: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -97,6 +100,10 @@ const Feed: React.FC = () => {
     }
     setIsModalVisible(true);
   };
+
+  const currentStatus = selectedShipment?.current_status || "Not Started";
+  const currentIndex = shipmentStatuses.findIndex(status => status === currentStatus);
+
   return (
     <div className="settings-management-container">
       <Title level={2}>Shipment Overview</Title>
@@ -148,9 +155,33 @@ const Feed: React.FC = () => {
 
         <Card style={{ width: "30%" }}>
           {selectedShipment ? (
-            <Button type="primary" onClick={handleCompleteShipmentClick}>
-              Complete Shipment
-            </Button>
+            <>
+              <Button type="primary" onClick={handleCompleteShipmentClick}>
+                Complete Shipment
+              </Button>
+
+              {/* Vertical steps with dots for the shipment status timeline */}
+              <Steps
+                direction="vertical"
+                current={currentIndex} // Highlight the current step
+                progressDot={(dot, { index }) => (
+                  <span
+                    className={index < currentIndex ? 'dot-finished' : index === currentIndex ? 'dot-active' : 'dot-wait'}
+                  >
+                    {dot}
+                  </span>
+                )}
+                style={{ marginTop: "20px" }}
+              >
+                {shipmentStatuses.map((status, index) => (
+                  <Step
+                    key={index}
+                    title={status}
+                    status={index < currentIndex ? 'finish' : index === currentIndex ? 'process' : 'wait'}
+                  />
+                ))}
+              </Steps>
+            </>
           ) : (
             <p>No shipment selected</p>
           )}
