@@ -117,8 +117,15 @@ const Feed: React.FC = () => {
       <Title level={2}>Shipment Overview</Title>
 
       {/* Flexbox container to hold the two cards side by side */}
-      <div style={{ display: "flex", gap: "20px" }}>
-        <Card style={{ width: "70%" }}>
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap", // Ensure responsiveness for smaller screens
+          justifyContent: "space-between", // Adds space between cards
+          gap: "20px", // Space between the two cards
+        }}
+      >
+        <Card style={{ width: "80%" }}>
           {errorMessage ? (
             <p>{errorMessage}</p>
           ) : (
@@ -160,8 +167,7 @@ const Feed: React.FC = () => {
             </Tabs>
           )}
         </Card>
-
-        <Card style={{ width: "30%" }}>
+        <Card style={{ width: "18%" }}>
           {selectedShipment ? (
             <>
               <Button type="primary" onClick={handleCompleteShipmentClick}>
@@ -187,7 +193,7 @@ const Feed: React.FC = () => {
                     {dot}
                   </span>
                 )}
-                style={{ marginTop: "20px" }}
+                style={{ marginTop: "30px" }}
               >
                 {shipmentStatuses?.map((status, index) => (
                   <Step

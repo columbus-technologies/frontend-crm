@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Form, Input, InputNumber, Row, Col, Divider, Button } from "antd";
+import {
+  Form,
+  Input,
+  InputNumber,
+  Row,
+  Col,
+  Divider,
+  Button,
+  Tooltip,
+} from "antd";
 import { ShipmentResponse } from "../../../types";
 import getLatestETD, {
   formatDateToLocalString,
@@ -576,7 +585,7 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
                   style={{ display: "flex", alignItems: "center" }}
                 >
                   <Row gutter={16} style={{ flex: 1, marginBottom: "0px" }}>
-                    <Col span={6}>
+                    <Col span={7}>
                       <Form.Item
                         {...field}
                         name={[field.name, "description"]}
@@ -657,7 +666,7 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
                   style={{ display: "flex", alignItems: "center" }}
                 >
                   <Row gutter={16} style={{ flex: 1, marginBottom: "0px" }}>
-                    <Col span={6}>
+                    <Col span={8}>
                       <Form.Item
                         {...field}
                         name={[field.name, "description"]}
@@ -838,7 +847,7 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
                   style={{ display: "flex", alignItems: "center" }}
                 >
                   <Row gutter={16} style={{ flex: 1, marginBottom: "0px" }}>
-                    <Col span={6}>
+                    <Col span={8}>
                       <Form.Item
                         {...field}
                         name={[field.name, "description"]}
@@ -1014,39 +1023,69 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
         <Row gutter={16} style={{ marginTop: "0px" }}>
           <Col span={12}>
             <Form.Item label="Bank Name" name="bank_name">
-              <Input disabled />
+              <Tooltip title={form.getFieldValue("bank_name")}>
+                <Input value={form.getFieldValue("bank_name")} disabled />
+              </Tooltip>
             </Form.Item>
             <Form.Item label="Swift Code" name="swift_code">
-              <Input disabled />
+              <Tooltip title={form.getFieldValue("swift_code")}>
+                <Input value={form.getFieldValue("swift_code")} disabled />
+              </Tooltip>
             </Form.Item>
             <Form.Item label="Bank Address" name="bank_address">
-              <Input disabled />
+              <Tooltip title={form.getFieldValue("bank_address")}>
+                <Input value={form.getFieldValue("bank_address")} disabled />
+              </Tooltip>
             </Form.Item>
             <Form.Item label="Payable To" name="payable_to">
-              <Input disabled />
+              <Tooltip title={form.getFieldValue("payable_to")}>
+                <Input value={form.getFieldValue("payable_to")} disabled />
+              </Tooltip>
             </Form.Item>
             <Form.Item label="Bank Code" name="bank_code">
-              <Input disabled />
+              <Tooltip title={form.getFieldValue("bank_code")}>
+                <Input value={form.getFieldValue("bank_code")} disabled />
+              </Tooltip>
             </Form.Item>
             <Form.Item label="Account Number" name="account_number">
-              <Input disabled />
+              <Tooltip title={form.getFieldValue("account_number")}>
+                <Input value={form.getFieldValue("account_number")} disabled />
+              </Tooltip>
             </Form.Item>
           </Col>
           <Col span={12}>
+            <Form.Item label="Bank Name" name="bank_name">
+              <Tooltip title={form.getFieldValue("bank_name")}>
+                <Input value={form.getFieldValue("bank_name")} disabled />
+              </Tooltip>
+            </Form.Item>
             <Form.Item label="Address" name="tenant_address">
-              <Input disabled />
+              <Tooltip title={form.getFieldValue("tenant_address")}>
+                <Input value={form.getFieldValue("tenant_address")} disabled />
+              </Tooltip>
             </Form.Item>
             <Form.Item label="Telephone" name="tenant_telephone">
-              <Input disabled />
+              <Tooltip title={form.getFieldValue("tenant_telephone")}>
+                <Input
+                  value={form.getFieldValue("tenant_telephone")}
+                  disabled
+                />
+              </Tooltip>
             </Form.Item>
             <Form.Item label="Fax" name="tenant_fax">
-              <Input disabled />
+              <Tooltip title={form.getFieldValue("tenant_fax")}>
+                <Input value={form.getFieldValue("tenant_fax")} disabled />
+              </Tooltip>
             </Form.Item>
             <Form.Item label="HP" name="tenant_hp">
-              <Input disabled />
+              <Tooltip title={form.getFieldValue("tenant_hp")}>
+                <Input value={form.getFieldValue("tenant_hp")} disabled />
+              </Tooltip>
             </Form.Item>
             <Form.Item label="Email" name="tenant_email">
-              <Input disabled />
+              <Tooltip title={form.getFieldValue("tenant_email")}>
+                <Input value={form.getFieldValue("tenant_email")} disabled />
+              </Tooltip>
             </Form.Item>
           </Col>
         </Row>

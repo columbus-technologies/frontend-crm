@@ -433,8 +433,19 @@ const RenderChecklistDetails: React.FC<{
 
     const updatedChecklist = { ...editedChecklist };
     if (updatedChecklist.crew_change) {
-      updatedChecklist.crew_change.sign_on.splice(key, 1);
-      updatedChecklist.crew_change.sign_off.splice(key, 1);
+      if (
+        updatedChecklist.crew_change.sign_on &&
+        updatedChecklist.crew_change.sign_on.length > 0
+      ) {
+        updatedChecklist.crew_change.sign_on.splice(key, 1);
+      }
+
+      if (
+        updatedChecklist.crew_change.sign_off &&
+        updatedChecklist.crew_change.sign_off.length > 0
+      ) {
+        updatedChecklist.crew_change.sign_off.splice(key, 1);
+      }
       setEditedChecklist(updatedChecklist);
       message.success("Crew change deleted successfully!");
     }
