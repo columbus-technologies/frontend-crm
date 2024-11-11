@@ -16,6 +16,7 @@ import GeneralInformationForm from "../forms/GeneralInformationForm";
 import CargoOperationsActivityForm from "../forms/CargoOperationsActivityForm";
 import BunkeringActivityForm from "../forms/BunkeringActivityForm";
 import { validateAtLeastOneCheckbox } from "../../utils/validationUtils";
+import GeneralInformationFormV2 from "../forms/GeneralInformationFormV2";
 
 const { Step } = Steps;
 
@@ -379,6 +380,11 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
     {
       title: "General Information",
       content: (
+        // <GeneralInformationForm
+        //   form={form}
+        //   shipmentStatuses={shipmentStatuses}
+        //   onActivitySelectionChange={setSelectedActivities}
+        // />
         <GeneralInformationForm
           form={form}
           shipmentStatuses={shipmentStatuses}
@@ -429,6 +435,41 @@ const MultiStepShipmentModal: React.FC<MultiStepShipmentModalProps> = ({
   ];
 
   return (
+    // <Modal open={visible} onCancel={onCancel} footer={null} width={900}>
+    //   <Steps current={currentStep}>
+    //     {steps.map((item, index) => (
+    //       <Step key={index} title={item.title} />
+    //     ))}
+    //   </Steps>
+    //   <div
+    //     className="steps-content"
+    //     style={{ marginTop: "24px", height: "400px", overflowY: "auto" }}
+    //     ref={modalContentRef}
+    //   >
+    //     {steps[currentStep].content}
+    //   </div>
+    //   <div
+    //     className="steps-action"
+    //     style={{ marginTop: "24px", textAlign: "right" }}
+    //   >
+    //     {currentStep > 0 && (
+    //       <Button style={{ margin: "0 8px" }} onClick={prev}>
+    //         Previous
+    //       </Button>
+    //     )}
+    //     {currentStep === steps.length - 1 && (
+    //       <Button type="primary" onClick={handleOk}>
+    //         Done
+    //       </Button>
+    //     )}
+    //     {currentStep < steps.length - 1 && (
+    //       <Button type="primary" onClick={next}>
+    //         Next
+    //       </Button>
+    //     )}
+    //   </div>
+    // </Modal>
+
     <Modal open={visible} onCancel={onCancel} footer={null} width={900}>
       <Steps current={currentStep}>
         {steps.map((item, index) => (

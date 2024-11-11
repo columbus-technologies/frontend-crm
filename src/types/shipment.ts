@@ -23,9 +23,9 @@ export interface CargoOperationsActivity {
   anchorage_location: string;
   terminal_name: string;
   shipment_product: ShipmentProduct[];
-  readiness: string; // Use string type for date-time fields
-  etb: string;
-  etd: string;
+  readiness: string | null; // Use string type for date-time fields
+  etb: string | null;
+  etd: string | null;
   arrival_departure_information: ArrivalDepartureInformation;
 }
 
@@ -51,9 +51,9 @@ export interface BunkeringActivity {
   bunker_intake_specifications: BunkerIntakeSpecifications[];
   shipment_product: ShipmentProduct[];
   freeboard: number;
-  readiness: string;
-  etb: string;
-  etd: string;
+  readiness: string | null;
+  etb: string | null;
+  etd: string | null;
 }
 
 export interface BunkerIntakeSpecifications {
@@ -78,9 +78,9 @@ export interface Activity {
   anchorage_location: string;
   terminal_name: string;
   shipment_product: ShipmentProduct;
-  readiness: string;
-  etb: string;
-  etd: string;
+  readiness: string | null;
+  etb: string | null;
+  etd: string | null;
   arrival_departure_information: ArrivalDepartureInformation;
 }
 
@@ -103,8 +103,8 @@ export interface ShipmentDetails {
 export interface Shipment {
   master_email: string;
   // ETA: string;
-  initial_ETA: string;
-  current_ETA: string;
+  initial_ETA: string | null;
+  current_ETA: string | null;
   voyage_number: string;
   current_status: string;
   shipment_type: ShipmentType;

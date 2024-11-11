@@ -244,7 +244,7 @@ const TestDemoInvoicing: React.FC<TestDemoInvoicingProps> = ({
                 onClick={handleEditPDA}
                 style={{ marginRight: "10px" }}
               >
-                Edit
+                Editt
               </Button>
             )}
             {(invoiceData || displayPDF) && (

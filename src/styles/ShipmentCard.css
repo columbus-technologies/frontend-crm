@@ -75,13 +75,15 @@
 
 .actionsStyle {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: center;
+  align-items: center; /* optional if you want to center vertically as well */
+  padding: 5px;
 }
 
 .buttonContainerStyle {
-  text-align: right;
-  margin-bottom: 10px; /* Adjust this to control spacing */
+  display: flex;
+  justify-content: center;
+  align-items: center; /* optional if you want to center vertically as well */
 }
 
 .updatedTextStyle {

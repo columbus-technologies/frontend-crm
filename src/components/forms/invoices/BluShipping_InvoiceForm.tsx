@@ -15,6 +15,7 @@ import getLatestETD, {
 } from "../../../utils/dateTimeUtils";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import getPilotageFees from "../../../utils/invoice";
+import "../../../styles/InvoicingPage.css";
 
 interface InvoiceFormProps {
   form: any;
@@ -443,54 +444,54 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
         <Row gutter={16} style={{ marginBottom: "20px" }}>
           <Col span={12}>
             <Form.Item label="Name" name="customerName">
-              <Input disabled={!isEditing} />
+              <Input disabled={!isEditing} className="custom-disabled-input" />
             </Form.Item>
             <Form.Item label="Fax" name="fax">
-              <Input disabled={!isEditing} />
+              <Input disabled={!isEditing} className="custom-disabled-input" />
             </Form.Item>
             <Form.Item label="IMO Number" name="imoNumber">
-              <Input disabled={!isEditing} />
+              <Input disabled={!isEditing} className="custom-disabled-input" />
             </Form.Item>
             <Form.Item label="Vessel Name" name="vesselName">
-              <Input disabled={!isEditing} />
+              <Input disabled={!isEditing} className="custom-disabled-input" />
             </Form.Item>
             <Form.Item label="Voyage Number" name="voyageNumber">
-              <Input disabled={!isEditing} />
+              <Input disabled={!isEditing} className="custom-disabled-input" />
             </Form.Item>
             <Form.Item label="Call Sign" name="callSign">
-              <Input disabled={!isEditing} />
+              <Input disabled={!isEditing} className="custom-disabled-input" />
             </Form.Item>
             <Form.Item label="Location" name="location">
-              <Input disabled={!isEditing} />
+              <Input disabled={!isEditing} className="custom-disabled-input" />
             </Form.Item>
             <Form.Item label="Purpose" name="purpose">
-              <Input disabled={!isEditing} />
+              <Input disabled={!isEditing} className="custom-disabled-input" />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item label="Contact Number" name="contactNumber">
-              <Input disabled={!isEditing} />
+              <Input disabled={!isEditing} className="custom-disabled-input" />
             </Form.Item>
             <Form.Item label="Email" name="email">
-              <Input disabled={!isEditing} />
+              <Input disabled={!isEditing} className="custom-disabled-input" />
             </Form.Item>
             <Form.Item label="GRT" name="grt">
-              <Input disabled={!isEditing} />
+              <Input disabled={!isEditing} className="custom-disabled-input" />
             </Form.Item>
             <Form.Item label="NRT" name="nrt">
-              <Input disabled={!isEditing} />
+              <Input disabled={!isEditing} className="custom-disabled-input" />
             </Form.Item>
             <Form.Item label="DWT" name="dwt">
-              <Input disabled={!isEditing} />
+              <Input disabled={!isEditing} className="custom-disabled-input" />
             </Form.Item>
             <Form.Item label="LOA" name="loa">
-              <Input disabled={!isEditing} />
+              <Input disabled={!isEditing} className="custom-disabled-input" />
             </Form.Item>
             <Form.Item label="ETA" name="eta">
-              <Input disabled={!isEditing} />
+              <Input disabled={!isEditing} className="custom-disabled-input" />
             </Form.Item>
             <Form.Item label="ETD" name="etd">
-              <Input disabled={!isEditing} />
+              <Input disabled={!isEditing} className="custom-disabled-input" />
             </Form.Item>
           </Col>
         </Row>
@@ -510,7 +511,11 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
                         name={[field.name, "description"]}
                         label="Description"
                       >
-                        <Input defaultValue="Port Dues" disabled={!isEditing} />
+                        <Input
+                          defaultValue="Port Dues"
+                          disabled={!isEditing}
+                          className="custom-disabled-input"
+                        />
                       </Form.Item>
                     </Col>
                     <Col span={8}>
@@ -519,7 +524,11 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
                         name={[field.name, "units"]}
                         label="Units (Per 100GT)"
                       >
-                        <InputNumber min={0} disabled={!isEditing} />
+                        <InputNumber
+                          min={0}
+                          disabled={!isEditing}
+                          className="custom-disabled-input-number"
+                        />
                       </Form.Item>
                     </Col>
                     <Col span={8}>
@@ -528,7 +537,12 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
                         name={[field.name, "unitPrice"]}
                         label="Unit Price"
                       >
-                        <InputNumber min={0} step={0.1} disabled={!isEditing} />
+                        <InputNumber
+                          min={0}
+                          step={0.1}
+                          disabled={!isEditing}
+                          className="custom-disabled-input-number"
+                        />
                       </Form.Item>
                     </Col>
                     <Col span={8}>
@@ -537,7 +551,11 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
                         name={[field.name, "price"]}
                         label="SGD Price"
                       >
-                        <InputNumber min={0} disabled />
+                        <InputNumber
+                          min={0}
+                          disabled
+                          className="custom-disabled-input-number"
+                        />
                       </Form.Item>
                     </Col>
                     <Col span={16}>
@@ -546,7 +564,10 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
                         name={[field.name, "remarks"]}
                         label="Remarks"
                       >
-                        <Input disabled={!isEditing} />
+                        <Input
+                          disabled={!isEditing}
+                          className="custom-disabled-input"
+                        />
                       </Form.Item>
                     </Col>
                   </Row>
@@ -591,7 +612,11 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
                         name={[field.name, "description"]}
                         label="Description"
                       >
-                        <Input defaultValue="Pilotage" disabled={!isEditing} />
+                        <Input
+                          defaultValue="Pilotage"
+                          disabled={!isEditing}
+                          className="custom-disabled-input"
+                        />
                       </Form.Item>
                     </Col>
                     <Col span={6}>
@@ -600,7 +625,11 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
                         name={[field.name, "hours"]}
                         label="Hours"
                       >
-                        <InputNumber min={0} disabled={!isEditing} />
+                        <InputNumber
+                          min={0}
+                          disabled={!isEditing}
+                          className="custom-disabled-input-number"
+                        />
                       </Form.Item>
                     </Col>
                     <Col span={6}>
@@ -609,7 +638,12 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
                         name={[field.name, "hourlyRate"]}
                         label="Hourly Rate"
                       >
-                        <InputNumber min={0} step={0.1} disabled={!isEditing} />
+                        <InputNumber
+                          min={0}
+                          step={0.1}
+                          disabled={!isEditing}
+                          className="custom-disabled-input-number"
+                        />
                       </Form.Item>
                     </Col>
                     <Col span={6}>
@@ -618,7 +652,11 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
                         name={[field.name, "price"]}
                         label="SGD Price"
                       >
-                        <InputNumber min={0} disabled />
+                        <InputNumber
+                          min={0}
+                          disabled
+                          className="custom-disabled-input-number"
+                        />
                       </Form.Item>
                     </Col>
                     <Col span={16}>
@@ -627,7 +665,10 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
                         name={[field.name, "remarks"]}
                         label="Remarks"
                       >
-                        <Input disabled={!isEditing} />
+                        <Input
+                          disabled={!isEditing}
+                          className="custom-disabled-input"
+                        />
                       </Form.Item>
                     </Col>
                   </Row>
@@ -675,6 +716,7 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
                         <Input
                           defaultValue="Service Launch"
                           disabled={!isEditing}
+                          className="custom-disabled-input"
                         />
                       </Form.Item>
                     </Col>
@@ -684,7 +726,11 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
                         name={[field.name, "trips"]}
                         label="Trips"
                       >
-                        <InputNumber min={0} disabled={!isEditing} />
+                        <InputNumber
+                          min={0}
+                          disabled={!isEditing}
+                          className="custom-disabled-input-number"
+                        />
                       </Form.Item>
                     </Col>
                     <Col span={6}>
@@ -693,7 +739,12 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
                         name={[field.name, "hourlyRate"]}
                         label="Hourly Rate"
                       >
-                        <InputNumber min={0} step={0.1} disabled={!isEditing} />
+                        <InputNumber
+                          min={0}
+                          step={0.1}
+                          disabled={!isEditing}
+                          className="custom-disabled-input-number"
+                        />
                       </Form.Item>
                     </Col>
                     <Col span={6}>
@@ -702,7 +753,12 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
                         name={[field.name, "price"]}
                         label="SGD Price"
                       >
-                        <InputNumber min={0} step={0.01} disabled />
+                        <InputNumber
+                          min={0}
+                          step={0.01}
+                          disabled
+                          className="custom-disabled-input-number"
+                        />
                       </Form.Item>
                     </Col>
                     <Col span={16}>
@@ -711,7 +767,10 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
                         name={[field.name, "remarks"]}
                         label="Remarks"
                       >
-                        <Input disabled={!isEditing} />
+                        <Input
+                          disabled={!isEditing}
+                          className="custom-disabled-input"
+                        />
                       </Form.Item>
                     </Col>
                   </Row>
@@ -756,7 +815,11 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
                         name={[field.name, "description"]}
                         label="Description"
                       >
-                        <Input defaultValue="Towage" disabled />
+                        <Input
+                          defaultValue="Towage"
+                          disabled
+                          className="custom-disabled-input"
+                        />
                       </Form.Item>
                     </Col>
                     <Col span={6}>
@@ -765,7 +828,11 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
                         name={[field.name, "tugRate"]}
                         label="Tug Rate"
                       >
-                        <InputNumber min={0} disabled={!isEditing} />
+                        <InputNumber
+                          min={0}
+                          disabled={!isEditing}
+                          className="custom-disabled-input-number"
+                        />
                       </Form.Item>
                     </Col>
                     <Col span={6}>
@@ -774,7 +841,11 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
                         name={[field.name, "tugs"]}
                         label="Tugs"
                       >
-                        <InputNumber min={0} disabled={!isEditing} />
+                        <InputNumber
+                          min={0}
+                          disabled={!isEditing}
+                          className="custom-disabled-input-number"
+                        />
                       </Form.Item>
                     </Col>
                     <Col span={6}>
@@ -783,7 +854,11 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
                         name={[field.name, "hours"]}
                         label="Hours"
                       >
-                        <InputNumber min={0} disabled={!isEditing} />
+                        <InputNumber
+                          min={0}
+                          disabled={!isEditing}
+                          className="custom-disabled-input-number"
+                        />
                       </Form.Item>
                     </Col>
                     <Col span={6}>
@@ -792,7 +867,12 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
                         name={[field.name, "bafRate"]}
                         label="BAF Rate (%)"
                       >
-                        <InputNumber min={0} step={0.1} disabled={!isEditing} />
+                        <InputNumber
+                          min={0}
+                          step={0.1}
+                          disabled={!isEditing}
+                          className="custom-disabled-input-number"
+                        />
                       </Form.Item>
                     </Col>
                     <Col span={6}>
@@ -801,7 +881,12 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
                         name={[field.name, "price"]}
                         label="SGD Price"
                       >
-                        <InputNumber min={0} step={0.01} disabled />
+                        <InputNumber
+                          min={0}
+                          step={0.01}
+                          disabled
+                          className="custom-disabled-input-number"
+                        />
                       </Form.Item>
                     </Col>
                     <Col span={16}>
@@ -810,7 +895,10 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
                         name={[field.name, "remarks"]}
                         label="Remarks"
                       >
-                        <Input disabled={!isEditing} />
+                        <Input
+                          disabled={!isEditing}
+                          className="custom-disabled-input"
+                        />
                       </Form.Item>
                     </Col>
                   </Row>
@@ -853,7 +941,11 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
                         name={[field.name, "description"]}
                         label="Description"
                       >
-                        <Input defaultValue="Mooring" disabled />
+                        <Input
+                          defaultValue="Mooring"
+                          disabled
+                          className="custom-disabled-input"
+                        />
                       </Form.Item>
                     </Col>
                     <Col span={6}>
@@ -862,7 +954,11 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
                         name={[field.name, "price"]}
                         label="SGD Price"
                       >
-                        <InputNumber min={0} disabled={!isEditing} />
+                        <InputNumber
+                          min={0}
+                          disabled={!isEditing}
+                          className="custom-disabled-input-number"
+                        />
                       </Form.Item>
                     </Col>
                     <Col span={16}>
@@ -871,7 +967,10 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
                         name={[field.name, "remarks"]}
                         label="Remarks"
                       >
-                        <Input disabled={!isEditing} />
+                        <Input
+                          disabled={!isEditing}
+                          className="custom-disabled-input"
+                        />
                       </Form.Item>
                     </Col>
                   </Row>
@@ -916,7 +1015,11 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
                         name={[field.name, "description"]}
                         label="Description"
                       >
-                        <Input defaultValue="Agency Fee" disabled />
+                        <Input
+                          defaultValue="Agency Fee"
+                          disabled
+                          className="custom-disabled-input"
+                        />
                       </Form.Item>
                     </Col>
                     <Col span={6}>
@@ -925,7 +1028,11 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
                         name={[field.name, "price"]}
                         label="SGD Price"
                       >
-                        <InputNumber min={0} disabled={!isEditing} />
+                        <InputNumber
+                          min={0}
+                          disabled={!isEditing}
+                          className="custom-disabled-input-number"
+                        />
                       </Form.Item>
                     </Col>
                   </Row>
@@ -970,7 +1077,10 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
                         name={[name, "description"]}
                         label="Description"
                       >
-                        <Input disabled={!isEditing} />
+                        <Input
+                          disabled={!isEditing}
+                          className="custom-disabled-input"
+                        />
                       </Form.Item>
                     </Col>
                     <Col span={6}>
@@ -979,7 +1089,12 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
                         name={[name, "price"]}
                         label="SGD Price"
                       >
-                        <InputNumber min={0} step={0.1} disabled={!isEditing} />
+                        <InputNumber
+                          min={0}
+                          step={0.1}
+                          disabled={!isEditing}
+                          className="custom-disabled-input-number"
+                        />
                       </Form.Item>
                     </Col>
                   </Row>
@@ -1010,12 +1125,21 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
         <Row gutter={16} style={{ marginBottom: "0px" }}>
           <Col span={12}>
             <Form.Item label="Description" name="estimated_total_description">
-              <Input defaultValue="Estimated Total SGD" disabled />
+              <Input
+                defaultValue="Estimated Total SGD"
+                disabled
+                className="custom-disabled-input"
+              />
             </Form.Item>
           </Col>
           <Col span={6}>
             <Form.Item label="SGD Price" name="estimated_total">
-              <InputNumber min={0} step={0.1} disabled />
+              <InputNumber
+                min={0}
+                step={0.1}
+                disabled
+                className="custom-disabled-input-number"
+              />
             </Form.Item>
           </Col>
         </Row>
@@ -1024,44 +1148,76 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
           <Col span={12}>
             <Form.Item label="Bank Name" name="bank_name">
               <Tooltip title={form.getFieldValue("bank_name")}>
-                <Input value={form.getFieldValue("bank_name")} disabled />
+                <Input
+                  value={form.getFieldValue("bank_name")}
+                  disabled
+                  className="custom-disabled-input"
+                />
               </Tooltip>
             </Form.Item>
             <Form.Item label="Swift Code" name="swift_code">
               <Tooltip title={form.getFieldValue("swift_code")}>
-                <Input value={form.getFieldValue("swift_code")} disabled />
+                <Input
+                  value={form.getFieldValue("swift_code")}
+                  disabled
+                  className="custom-disabled-input"
+                />
               </Tooltip>
             </Form.Item>
             <Form.Item label="Bank Address" name="bank_address">
               <Tooltip title={form.getFieldValue("bank_address")}>
-                <Input value={form.getFieldValue("bank_address")} disabled />
+                <Input
+                  value={form.getFieldValue("bank_address")}
+                  disabled
+                  className="custom-disabled-input"
+                />
               </Tooltip>
             </Form.Item>
             <Form.Item label="Payable To" name="payable_to">
               <Tooltip title={form.getFieldValue("payable_to")}>
-                <Input value={form.getFieldValue("payable_to")} disabled />
+                <Input
+                  value={form.getFieldValue("payable_to")}
+                  disabled
+                  className="custom-disabled-input"
+                />
               </Tooltip>
             </Form.Item>
             <Form.Item label="Bank Code" name="bank_code">
               <Tooltip title={form.getFieldValue("bank_code")}>
-                <Input value={form.getFieldValue("bank_code")} disabled />
+                <Input
+                  value={form.getFieldValue("bank_code")}
+                  disabled
+                  className="custom-disabled-input"
+                />
               </Tooltip>
             </Form.Item>
             <Form.Item label="Account Number" name="account_number">
               <Tooltip title={form.getFieldValue("account_number")}>
-                <Input value={form.getFieldValue("account_number")} disabled />
+                <Input
+                  value={form.getFieldValue("account_number")}
+                  disabled
+                  className="custom-disabled-input"
+                />
               </Tooltip>
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item label="Bank Name" name="bank_name">
               <Tooltip title={form.getFieldValue("bank_name")}>
-                <Input value={form.getFieldValue("bank_name")} disabled />
+                <Input
+                  value={form.getFieldValue("bank_name")}
+                  disabled
+                  className="custom-disabled-input"
+                />
               </Tooltip>
             </Form.Item>
             <Form.Item label="Address" name="tenant_address">
               <Tooltip title={form.getFieldValue("tenant_address")}>
-                <Input value={form.getFieldValue("tenant_address")} disabled />
+                <Input
+                  value={form.getFieldValue("tenant_address")}
+                  disabled
+                  className="custom-disabled-input"
+                />
               </Tooltip>
             </Form.Item>
             <Form.Item label="Telephone" name="tenant_telephone">
@@ -1069,22 +1225,35 @@ const BluShipping_InvoiceForm: React.FC<InvoiceFormProps> = ({
                 <Input
                   value={form.getFieldValue("tenant_telephone")}
                   disabled
+                  className="custom-disabled-input"
                 />
               </Tooltip>
             </Form.Item>
             <Form.Item label="Fax" name="tenant_fax">
               <Tooltip title={form.getFieldValue("tenant_fax")}>
-                <Input value={form.getFieldValue("tenant_fax")} disabled />
+                <Input
+                  value={form.getFieldValue("tenant_fax")}
+                  disabled
+                  className="custom-disabled-input"
+                />
               </Tooltip>
             </Form.Item>
             <Form.Item label="HP" name="tenant_hp">
               <Tooltip title={form.getFieldValue("tenant_hp")}>
-                <Input value={form.getFieldValue("tenant_hp")} disabled />
+                <Input
+                  value={form.getFieldValue("tenant_hp")}
+                  disabled
+                  className="custom-disabled-input"
+                />
               </Tooltip>
             </Form.Item>
             <Form.Item label="Email" name="tenant_email">
               <Tooltip title={form.getFieldValue("tenant_email")}>
-                <Input value={form.getFieldValue("tenant_email")} disabled />
+                <Input
+                  value={form.getFieldValue("tenant_email")}
+                  disabled
+                  className="custom-disabled-input"
+                />
               </Tooltip>
             </Form.Item>
           </Col>
