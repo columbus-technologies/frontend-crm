@@ -204,16 +204,8 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({ shipment }) => {
 
       <div className="actionsStyle">
         <div className="buttonContainerStyle">
-          <Button
-            type="primary"
-            icon={<EyeOutlined />}
-            style={{ marginRight: "8px" }}
-            onClick={viewShipment}
-          >
+          <Button type="primary" icon={<EyeOutlined />} onClick={viewShipment}>
             View Shipment
-          </Button>
-          <Button type="default" icon={<EditOutlined />}>
-            Edit Shipment
           </Button>
         </div>
       </div>

@@ -7,6 +7,7 @@ import {
   PlusOutlined,
 } from "@ant-design/icons";
 import MultiStepShipmentModal from "./modals/MultiStepShipmentModal";
+import MultiStepShipmentModalV2 from "./modals/MultiStepShipmentModalV2";
 
 const { Sider } = Layout;
 const { SubMenu } = Menu;
@@ -173,7 +174,7 @@ const Sidebar: React.FC = () => {
           </SubMenu>
         </Menu>
       </Sider>
-      <MultiStepShipmentModal
+      <MultiStepShipmentModalV2
         visible={isModalVisible}
         onCancel={handleModalClose}
         onCreate={handleModalClose}
