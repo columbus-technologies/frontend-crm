@@ -209,7 +209,7 @@ const RenderCargoOperationsActivities: React.FC<{
               `${activity.arrival_departure_information.departure_mast_height} metres`
             )}
           </Descriptions.Item>
-          <Descriptions.Item label="Readiness">
+          {/* <Descriptions.Item label="Readiness">
             {isEditing ? (
               <DatePicker
                 style={{ width: "100%" }}
@@ -228,8 +228,8 @@ const RenderCargoOperationsActivities: React.FC<{
             ) : (
               formatDateToLocalString(activity.readiness)
             )}
-          </Descriptions.Item>
-          <Descriptions.Item label="ETB">
+          </Descriptions.Item> */}
+          {/* <Descriptions.Item label="ETB">
             {isEditing ? (
               <DatePicker
                 style={{ width: "100%" }}
@@ -248,12 +248,12 @@ const RenderCargoOperationsActivities: React.FC<{
             ) : (
               formatDateToLocalString(activity.etb)
             )}
-          </Descriptions.Item>
+          </Descriptions.Item> */}
           <Descriptions.Item label="ETD">
             {isEditing ? (
               <DatePicker
                 style={{ width: "100%" }}
-                value={dayjs(activity.etd)}
+                value={activity.etd ? dayjs(activity.etd) : null}
                 onChange={(date) =>
                   handleChange(
                     "cargo_operations",
@@ -264,9 +264,12 @@ const RenderCargoOperationsActivities: React.FC<{
                 }
                 showTime
                 format="YYYY-MM-DD HH:mm"
+                placeholder="Please fill up"
               />
-            ) : (
+            ) : activity.etd ? (
               formatDateToLocalString(activity.etd)
+            ) : (
+              "Pending"
             )}
           </Descriptions.Item>
         </Descriptions>

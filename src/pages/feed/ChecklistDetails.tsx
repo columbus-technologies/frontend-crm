@@ -490,7 +490,7 @@ const RenderChecklistDetails: React.FC<{
       <div>
         {/* Render Checklist Information as Table */}
 
-        <Table
+        {/* <Table
           className="styled-descriptions"
           columns={getCrewChangeTableColumns(
             isEditing,
@@ -501,7 +501,7 @@ const RenderChecklistDetails: React.FC<{
           pagination={false}
           dataSource={getCrewChangeData(editedChecklist)}
           title={() => "Crew Change Details"}
-        />
+        /> */}
         <Table
           className="styled-descriptions"
           columns={getTableColumns(

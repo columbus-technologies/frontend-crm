@@ -33,8 +33,9 @@ const Dashboard: React.FC = () => {
       setLoading(true); // Start loading
       try {
         const data = await getAllShipments();
-        console.log(data);
+        console.log(data, "james");
         setShipments(data);
+
         setFilteredShipments(data);
 
         const shipmentStatusesData = await getShipmentStatuses();

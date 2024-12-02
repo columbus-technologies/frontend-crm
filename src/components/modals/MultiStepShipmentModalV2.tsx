@@ -158,7 +158,13 @@ const MultiStepShipmentModalV2: React.FC<MultiStepShipmentModalProps> = ({
                     ],
                     readiness: null, // Date-time fields as strings (empty for now)
                     etb: null,
-                    etd: null,
+                    etd: mergedValues.ETA
+                      ? new Date(
+                          new Date(mergedValues.ETA).setDate(
+                            new Date(mergedValues.ETA).getDate() + 7
+                          )
+                        ).toISOString()
+                      : null,
                     arrival_departure_information: {
                       arrival_displacement: -1,
                       departure_displacement: -1,
@@ -202,7 +208,13 @@ const MultiStepShipmentModalV2: React.FC<MultiStepShipmentModalProps> = ({
                     freeboard: 0,
                     readiness: null,
                     etb: null,
-                    etd: null,
+                    etd: mergedValues.ETA
+                      ? new Date(
+                          new Date(mergedValues.ETA).setDate(
+                            new Date(mergedValues.ETA).getDate() + 7
+                          )
+                        ).toISOString()
+                      : null,
                   },
                 ]
               : [],

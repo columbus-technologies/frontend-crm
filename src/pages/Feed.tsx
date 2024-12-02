@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Card, Typography, Tabs, Button, Steps } from "antd";
+import { Card, Typography, Tabs, Button, Steps, message } from "antd";
 import { useParams } from "react-router-dom";
-import * as xml2js from "xml2js";
+import { parseStringPromise } from "xml2js";
 
 const { Title } = Typography;
 const { TabPane } = Tabs;
@@ -22,6 +22,7 @@ import { getFeedEmailsByShipmentID } from "../api/feed_emails";
 import UnauthorizedModal from "../components/modals/UnauthorizedModal";
 import CompleteShipmentModal from "../components/modals/CompleteShipmentModal";
 import RenderShipmentDetails from "./feed/ShipmentDetails";
+import RenderPreArrivalDetails from "./feed/PreArrivalDetails";
 import BluShippingInvoicing from "./feed/invoices/BluShipping_Invoicing";
 import TestDemoInvoicing from "./feed/invoices/TestDemo_Invoicing";
 import FeedDetails from "./feed/FeedDetails";
@@ -51,7 +52,9 @@ const Feed: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [invoiceTenant, setInvoiceTenant] = useState<string | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [preArrivalInformation, setPreArrivalInformation] = useState(null);
+  const [preArrivalInformation, setPreArrivalInformation] = useState<
+    any | null
+  >(null);
 
   // Ref for the file input
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -97,69 +100,26 @@ const Feed: React.FC = () => {
     }
   }, [id]);
 
-  const handleFileUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const xml = e.target.result;
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
 
-        xml2js.parseString(xml, { explicitArray: false }, (err, result) => {
-          if (err) {
-            console.error("Error parsing XML:", err);
-            return;
-          }
-          const form = result.form;
-          const newPreArrivalInformation = {
-            voyage_number: form.name,
-            current_ETA: `${form.date}T${form.time}Z`,
-            shipment_type: {
-              cargo_operations: {
-                cargo_operations: true,
-                cargo_operations_activity: form.Data[1].cargo.map((cargo) => ({
-                  shipment_product: [
-                    {
-                      sub_product_type: cargo.typeofcargo,
-                      quantity: parseInt(cargo.quantityofcargo, 10),
-                    },
-                  ],
-                })),
-              },
-              bunkering: {
-                bunkering: true,
-                bunkering_activity: [
-                  {
-                    docking: form.alongside,
-                    bunker_intake_specifications: form.Data[3].bunker.map(
-                      (bunker) => ({
-                        sub_product_type: bunker.bunkerprod,
-                        maximum_quantity_intake: parseInt(
-                          bunker.quantityintake,
-                          10
-                        ),
-                        maximum_hose_size: parseInt(bunker.bunkersize, 10),
-                      })
-                    ),
-                  },
-                ],
-              },
-            },
-            vessel_specifications: {
-              vessel_name: "Super Ever",
-              imo_number: 12345678,
-            },
-            shipment_details: {
-              agent_details: {
-                name: form.master,
-                contact: form.lport,
-              },
-            },
-          };
+    if (!file) return;
 
-          setPreArrivalInformation(newPreArrivalInformation);
-        });
-      };
-      reader.readAsText(file);
+    try {
+      const text = await file.text();
+      const parsedData = await parseStringPromise(text, {
+        explicitArray: false,
+      });
+      console.log(parsedData, "asd");
+      // Transform the parsed data into the expected structure for RenderPreArrivalDetails
+      setPreArrivalInformation(parsedData);
+      message.success("XML file parsed successfully!");
+      console.log("XML file parsed successfully");
+    } catch (error) {
+      message.error("Failed to parse XML file. Please check the file format.");
+      console.error(error);
     }
   };
 
@@ -205,16 +165,19 @@ const Feed: React.FC = () => {
             onChange={handleFileUpload}
             style={{ display: "none" }} // Hide input
           />
+          {/* {preArrivalInformation && (
+            <RenderPreArrivalDetails data={preArrivalInformation} />
+          )} */}
         </div>
       </div>
 
-      {/* Parsed Payload Section */}
+      {/* Parsed Payload Section
       {preArrivalInformation && (
         <div style={{ marginBottom: "20px" }}>
           <h3>Parsed Payload:</h3>
           <pre>{JSON.stringify(preArrivalInformation, null, 2)}</pre>
         </div>
-      )}
+      )} */}
 
       {/* Main Container for Cards */}
       <div
@@ -232,7 +195,7 @@ const Feed: React.FC = () => {
             <>
               <div
                 style={{
-                  display: "flex",
+                  // display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
                 }}
@@ -241,27 +204,37 @@ const Feed: React.FC = () => {
                   <TabPane tab="Feed" key="1">
                     <FeedDetails selectedFeedEmails={selectedFeedEmails} />
                   </TabPane>
-                  <TabPane tab="Shipment Details" key="2">
+                  <TabPane tab="Pre-Arrival Information" key="2">
+                    {preArrivalInformation ? (
+                      <RenderPreArrivalDetails
+                        data={preArrivalInformation}
+                        key={JSON.stringify(preArrivalInformation)} // Use key to force re-render
+                      />
+                    ) : (
+                      <p>No data available. Please upload XML.</p>
+                    )}
+                  </TabPane>
+                  <TabPane tab="Shipment Details" key="3">
                     <RenderShipmentDetails
                       selectedShipment={selectedShipment}
                     />
                   </TabPane>
-                  <TabPane tab="Vessel" key="3">
+                  <TabPane tab="Vessel" key="4">
                     <RenderVesselDetails selectedShipment={selectedShipment!} />
                   </TabPane>
-                  <TabPane tab="Customer" key="4">
+                  <TabPane tab="Customer" key="5">
                     {renderCustomerDetails(customerData)}
                   </TabPane>
-                  <TabPane tab="Audit" key="5">
+                  <TabPane tab="Audit" key="6">
                     {renderContent("Audit content...")}
                   </TabPane>
-                  <TabPane tab="Checklist" key="6">
+                  <TabPane tab="Checklist" key="7">
                     <RenderChecklistDetails
                       selectedShipment={selectedShipment!}
                       selectedChecklist={selectedChecklist}
                     />
                   </TabPane>
-                  <TabPane tab="Invoicing" key="7">
+                  <TabPane tab="Invoicing" key="8">
                     {invoiceTenant === "BluShipping" && selectedShipment && (
                       <BluShippingInvoicing
                         selectedShipment={selectedShipment}

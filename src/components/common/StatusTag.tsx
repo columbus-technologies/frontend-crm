@@ -9,7 +9,7 @@ interface StatusTagProps {
 
 const StatusTag: React.FC<StatusTagProps> = ({ activity }) => {
   const now = moment();
-  console.log(activity, " activity");
+  // console.log(activity, " activity");
   const readiness = activity.readiness ? moment(activity.readiness) : null;
   // const etb = activity.etb ? moment(activity.etb) : null;
   const etd = activity.etd ? moment(activity.etd) : null;

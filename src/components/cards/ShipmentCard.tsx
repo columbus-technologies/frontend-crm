@@ -54,13 +54,16 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({ shipment }) => {
   ): activity is CargoOperationsActivity => {
     return "activity_type" in activity;
   };
+  console.log(shipment.initial_ETA, "fhere");
+  const initialETA = shipment.initial_ETA
+    ? moment(shipment.initial_ETA).format("DD-MMM-YYYY, dddd, HH:mm") + "HRS"
+    : "Pending";
 
-  const initialETA = moment(shipment.initial_ETA).format(
-    "DD-MMM-YYYY, dddd, HH:mm"
-  );
-  const updatedETA = moment(shipment.current_ETA).format(
-    "DD-MMM-YYYY, dddd, HH:mm"
-  );
+  const updatedETA = shipment.current_ETA
+    ? moment(shipment.current_ETA).format("DD-MMM-YYYY, dddd, HH:mm") + "HRS"
+    : "Pending";
+
+  console.log(initialETA, updatedETA);
   const sameETA = initialETA === updatedETA;
 
   return (
@@ -94,7 +97,7 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({ shipment }) => {
             />
             <span>
               <strong>ETA: </strong>
-              {updatedETA} HRS
+              {updatedETA}
             </span>
           </div>
         ) : (
@@ -105,7 +108,7 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({ shipment }) => {
               />
               <span>
                 <strong>Updated ETA: </strong>
-                {updatedETA} HRS
+                {updatedETA}
               </span>
             </div>
             <div
@@ -121,7 +124,7 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({ shipment }) => {
               />
               <span>
                 <strong>Initial ETA: </strong>
-                {initialETA} HRS
+                {initialETA}
               </span>
             </div>
           </div>
@@ -145,7 +148,7 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({ shipment }) => {
           activities.map((activity, index) => (
             <div key={index}>
               <h5 className="contentStyle">
-                <StatusTag activity={activity} />
+                {/* <StatusTag activity={activity} /> */}
                 {isCargoOperations(activity) ? (
                   <>
                     <h2>Cargo Ops Activity</h2>

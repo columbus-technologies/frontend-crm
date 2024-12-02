@@ -128,7 +128,7 @@ const RenderBunkeringActivity: React.FC<{
               `${activity.freeboard} metres`
             )}
           </Descriptions.Item>
-          <Descriptions.Item label="Readiness">
+          {/* <Descriptions.Item label="Readiness">
             {isEditing ? (
               <DatePicker
                 style={{ width: "100%" }}
@@ -147,8 +147,8 @@ const RenderBunkeringActivity: React.FC<{
             ) : (
               formatDateToLocalString(activity.readiness)
             )}
-          </Descriptions.Item>
-          <Descriptions.Item label="ETB">
+          </Descriptions.Item> */}
+          {/* <Descriptions.Item label="ETB">
             {isEditing ? (
               <DatePicker
                 style={{ width: "100%" }}
@@ -162,7 +162,7 @@ const RenderBunkeringActivity: React.FC<{
             ) : (
               formatDateToLocalString(activity.etb)
             )}
-          </Descriptions.Item>
+          </Descriptions.Item> */}
           <Descriptions.Item label="ETD">
             {isEditing ? (
               <DatePicker
@@ -174,8 +174,10 @@ const RenderBunkeringActivity: React.FC<{
                 showTime
                 format="YYYY-MM-DD HH:mm"
               />
-            ) : (
+            ) : activity.etd ? (
               formatDateToLocalString(activity.etd)
+            ) : (
+              "Pending"
             )}
           </Descriptions.Item>
         </Descriptions>

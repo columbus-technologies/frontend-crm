@@ -116,8 +116,8 @@ export interface ShipmentResponse {
   ID: string;
   master_email: string;
   // ETA: string;
-  initial_ETA: string;
-  current_ETA: string;
+  initial_ETA: string | null;
+  current_ETA: string | null;
   voyage_number: string;
   current_status: string;
   shipment_type: ShipmentType;
