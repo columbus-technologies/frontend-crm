@@ -9,3 +9,4 @@ export * from "./category_management_activity_types";
 export * from "./category_management_product_types";
 export * from "./invoice_pricing";
 export * from "./checklist";
+export * from "./pre_arrival_details";

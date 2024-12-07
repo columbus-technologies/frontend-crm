@@ -8,3 +8,4 @@ export * from "./category_management_activity_type";
 export * from "./category_management_product_type";
 export * from "./invoice";
 export * from "./checklist";
+export * from "./pre_arrival_details";

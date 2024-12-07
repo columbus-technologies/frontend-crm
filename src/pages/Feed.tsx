@@ -17,6 +17,8 @@ import {
   getInvoiceTenant,
   getShipmentById,
   getShipmentStatuses,
+  fetchPreArrivalDetails,
+  createPreArrivalDetails,
 } from "../api";
 import { getFeedEmailsByShipmentID } from "../api/feed_emails";
 import UnauthorizedModal from "../components/modals/UnauthorizedModal";
@@ -63,6 +65,9 @@ const Feed: React.FC = () => {
     try {
       const shipmentStatuses = await getShipmentStatuses();
       setShipmentStatuses(shipmentStatuses);
+
+      const preArrivalDetails = await fetchPreArrivalDetails(id);
+      setPreArrivalInformation(preArrivalDetails);
 
       const data = await getShipmentById(id);
       setSelectedShipment(data);
@@ -113,10 +118,22 @@ const Feed: React.FC = () => {
         explicitArray: false,
       });
       console.log(parsedData, "asd");
+      // Add the shipment ID to the parsed data
+      const enrichedData = {
+        ...parsedData,
+        form: {
+          ...parsedData.form,
+          shipment_id: id, // Add the id from useParams inside the form object
+        },
+      };
+      console.log(enrichedData, "Enriched Data with ID");
+
       // Transform the parsed data into the expected structure for RenderPreArrivalDetails
-      setPreArrivalInformation(parsedData);
+      setPreArrivalInformation(enrichedData);
       message.success("XML file parsed successfully!");
       console.log("XML file parsed successfully");
+      createPreArrivalDetails(enrichedData);
+      console.log("sent info to db");
     } catch (error) {
       message.error("Failed to parse XML file. Please check the file format.");
       console.error(error);
@@ -214,21 +231,21 @@ const Feed: React.FC = () => {
                       <p>No data available. Please upload XML.</p>
                     )}
                   </TabPane>
-                  <TabPane tab="Shipment Details" key="3">
+                  {/* <TabPane tab="Shipment Details" key="3">
                     <RenderShipmentDetails
                       selectedShipment={selectedShipment}
                     />
-                  </TabPane>
-                  <TabPane tab="Vessel" key="4">
+                  </TabPane> */}
+                  <TabPane tab="Vessel" key="3">
                     <RenderVesselDetails selectedShipment={selectedShipment!} />
                   </TabPane>
-                  <TabPane tab="Customer" key="5">
+                  <TabPane tab="Customer" key="4">
                     {renderCustomerDetails(customerData)}
                   </TabPane>
-                  <TabPane tab="Audit" key="6">
+                  <TabPane tab="Audit" key="5">
                     {renderContent("Audit content...")}
                   </TabPane>
-                  <TabPane tab="Checklist" key="7">
+                  <TabPane tab="Checklist" key="6">
                     <RenderChecklistDetails
                       selectedShipment={selectedShipment!}
                       selectedChecklist={selectedChecklist}
