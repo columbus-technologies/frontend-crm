@@ -2,7 +2,7 @@ import React from "react";
 import { Card, Button, Carousel, Tag } from "antd";
 import {
   EyeOutlined,
-  EditOutlined,
+  // EditOutlined,
   ClockCircleOutlined,
   UserAddOutlined,
 } from "@ant-design/icons";
@@ -14,7 +14,7 @@ import {
   BunkeringActivity,
   BunkerIntakeSpecifications,
 } from "../../types";
-import StatusTag from "../common/StatusTag";
+// import StatusTag from "../common/StatusTag";
 import { useStatusColours } from "../../context/StatusColoursContext";
 import SubProductTypes from "../common/SubProductTypes";
 import { useNavigate } from "react-router-dom";
@@ -210,6 +210,9 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({ shipment }) => {
           <Button type="primary" icon={<EyeOutlined />} onClick={viewShipment}>
             View Shipment
           </Button>
+          {/* <Button type="default" icon={<EditOutlined />}>
+            Edit Shipment
+          </Button> */}
         </div>
       </div>
       <span className="updatedTextStyle">

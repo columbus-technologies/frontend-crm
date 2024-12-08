@@ -23,7 +23,7 @@ import {
 import { getFeedEmailsByShipmentID } from "../api/feed_emails";
 import UnauthorizedModal from "../components/modals/UnauthorizedModal";
 import CompleteShipmentModal from "../components/modals/CompleteShipmentModal";
-import RenderShipmentDetails from "./feed/ShipmentDetails";
+// import RenderShipmentDetails from "./feed/ShipmentDetails";
 import RenderPreArrivalDetails from "./feed/PreArrivalDetails";
 import BluShippingInvoicing from "./feed/invoices/BluShipping_Invoicing";
 import TestDemoInvoicing from "./feed/invoices/TestDemo_Invoicing";
@@ -140,11 +140,11 @@ const Feed: React.FC = () => {
     }
   };
 
-  const renderContent = (content: string) => (
-    <div>
-      <p>{content}</p>
-    </div>
-  );
+  // const renderContent = (content: string) => (
+  //   <div>
+  //     <p>{content}</p>
+  //   </div>
+  // );
 
   const handleCompleteShipmentClick = () => {
     setIsModalVisible(true);
@@ -242,9 +242,9 @@ const Feed: React.FC = () => {
                   <TabPane tab="Customer" key="4">
                     {renderCustomerDetails(customerData)}
                   </TabPane>
-                  <TabPane tab="Audit" key="5">
+                  {/* <TabPane tab="Audit" key="5">
                     {renderContent("Audit content...")}
-                  </TabPane>
+                  </TabPane> */}
                   <TabPane tab="Checklist" key="6">
                     <RenderChecklistDetails
                       selectedShipment={selectedShipment!}
