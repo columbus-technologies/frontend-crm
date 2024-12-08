@@ -3,10 +3,11 @@ import {
   Form,
   DatePicker,
   Button,
-  AutoComplete,
+  // AutoComplete,
   Row,
   Col,
   Divider,
+  Select,
 } from "antd";
 import QuantityInput from "../common/QuantityInput";
 import { validateFloat } from "../../utils/validationUtils";
@@ -49,21 +50,17 @@ const CargoOperationsActivityForm: React.FC<
                 rules={[
                   {
                     required: true,
-                    message: "Please input the Activity Type!",
+                    message: "Please select the Activity Type!",
                   },
                 ]}
               >
-                <AutoComplete
+                <Select
+                  placeholder="Select Activity Type"
                   options={activityTypes.map((activity) => ({
                     value: activity,
+                    label: activity,
                   }))}
-                  placeholder="Activity Type"
                   style={{ width: "100%" }}
-                  filterOption={(inputValue, option) =>
-                    option!.value
-                      .toLowerCase()
-                      .includes(inputValue.toLowerCase())
-                  }
                 />
               </Form.Item>
               <Form.Item
@@ -73,21 +70,17 @@ const CargoOperationsActivityForm: React.FC<
                 rules={[
                   {
                     required: true,
-                    message: "Please input the Customer!",
+                    message: "Please select the Customer!",
                   },
                 ]}
               >
-                <AutoComplete
+                <Select
+                  placeholder="Select Customer"
                   options={customerNames.map((customer) => ({
                     value: customer,
+                    label: customer,
                   }))}
-                  placeholder="Customer"
                   style={{ width: "100%" }}
-                  filterOption={(inputValue, option) =>
-                    option!.value
-                      .toLowerCase()
-                      .includes(inputValue.toLowerCase())
-                  }
                 />
               </Form.Item>
               <Form.Item
@@ -97,21 +90,17 @@ const CargoOperationsActivityForm: React.FC<
                 rules={[
                   {
                     required: true,
-                    message: "Please input the Terminal!",
+                    message: "Please select the Terminal!",
                   },
                 ]}
               >
-                <AutoComplete
+                <Select
+                  placeholder="Select Terminal Name"
                   options={terminalLocations.map((location) => ({
                     value: location,
+                    label: location,
                   }))}
-                  placeholder="Terminal Name"
                   style={{ width: "100%" }}
-                  filterOption={(inputValue, option) =>
-                    option!.value
-                      .toLowerCase()
-                      .includes(inputValue.toLowerCase())
-                  }
                 />
               </Form.Item>
               <Divider />

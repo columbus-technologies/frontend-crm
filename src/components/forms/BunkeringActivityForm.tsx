@@ -9,6 +9,7 @@ import {
   Col,
   Radio,
   Divider,
+  Select,
 } from "antd";
 import InputWithUnit from "../common/InputWithUnit";
 import { validateFloat } from "../../utils/validationUtils";
@@ -82,20 +83,16 @@ const BunkeringActivityForm: React.FC<BunkeringActivityFormProps> = ({
                     name={[name, "customer_name"]}
                     label="Customer"
                     rules={[
-                      { required: true, message: "Please input customer!" },
+                      { required: true, message: "Please select a customer!" },
                     ]}
                   >
-                    <AutoComplete
+                    <Select
+                      placeholder="Select Customer"
                       options={customerNames.map((customer) => ({
                         value: customer,
+                        label: customer,
                       }))}
-                      placeholder="Customer"
                       style={{ width: "100%" }}
-                      filterOption={(inputValue, option) =>
-                        option!.value
-                          .toLowerCase()
-                          .includes(inputValue.toLowerCase())
-                      }
                     />
                   </Form.Item>
                 </Col>
