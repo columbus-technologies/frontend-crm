@@ -97,11 +97,11 @@ const Feed: React.FC = () => {
     }
   }, [id]); // Dependency array now includes id
 
-  const renderContent = (content: string) => (
-    <div>
-      <p>{content}</p>
-    </div>
-  );
+  // const renderContent = (content: string) => (
+  //   <div>
+  //     <p>{content}</p>
+  //   </div>
+  // );
 
   const handleCompleteShipmentClick = () => {
     setIsModalVisible(true);
@@ -142,9 +142,9 @@ const Feed: React.FC = () => {
               <TabPane tab="Customer" key="4">
                 {renderCustomerDetails(customerData)}
               </TabPane>
-              <TabPane tab="Audit" key="5">
+              {/* <TabPane tab="Audit" key="5">
                 {renderContent("Audit content...")}
-              </TabPane>
+              </TabPane> */}
               <TabPane tab="Checklist" key="6">
                 {/* {renderContent("Checklist content...")} */}
                 <RenderChecklistDetails

@@ -2,7 +2,7 @@ import React from "react";
 import { Card, Button, Carousel, Tag } from "antd";
 import {
   EyeOutlined,
-  EditOutlined,
+  // EditOutlined,
   ClockCircleOutlined,
   UserAddOutlined,
 } from "@ant-design/icons";
@@ -204,17 +204,12 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({ shipment }) => {
 
       <div className="actionsStyle">
         <div className="buttonContainerStyle">
-          <Button
-            type="primary"
-            icon={<EyeOutlined />}
-            style={{ marginRight: "8px" }}
-            onClick={viewShipment}
-          >
+          <Button type="primary" icon={<EyeOutlined />} onClick={viewShipment}>
             View Shipment
           </Button>
-          <Button type="default" icon={<EditOutlined />}>
+          {/* <Button type="default" icon={<EditOutlined />}>
             Edit Shipment
-          </Button>
+          </Button> */}
         </div>
       </div>
       <span className="updatedTextStyle">
